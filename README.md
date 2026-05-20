@@ -1,6 +1,10 @@
+<div align="center">
+  <img src="public/images/logo.png" alt="Gladiators Logo" width="200" />
+</div>
+
 # ⚔️ GladiConnect — by Team Gladiators
 
-> _Bridging the Gap for Global Goals_
+> _Bridge the Gap. Amplify Impact._
 
 **GladiConnect** is a professional, role-based web application designed to connect **NGOs**, **Volunteers**, and **Corporate Funders** to collaboratively achieve **UN Sustainable Development Goals 16 (Peace, Justice & Strong Institutions)** and **17 (Partnerships for the Goals)**.
 
