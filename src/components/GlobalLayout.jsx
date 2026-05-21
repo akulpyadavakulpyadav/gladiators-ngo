@@ -35,7 +35,7 @@ const GlobalLayout = () => {
           style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}
           onClick={() => navigate('/')}
         >
-          <img src="/images/logo.png" alt="GladiConnect Logo" style={{ width: 28, height: 28, objectFit: 'contain' }} />
+          <img src="/images/logo.png" alt="GladiConnect Logo" style={{ width: 38, height: 38, objectFit: 'contain', borderRadius: '50%' }} />
           <span style={{
             fontWeight: 800, fontSize: '1.15rem',
             color: '#1E293B',

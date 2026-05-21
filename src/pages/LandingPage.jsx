@@ -50,9 +50,29 @@ const LandingPage = () => {
       }} />
 
       {/* SDG Badge */}
-      <div className="sdg-badge animate-fade-in" style={{ marginBottom: '2.5rem', position: 'relative', zIndex: 1 }}>
+      <div className="sdg-badge animate-fade-in" style={{ marginBottom: '2rem', position: 'relative', zIndex: 1 }}>
         <span>🌱</span>
-        <span>SDG 16 & 17 · GLADICONNECT</span>
+        <span>SDG 16 &amp; 17 · GLADICONNECT</span>
+      </div>
+
+      {/* Logo */}
+      <div className="animate-fade-in" style={{ marginBottom: '2rem', position: 'relative', zIndex: 1 }}>
+        <div style={{
+          width: 130, height: 130,
+          borderRadius: '50%',
+          background: 'rgba(255,255,255,0.08)',
+          border: '2px solid rgba(255,255,255,0.2)',
+          boxShadow: '0 0 48px rgba(107,143,94,0.45), 0 0 0 8px rgba(255,255,255,0.05)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          margin: '0 auto',
+          backdropFilter: 'blur(8px)'
+        }}>
+          <img
+            src="/images/logo.png"
+            alt="Gladiators NGO Logo"
+            style={{ width: 112, height: 112, objectFit: 'contain', borderRadius: '50%' }}
+          />
+        </div>
       </div>
 
       {/* Hero Text */}

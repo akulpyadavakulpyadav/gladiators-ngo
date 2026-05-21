@@ -5,7 +5,7 @@
 # ⚔️ GladiConnect — by Team Gladiators
 
 <div align="center">
-  <img src="17630174113065358213.jpeg" alt="Gladiators NGO Logo" width="320" />
+  <img src="public/images/logo.png" alt="Gladiators NGO Logo" width="320" />
 </div>
 
 ## Our Logo & Identity
