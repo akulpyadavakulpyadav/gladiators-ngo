@@ -6,9 +6,10 @@ import { t } from '../../utils/translations';
 
 /* ─── NGO Directory ─── */
 const DirectorySearch = () => {
+  const { user } = useAuth();
   const { language } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
-  const [domainFilter, setDomainFilter] = useState('All');
+  const [domainFilter, setDomainFilter] = useState(user?.interests || 'All');
 
   const ngos = [
     { id: 1, name: 'Global Green Initiative', domain: 'Environment', location: 'Bangalore', verified: true },
