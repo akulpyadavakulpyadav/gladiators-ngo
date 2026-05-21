@@ -324,7 +324,7 @@ const LoginPage = () => {
             >
               ← Back to standard login
             </button>
-            <DigilockerMock entityType={selectedRole} onVerify={handleDigilockerSuccess} />
+            <DigilockerMock entityType={selectedRole} onVerify={handleDigilockerSuccess} isLogin={true} />
           </div>
         )}
       </div>

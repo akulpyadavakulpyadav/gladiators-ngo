@@ -9,7 +9,7 @@ const LABELS = {
   volunteer: 'Aadhaar Number'
 };
 
-const DigilockerMock = ({ onVerify, entityType }) => {
+const DigilockerMock = ({ onVerify, entityType, isLogin }) => {
   const { language } = useLanguage();
   const [step, setStep] = useState(1);
   const [idValue, setIdValue] = useState('');
@@ -44,7 +44,14 @@ const DigilockerMock = ({ onVerify, entityType }) => {
 
     setStep(2);
     setTimeout(() => {
-      setStep('error');
+      if (isLogin) {
+        setStep('error');
+      } else {
+        setStep(3);
+        setTimeout(() => {
+          onVerify({ verifiedId: idValue });
+        }, 1500);
+      }
     }, 2000);
   };
 
