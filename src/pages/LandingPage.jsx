@@ -60,47 +60,40 @@ const LandingPage = () => {
         <span>SDG 16 &amp; 17 · GLADICONNECT</span>
       </div>
 
-      {/* Logo with wide-spreading ripple rings */}
+      {/* Logo — full screen width, natural height, no boundary */}
       <div className="animate-fade-in" style={{
-        marginBottom: '2rem', position: 'relative', zIndex: 1,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        width: '100%'
+        position: 'relative', zIndex: 1,
+        width: '100%',
+        marginBottom: '0'
       }}>
-        {/* Staggered wide-spread ripple rings */}
+        {/* Ripple rings centered behind logo */}
         {[0, 1, 2].map(i => (
           <div key={i} style={{
             position: 'absolute',
-            width: 300, height: 300,
+            top: '50%', left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '35vw', height: '35vw',
             borderRadius: '50%',
-            border: `1.5px solid rgba(107,143,94,${0.6 - i * 0.15})`,
+            border: `1.5px solid rgba(107,143,94,${0.65 - i * 0.18})`,
             animation: `pulse-spread 2.8s ease-out ${i * 0.9}s infinite`,
             pointerEvents: 'none',
             zIndex: 0
           }} />
         ))}
 
-        {/* Logo — circular clip, no white background */}
-        <div style={{
-          width: 280, height: 280,
-          borderRadius: '50%',
-          border: '2px solid rgba(107,143,94,0.5)',
-          boxShadow: '0 0 60px rgba(107,143,94,0.5)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          position: 'relative', zIndex: 1,
-          overflow: 'hidden',
-          background: 'transparent'
-        }}>
-          <img
-            src="/images/logo.png"
-            alt="Gladiators NGO Logo"
-            style={{
-              width: 260, height: 260,
-              objectFit: 'contain',
-              borderRadius: '50%',
-              mixBlendMode: 'multiply'
-            }}
-          />
-        </div>
+        {/* Full-width logo, height = natural aspect ratio, no border/clip */}
+        <img
+          src="/images/logo.png"
+          alt="Gladiators NGO Logo"
+          style={{
+            width: '100%',
+            height: 'auto',
+            display: 'block',
+            mixBlendMode: 'multiply',
+            position: 'relative',
+            zIndex: 1
+          }}
+        />
       </div>
 
       {/* Hero Text */}
