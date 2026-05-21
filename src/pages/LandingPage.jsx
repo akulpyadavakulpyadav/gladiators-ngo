@@ -64,28 +64,28 @@ const LandingPage = () => {
       <div className="animate-fade-in" style={{ marginBottom: '2rem', position: 'relative', zIndex: 1 }}>
         {/* Outer pulse ring */}
         <div style={{
-          width: 220, height: 220,
+          width: 300, height: 300,
           borderRadius: '50%',
           border: '2px solid rgba(107,143,94,0.35)',
-          boxShadow: '0 0 0 12px rgba(107,143,94,0.08), 0 0 80px rgba(107,143,94,0.4)',
+          boxShadow: '0 0 0 14px rgba(107,143,94,0.08), 0 0 100px rgba(107,143,94,0.4)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           margin: '0 auto',
           animation: 'pulse-ring 3s ease-in-out infinite'
         }}>
           {/* Inner glowing container */}
           <div style={{
-            width: 190, height: 190,
+            width: 270, height: 270,
             borderRadius: '50%',
             background: 'rgba(255,255,255,0.10)',
             border: '2px solid rgba(255,255,255,0.25)',
-            boxShadow: '0 0 60px rgba(107,143,94,0.55), inset 0 0 30px rgba(255,255,255,0.05)',
+            boxShadow: '0 0 80px rgba(107,143,94,0.55), inset 0 0 40px rgba(255,255,255,0.05)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             backdropFilter: 'blur(10px)'
           }}>
             <img
               src="/images/logo.png"
               alt="Gladiators NGO Logo"
-              style={{ width: 170, height: 170, objectFit: 'contain', borderRadius: '50%' }}
+              style={{ width: 250, height: 250, objectFit: 'contain', borderRadius: '50%' }}
             />
           </div>
         </div>
