@@ -60,19 +60,20 @@ const LandingPage = () => {
         <span>SDG 16 &amp; 17 · GLADICONNECT</span>
       </div>
 
-      {/* Logo — full screen width, natural height, no boundary */}
+      {/* Logo — aesthetically sized, centered, glow effect */}
       <div className="animate-fade-in" style={{
         position: 'relative', zIndex: 1,
-        width: '100%',
-        marginBottom: '0'
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        marginBottom: '1.5rem'
       }}>
-        {/* Ripple rings centered behind logo */}
+        {/* Ripple rings — sized to the visible circular logo area */}
         {[0, 1, 2].map(i => (
           <div key={i} style={{
             position: 'absolute',
             top: '50%', left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: '35vw', height: '35vw',
+            width: 'clamp(180px, 22vw, 280px)',
+            height: 'clamp(180px, 22vw, 280px)',
             borderRadius: '50%',
             border: `1.5px solid rgba(107,143,94,${0.65 - i * 0.18})`,
             animation: `pulse-spread 2.8s ease-out ${i * 0.9}s infinite`,
@@ -81,15 +82,16 @@ const LandingPage = () => {
           }} />
         ))}
 
-        {/* Full-width logo, height = natural aspect ratio, no border/clip */}
+        {/* Logo image — responsive, no clip, white bg removed via blend + drop-shadow glow */}
         <img
           src="/images/logo.png"
           alt="Gladiators NGO Logo"
           style={{
-            width: '100%',
+            width: 'clamp(260px, 38vw, 420px)',
             height: 'auto',
             display: 'block',
             mixBlendMode: 'multiply',
+            filter: 'drop-shadow(0 0 32px rgba(107,143,94,0.7)) drop-shadow(0 0 12px rgba(212,160,23,0.3))',
             position: 'relative',
             zIndex: 1
           }}
