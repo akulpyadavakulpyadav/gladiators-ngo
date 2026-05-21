@@ -141,10 +141,10 @@ const LoginPage = () => {
         {/* Floating circular glowing logo area */}
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <div style={{
-            width: 76, height: 76, borderRadius: '50%', overflow: 'hidden',
+            width: 120, height: 120, borderRadius: '50%', overflow: 'hidden',
             display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
             background: 'rgba(255, 255, 255, 0.05)',
-            boxShadow: '0 0 20px rgba(107,143,94,0.3)',
+            boxShadow: '0 0 24px rgba(107,143,94,0.45)',
             border: '2px solid rgba(255,255,255,0.1)',
             marginBottom: '1rem'
           }}>
@@ -162,7 +162,7 @@ const LoginPage = () => {
                 key={r}
                 onClick={() => setSelectedRole(r)}
                 className={`tab-btn ${selectedRole === r ? 'tab-btn-active' : 'tab-btn-inactive'}`}
-                style={{ flex: 1, padding: '0.5rem 0', fontSize: '0.8rem', textTransform: 'capitalize' }}
+                style={{ flex: 1, padding: '0.5rem 0', fontSize: '0.8rem', textTransform: 'capitalize', justifyContent: 'center' }}
               >
                 {t('role_' + r + '_title', language)}
               </button>
