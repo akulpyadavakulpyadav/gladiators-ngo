@@ -5,12 +5,53 @@ import { useLanguage } from '../context/LanguageContext';
 import { UserCircle, Phone, Globe, LogOut, ChevronDown } from 'lucide-react';
 import { t } from '../utils/translations';
 
+const taglines = {
+  EN: [
+    "Bridge the Gap. Amplify Impact.",
+    "Unity. Purpose. Impact.",
+    "Connecting Hearts, Empowering Communities.",
+    "Bridging Action. Creating Change.",
+    "Empowering Voices, Elevating Action."
+  ],
+  HI: [
+    "खाई को पाटें। प्रभाव को बढ़ाएं।",
+    "एकता। उद्देश्य। प्रभाव।",
+    "दिलों को जोड़ना, समुदायों को सशक्त बनाना।",
+    "कार्रवाई का सेतु। बदलाव का सृजन।",
+    "आवाज को सशक्त बनाना, कार्रवाई को ऊंचा उठाना।"
+  ],
+  KN: [
+    "ಅಂತರವನ್ನು ಕಡಿಮೆ ಮಾಡಿ. ಪ್ರಭಾವವನ್ನು ಹೆಚ್ಚಿಸಿ.",
+    "ಏಕತೆ. ಉದ್ದೇಶ. ಪ್ರಭಾವ.",
+    "ಹೃದಯಗಳನ್ನು ಜೋಡಿಸುವುದು, ಸಮುದಾಯಗಳನ್ನು ಸಬಲೀಕರಿಸುವುದು.",
+    "ಸೇವಾ ಸೇತುವೆ. ಬದಲಾವಣೆಯ ಸೃಷ್ಟಿ.",
+    "ಧ್ವನಿಗಳನ್ನು ಸಬಲೀಕರಿಸುವುದು, ಸೇವೆಯನ್ನು ಎತ್ತರಿಸುವುದು."
+  ]
+};
+
 const GlobalLayout = () => {
   const { user, logout, isAuthenticated } = useAuth();
   const { language, toggleLanguage } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
   const [showDropdown, setShowDropdown] = useState(false);
+
+  const [currentTaglineIndex, setCurrentTaglineIndex] = useState(0);
+  const [fadeState, setFadeState] = useState('fade-in');
+
+  const currentLanguageTaglines = taglines[language] || taglines.EN;
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setFadeState('fade-out');
+      setTimeout(() => {
+        setCurrentTaglineIndex((prev) => (prev + 1) % currentLanguageTaglines.length);
+        setFadeState('fade-in');
+      }, 500);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [currentLanguageTaglines.length]);
 
   const isLandingPage = location.pathname === '/';
 
@@ -43,6 +84,32 @@ const GlobalLayout = () => {
             letterSpacing: '-0.01em'
           }}>
             GladiConnect
+          </span>
+        </div>
+
+        {/* Middle: Creative Tagline Slider */}
+        <div className="hidden-mobile" style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          textAlign: 'center',
+          padding: '0 1.5rem',
+          pointerEvents: 'none'
+        }}>
+          <span style={{
+            fontSize: '0.9rem',
+            fontWeight: 700,
+            fontStyle: 'italic',
+            letterSpacing: '0.03em',
+            background: 'linear-gradient(135deg, #3D5A34, #D4A017)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            display: 'inline-block',
+            opacity: fadeState === 'fade-in' ? 1 : 0,
+            transform: fadeState === 'fade-in' ? 'translateY(0)' : 'translateY(-6px)',
+            transition: 'opacity 0.5s ease-in-out, transform 0.5s ease-in-out',
+          }}>
+            "{currentLanguageTaglines[currentTaglineIndex]}"
           </span>
         </div>
 
