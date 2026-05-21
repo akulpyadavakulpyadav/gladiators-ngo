@@ -4,6 +4,21 @@
 
 # ⚔️ GladiConnect — by Team Gladiators
 
+<div align="center">
+  <img src="17630174113065358213.jpeg" alt="Gladiators NGO Logo" width="320" />
+</div>
+
+## Our Logo & Identity
+
+The **Gladiators NGO** logo represents **strength, transformation, and social responsibility**.
+
+- 🪖 **The Gladiator Helmet** — Symbolizes resilience, inner strength, and the courage to advocate for community welfare.
+- 🦅 **The Soaring Wings** — Represents empowerment, liberation, and growth.
+- ⭐ **The Star** — Embedded in the negative space, it acts as a beacon of hope and a bright future.
+- 💬 **Tagline: "UNITY. PURPOSE. IMPACT."** — Defines our core workflow — bringing people together with a clear direction to create lasting change.
+
+---
+
 > _Bridge the Gap. Amplify Impact._
 
 **GladiConnect** is a professional, role-based web application designed to connect **NGOs**, **Volunteers**, and **Corporate Funders** to collaboratively achieve **UN Sustainable Development Goals 16 (Peace, Justice & Strong Institutions)** and **17 (Partnerships for the Goals)**.
