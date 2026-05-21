@@ -60,34 +60,46 @@ const LandingPage = () => {
         <span>SDG 16 &amp; 17 · GLADICONNECT</span>
       </div>
 
-      {/* Logo */}
-      <div className="animate-fade-in" style={{ marginBottom: '2rem', position: 'relative', zIndex: 1 }}>
-        {/* Outer pulse ring */}
-        <div style={{
-          width: 300, height: 300,
-          borderRadius: '50%',
-          border: '2px solid rgba(107,143,94,0.35)',
-          boxShadow: '0 0 0 14px rgba(107,143,94,0.08), 0 0 100px rgba(107,143,94,0.4)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          margin: '0 auto',
-          animation: 'pulse-ring 3s ease-in-out infinite'
-        }}>
-          {/* Inner glowing container */}
-          <div style={{
-            width: 270, height: 270,
+      {/* Logo with wide-spreading ripple rings */}
+      <div className="animate-fade-in" style={{
+        marginBottom: '2rem', position: 'relative', zIndex: 1,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        width: '100%'
+      }}>
+        {/* Staggered wide-spread ripple rings */}
+        {[0, 1, 2].map(i => (
+          <div key={i} style={{
+            position: 'absolute',
+            width: 300, height: 300,
             borderRadius: '50%',
-            background: 'rgba(255,255,255,0.10)',
-            border: '2px solid rgba(255,255,255,0.25)',
-            boxShadow: '0 0 80px rgba(107,143,94,0.55), inset 0 0 40px rgba(255,255,255,0.05)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            backdropFilter: 'blur(10px)'
-          }}>
-            <img
-              src="/images/logo.png"
-              alt="Gladiators NGO Logo"
-              style={{ width: 250, height: 250, objectFit: 'contain', borderRadius: '50%' }}
-            />
-          </div>
+            border: `1.5px solid rgba(107,143,94,${0.6 - i * 0.15})`,
+            animation: `pulse-spread 2.8s ease-out ${i * 0.9}s infinite`,
+            pointerEvents: 'none',
+            zIndex: 0
+          }} />
+        ))}
+
+        {/* Logo — circular clip, no white background */}
+        <div style={{
+          width: 280, height: 280,
+          borderRadius: '50%',
+          border: '2px solid rgba(107,143,94,0.5)',
+          boxShadow: '0 0 60px rgba(107,143,94,0.5)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          position: 'relative', zIndex: 1,
+          overflow: 'hidden',
+          background: 'transparent'
+        }}>
+          <img
+            src="/images/logo.png"
+            alt="Gladiators NGO Logo"
+            style={{
+              width: 260, height: 260,
+              objectFit: 'contain',
+              borderRadius: '50%',
+              mixBlendMode: 'multiply'
+            }}
+          />
         </div>
       </div>
 
