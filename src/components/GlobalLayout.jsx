@@ -61,6 +61,14 @@ const GlobalLayout = () => {
     navigate('/');
   };
 
+  const handleLogoClick = () => {
+    if (isAuthenticated && user?.role) {
+      navigate(`/${user.role}/dashboard`);
+    } else {
+      navigate('/');
+    }
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <nav className="glass-panel" style={{
@@ -75,7 +83,7 @@ const GlobalLayout = () => {
         {/* Left side: Logo */}
         <div
           style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}
-          onClick={() => navigate('/')}
+          onClick={handleLogoClick}
         >
           <img src="/images/logo.png" alt="GladiConnect Logo" style={{ width: 38, height: 38, objectFit: 'contain', borderRadius: '50%' }} />
           <span style={{
