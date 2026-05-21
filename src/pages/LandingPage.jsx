@@ -82,21 +82,28 @@ const LandingPage = () => {
           }} />
         ))}
 
-        {/* Logo image — square element so radial mask is truly circular in all directions */}
-        <img
-          src="/images/logo.png"
-          alt="Gladiators NGO Logo"
-          style={{
-            width: 'clamp(260px, 38vw, 420px)',
-            height: 'clamp(260px, 38vw, 420px)',
-            objectFit: 'contain',
-            maskImage: 'radial-gradient(circle, black 40%, transparent 68%)',
-            WebkitMaskImage: 'radial-gradient(circle, black 40%, transparent 68%)',
-            filter: 'drop-shadow(0 0 28px rgba(107,143,94,0.65)) drop-shadow(0 0 10px rgba(212,160,23,0.25))',
-            position: 'relative',
-            zIndex: 1
-          }}
-        />
+        {/* Perfect square circular container to clip landscape image and dissolve evenly in all directions */}
+        <div style={{
+          width: 'clamp(260px, 38vw, 420px)',
+          height: 'clamp(260px, 38vw, 420px)',
+          borderRadius: '50%',
+          overflow: 'hidden',
+          position: 'relative',
+          zIndex: 1,
+          maskImage: 'radial-gradient(circle, black 35%, transparent 70%)',
+          WebkitMaskImage: 'radial-gradient(circle, black 35%, transparent 70%)',
+          filter: 'drop-shadow(0 0 28px rgba(107,143,94,0.65)) drop-shadow(0 0 10px rgba(212,160,23,0.25))'
+        }}>
+          <img
+            src="/images/logo.png"
+            alt="Gladiators NGO Logo"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover'
+            }}
+          />
+        </div>
       </div>
 
       {/* Hero Text */}
