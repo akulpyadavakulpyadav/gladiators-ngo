@@ -12,9 +12,20 @@ const VolunteerOnboarding = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  const handlePhoneChange = (e) => {
+    const value = e.target.value.replace(/\D/g, ''); // Keep only digits
+    if (value.length <= 10) {
+      setPhone(value);
+    }
+  };
+
   const handleSendOtp = (e) => {
     e.preventDefault();
-    if (phone.length >= 10) setStep(1.5);
+    if (phone.length === 10) {
+      setStep(1.5);
+    } else {
+      alert('Please enter a valid 10-digit phone number.');
+    }
   };
 
   const handleVerifyOtp = (e) => {
@@ -61,7 +72,15 @@ const VolunteerOnboarding = () => {
             <form onSubmit={handleSendOtp}>
               <div className="form-group">
                 <label className="form-label" style={{ color: '#334155', fontWeight: 700 }}>Phone Number</label>
-                <input type="tel" className="form-input" style={{ background: '#FFFFFF', color: '#0F172A', borderColor: '#CBD5E1', borderWidth: '2px' }} placeholder="+91 9876543210" value={phone} onChange={e => setPhone(e.target.value)} required />
+                <input
+                  type="tel"
+                  className="form-input"
+                  style={{ background: '#FFFFFF', color: '#0F172A', borderColor: '#CBD5E1', borderWidth: '2px' }}
+                  placeholder="e.g. 9876543210 (10 digits)"
+                  value={phone}
+                  onChange={handlePhoneChange}
+                  required
+                />
               </div>
               <button type="submit" className="btn btn-primary" style={{ width: '100%', background: '#4A6741', color: '#FFFFFF', fontSize: '1rem', padding: '0.85rem' }}>Send OTP</button>
             </form>

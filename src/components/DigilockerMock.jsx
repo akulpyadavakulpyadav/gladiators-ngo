@@ -10,10 +10,35 @@ const LABELS = {
 const DigilockerMock = ({ onVerify, entityType }) => {
   const [step, setStep] = useState(1);
   const [idValue, setIdValue] = useState('');
+  const handleIdChange = (e) => {
+    const rawVal = e.target.value;
+    if (entityType === 'volunteer') {
+      const cleanVal = rawVal.replace(/\D/g, ''); // Keep only digits
+      if (cleanVal.length <= 12) {
+        // Format with space every 4 digits
+        const parts = [];
+        for (let i = 0; i < cleanVal.length; i += 4) {
+          parts.push(cleanVal.substring(i, i + 4));
+        }
+        setIdValue(parts.join(' '));
+      }
+    } else {
+      setIdValue(rawVal);
+    }
+  };
 
   const handleVerify = (e) => {
     e.preventDefault();
     if (!idValue) return;
+
+    if (entityType === 'volunteer') {
+      const digitsOnly = idValue.replace(/\D/g, '');
+      if (digitsOnly.length !== 12) {
+        alert('Please enter a valid 12-digit Aadhaar number.');
+        return;
+      }
+    }
+
     setStep(2);
     setTimeout(() => {
       setStep(3);
@@ -52,9 +77,9 @@ const DigilockerMock = ({ onVerify, entityType }) => {
               type="text"
               className="form-input"
               style={{ background: '#FFFFFF', color: '#0F172A', borderColor: '#CBD5E1', borderWidth: '2px' }}
-              placeholder="Enter your ID for verification"
+              placeholder={entityType === 'volunteer' ? "XXXX XXXX XXXX" : "Enter your ID for verification"}
               value={idValue}
-              onChange={(e) => setIdValue(e.target.value)}
+              onChange={handleIdChange}
               required
             />
           </div>
