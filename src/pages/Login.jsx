@@ -142,7 +142,7 @@ const LoginPage = () => {
             border: '2px solid rgba(255,255,255,0.1)',
             marginBottom: '1rem'
           }}>
-            <img src="/images/logo.png" alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <img src="/images/logo.png" alt="GladiConnect Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
           <h1 className="text-gradient" style={{ fontSize: '1.75rem', marginBottom: '0.4rem', fontWeight: 800 }}>{t('login_title', language)}</h1>
           <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', margin: 0 }}>{t('login_sub', language)}</p>

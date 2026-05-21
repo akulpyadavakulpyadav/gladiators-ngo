@@ -100,7 +100,7 @@ const LandingPage = () => {
         }}>
           <img
             src="/images/logo.png"
-            alt="Gladiators NGO Logo"
+            alt="GladiConnect Logo"
             style={{
               width: '100%',
               height: '100%',
