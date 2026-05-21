@@ -82,7 +82,7 @@ const LandingPage = () => {
           }} />
         ))}
 
-        {/* Logo image — responsive, no clip, white bg removed via blend + drop-shadow glow */}
+        {/* Logo image — circular radial fade merges white bg into hero background */}
         <img
           src="/images/logo.png"
           alt="Gladiators NGO Logo"
@@ -90,8 +90,9 @@ const LandingPage = () => {
             width: 'clamp(260px, 38vw, 420px)',
             height: 'auto',
             display: 'block',
-            mixBlendMode: 'multiply',
-            filter: 'drop-shadow(0 0 32px rgba(107,143,94,0.7)) drop-shadow(0 0 12px rgba(212,160,23,0.3))',
+            maskImage: 'radial-gradient(circle, black 42%, transparent 70%)',
+            WebkitMaskImage: 'radial-gradient(circle, black 42%, transparent 70%)',
+            filter: 'drop-shadow(0 0 28px rgba(107,143,94,0.65)) drop-shadow(0 0 10px rgba(212,160,23,0.25))',
             position: 'relative',
             zIndex: 1
           }}
