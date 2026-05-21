@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { UserCircle, Phone, Globe, LogOut, ChevronDown } from 'lucide-react';
@@ -8,7 +8,10 @@ const GlobalLayout = () => {
   const { user, logout, isAuthenticated } = useAuth();
   const { language, toggleLanguage } = useLanguage();
   const navigate = useNavigate();
+  const location = useLocation();
   const [showDropdown, setShowDropdown] = useState(false);
+
+  const isLandingPage = location.pathname === '/';
 
   const handleLogout = () => {
     logout();
@@ -18,69 +21,88 @@ const GlobalLayout = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      {/* Global Navigation Bar */}
-      <nav className="glass-panel" style={{ 
-        position: 'sticky', top: '1rem', zIndex: 50,
-        margin: '1rem 1.5rem 0', padding: '0.75rem 1.5rem',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between' 
+      <nav className="glass-panel" style={{
+        position: 'fixed', top: '1rem', left: '1.5rem', right: '1.5rem', zIndex: 50,
+        padding: '0.75rem 1.5rem',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        background: '#FFFFFF',
+        border: '1px solid #E2E8F0',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+        borderRadius: 'var(--radius-xl)'
       }}>
-        {/* Left side */}
+        {/* Left side: Logo */}
+        <div
+          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}
+          onClick={() => navigate('/')}
+        >
+          <img src="/images/logo.png" alt="GladiConnect Logo" style={{ width: 28, height: 28, objectFit: 'contain' }} />
+          <span style={{
+            fontWeight: 800, fontSize: '1.15rem',
+            color: '#1E293B',
+            letterSpacing: '-0.01em'
+          }}>
+            GladiConnect
+          </span>
+        </div>
+
+        {/* Right side */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          {isAuthenticated ? (
+          {isAuthenticated && (
             <div style={{ position: 'relative' }}>
-              <button 
+              <button
                 onClick={() => setShowDropdown(!showDropdown)}
-                style={{ 
+                style={{
                   display: 'flex', alignItems: 'center', gap: '0.5rem',
                   background: 'none', border: 'none', cursor: 'pointer',
                   padding: '0.4rem 0.6rem', borderRadius: 'var(--radius-md)',
                   fontFamily: 'inherit', transition: 'background var(--transition-fast)'
                 }}
-                onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,0,0,0.04)'}
+                onMouseEnter={e => e.currentTarget.style.background = '#F1F5F9'}
                 onMouseLeave={e => e.currentTarget.style.background = 'none'}
               >
-                <div style={{ 
-                  width: 36, height: 36, borderRadius: '50%', 
+                <div style={{
+                  width: 36, height: 36, borderRadius: '50%',
                   background: 'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   color: 'white', fontWeight: 700, fontSize: '0.85rem'
                 }}>
                   {user?.name?.charAt(0)?.toUpperCase() || 'U'}
                 </div>
-                <div style={{ textAlign: 'left' }}>
-                  <p style={{ fontSize: '0.85rem', fontWeight: 600, lineHeight: 1.3, color: 'var(--color-text-primary)' }}>{user?.name}</p>
-                  <span className="badge badge-primary" style={{ fontSize: '0.6rem', padding: '0.1rem 0.5rem' }}>{user?.role?.toUpperCase()}</span>
+                <div style={{ textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '0.1rem' }}>
+                  <p style={{ fontSize: '0.85rem', fontWeight: 600, lineHeight: 1, color: '#1E293B', margin: 0 }}>{user?.name}</p>
+                  <span className="badge badge-primary" style={{ fontSize: '0.6rem', padding: '0.1rem 0.4rem', background: '#E2E8F0', color: '#3D5A34', alignSelf: 'flex-start' }}>{user?.role?.toUpperCase()}</span>
                 </div>
-                <ChevronDown size={14} style={{ color: 'var(--color-text-secondary)' }} />
+                <ChevronDown size={14} style={{ color: '#475569', marginLeft: '0.2rem' }} />
               </button>
 
               {showDropdown && (
-                <div className="glass-card" style={{ 
-                  position: 'absolute', top: 'calc(100% + 0.5rem)', left: 0,
-                  width: 180, padding: '0.5rem', zIndex: 100
+                <div className="glass-card" style={{
+                  position: 'absolute', top: 'calc(100% + 0.5rem)', right: 0,
+                  width: 180, padding: '0.5rem', zIndex: 100,
+                  background: '#FFFFFF', border: '1px solid #E2E8F0', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
                 }}>
-                  <button 
+                  <button
                     onClick={() => setShowDropdown(false)}
-                    style={{ 
+                    style={{
                       display: 'flex', alignItems: 'center', gap: '0.5rem', width: '100%',
                       padding: '0.5rem 0.75rem', border: 'none', background: 'none',
                       borderRadius: 'var(--radius-sm)', cursor: 'pointer',
-                      fontSize: '0.85rem', fontFamily: 'inherit', color: 'var(--color-text-primary)'
+                      fontSize: '0.85rem', fontFamily: 'inherit', color: '#1E293B'
                     }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,0,0,0.04)'}
+                    onMouseEnter={e => e.currentTarget.style.background = '#F1F5F9'}
                     onMouseLeave={e => e.currentTarget.style.background = 'none'}
                   >
                     <UserCircle size={16} /> Edit Profile
                   </button>
-                  <button 
+                  <button
                     onClick={handleLogout}
-                    style={{ 
+                    style={{
                       display: 'flex', alignItems: 'center', gap: '0.5rem', width: '100%',
                       padding: '0.5rem 0.75rem', border: 'none', background: 'none',
                       borderRadius: 'var(--radius-sm)', cursor: 'pointer',
-                      fontSize: '0.85rem', fontFamily: 'inherit', color: 'var(--color-danger)'
+                      fontSize: '0.85rem', fontFamily: 'inherit', color: '#EF4444'
                     }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(239,68,68,0.06)'}
+                    onMouseEnter={e => e.currentTarget.style.background = '#FEF2F2'}
                     onMouseLeave={e => e.currentTarget.style.background = 'none'}
                   >
                     <LogOut size={16} /> Logout
@@ -88,40 +110,33 @@ const GlobalLayout = () => {
                 </div>
               )}
             </div>
-          ) : (
-            <div 
-              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}
-              onClick={() => navigate('/')}
-            >
-              <div style={{ 
-                width: 10, height: 10, borderRadius: '50%', 
-                background: 'var(--color-secondary)'
-              }} className="pulse-animation" />
-              <span style={{ fontWeight: 800, fontSize: '1.15rem', color: 'var(--color-primary)', letterSpacing: '-0.01em' }}>
-                GladiConnect
-              </span>
-            </div>
           )}
-        </div>
 
-        {/* Right side */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <button className="btn-ghost hidden-mobile" style={{ 
+          <button className="btn-ghost hidden-mobile" style={{
             display: 'flex', alignItems: 'center', gap: '0.4rem',
-            border: '1px solid rgba(239,68,68,0.2)', borderRadius: 'var(--radius-md)',
-            padding: '0.5rem 1rem', background: 'rgba(239,68,68,0.04)',
+            border: '1px solid #E2E8F0',
+            borderRadius: 'var(--radius-md)',
+            padding: '0.5rem 1rem',
+            background: '#F8FAFC',
             cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.8rem'
           }}>
-            <Phone size={15} style={{ color: 'var(--color-danger)' }} className="pulse-animation" />
-            <span style={{ color: 'var(--color-danger)' }}>24/7 Helpline</span>
+            <Phone size={15} style={{ color: '#4A6741' }} className="pulse-animation" />
+            <span style={{ color: '#475569' }}>24/7 Helpline</span>
           </button>
 
-          <button 
-            onClick={toggleLanguage} 
-            className="btn btn-secondary" 
-            style={{ padding: '0.5rem 0.9rem', fontSize: '0.8rem' }}
+          <button
+            onClick={toggleLanguage}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
+              padding: '0.5rem 0.9rem', fontSize: '0.8rem', fontWeight: 600,
+              borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer',
+              fontFamily: 'inherit',
+              background: '#F1F5F9',
+              color: '#1E293B',
+              transition: 'all var(--transition-fast)'
+            }}
           >
-            <Globe size={14} />
+            <Globe size={14} style={{ color: '#475569' }} />
             {language}
           </button>
         </div>
@@ -129,16 +144,28 @@ const GlobalLayout = () => {
 
       {/* Click-away overlay for dropdown */}
       {showDropdown && (
-        <div 
-          onClick={() => setShowDropdown(false)} 
-          style={{ position: 'fixed', inset: 0, zIndex: 49 }} 
+        <div
+          onClick={() => setShowDropdown(false)}
+          style={{ position: 'fixed', inset: 0, zIndex: 49 }}
         />
       )}
 
       {/* Main Content */}
-      <main className="container" style={{ flex: 1, padding: '2rem 1.5rem 3rem' }}>
+      <main className={isLandingPage ? '' : 'container'} style={{ flex: 1, paddingTop: isLandingPage ? 0 : '5rem', paddingBottom: isLandingPage ? 0 : '1rem' }}>
         <Outlet />
       </main>
+
+      <footer style={{
+        textAlign: 'center',
+        padding: '1rem',
+        color: '#FFFFFF',
+        fontSize: '0.9rem',
+        fontWeight: 600,
+        letterSpacing: '0.02em',
+        background: 'transparent'
+      }}>
+        Made for the world by Gladiators
+      </footer>
     </div>
   );
 };

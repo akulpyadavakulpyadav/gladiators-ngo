@@ -55,9 +55,9 @@ const ManagementSuite = () => (
 
     <div className="grid grid-md-3">
       {[
-        { label: 'Total Volunteers', value: '1,245', color: 'var(--color-primary)', bg: 'rgba(26, 82, 118, 0.08)' },
-        { label: 'Active Campaigns', value: '4', color: 'var(--color-secondary)', bg: 'rgba(30, 132, 73, 0.08)' },
-        { label: 'Total Hours Logged', value: '14,500+', color: 'var(--color-warning)', bg: 'rgba(245, 158, 11, 0.08)' }
+        { label: 'Total Volunteers', value: '1,245', color: 'var(--color-primary)', bg: 'rgba(0, 0, 0, 0.05)' },
+        { label: 'Active Campaigns', value: '4', color: 'var(--color-secondary)', bg: 'rgba(0, 0, 0, 0.05)' },
+        { label: 'Total Hours Logged', value: '14,500+', color: 'var(--color-warning)', bg: 'rgba(0, 0, 0, 0.05)' }
       ].map((s, i) => (
         <div key={i} className="stat-card">
           <div className="stat-icon" style={{ background: s.bg }}><span style={{ color: s.color, fontWeight: 800 }}>●</span></div>
@@ -193,7 +193,7 @@ const OfflineEventLogger = () => {
 const FinanceSuite = () => (
   <div className="animate-fade-in glass-card" style={{ padding: '3rem 2rem', textAlign: 'center' }}>
     <div style={{ 
-      width: 72, height: 72, borderRadius: '50%', background: 'rgba(30, 132, 73, 0.08)',
+      width: 72, height: 72, borderRadius: '50%', background: 'rgba(0, 0, 0, 0.05)',
       display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem'
     }}>
       <IndianRupee size={32} style={{ color: 'var(--color-secondary)' }} />
@@ -210,7 +210,7 @@ const FinanceSuite = () => (
 const CollabHub = () => (
   <div className="animate-fade-in glass-card" style={{ padding: '3rem 2rem', textAlign: 'center' }}>
     <div style={{ 
-      width: 72, height: 72, borderRadius: '50%', background: 'rgba(26, 82, 118, 0.08)',
+      width: 72, height: 72, borderRadius: '50%', background: 'rgba(0, 0, 0, 0.05)',
       display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem'
     }}>
       <MessageSquare size={32} style={{ color: 'var(--color-primary)' }} />

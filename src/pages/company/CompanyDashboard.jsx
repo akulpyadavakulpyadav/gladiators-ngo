@@ -7,9 +7,9 @@ const FundingPortal = () => (
   <div className="animate-fade-in space-y-6">
     <div className="grid grid-md-3">
       {[
-        { label: 'Total Budget Allocated', value: '₹ 50.0L', color: 'var(--color-primary)', bg: 'rgba(26, 82, 118, 0.08)' },
-        { label: 'Funds Disbursed', value: '₹ 32.5L', color: 'var(--color-secondary)', bg: 'rgba(30, 132, 73, 0.08)' },
-        { label: 'Active Partnerships', value: '4 NGOs', color: 'var(--color-text-primary)', bg: 'rgba(30, 41, 59, 0.06)' }
+        { label: 'Total Budget Allocated', value: '₹ 50.0L', color: 'var(--color-primary)', bg: 'rgba(0, 0, 0, 0.05)' },
+        { label: 'Funds Disbursed', value: '₹ 32.5L', color: 'var(--color-secondary)', bg: 'rgba(0, 0, 0, 0.05)' },
+        { label: 'Active Partnerships', value: '4 NGOs', color: 'var(--color-text-primary)', bg: 'rgba(0, 0, 0, 0.05)' }
       ].map((s, i) => (
         <div key={i} className="stat-card" style={{ textAlign: 'left' }}>
           <div className="stat-label" style={{ marginBottom: '0.5rem' }}>{s.label}</div>
@@ -63,7 +63,7 @@ const DueDiligence = () => (
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <div style={{
               width: 36, height: 36, borderRadius: '50%',
-              background: item.status === 'Verified' ? 'rgba(30, 132, 73, 0.08)' : 'rgba(245, 158, 11, 0.08)',
+              background: item.status === 'Verified' ? 'rgba(0, 0, 0, 0.05)' : 'rgba(0, 0, 0, 0.05)',
               display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
             }}>
               {item.status === 'Verified'
@@ -86,7 +86,7 @@ const DueDiligence = () => (
 const CsrReports = () => (
   <div className="animate-fade-in glass-card" style={{ padding: '3rem 2rem', textAlign: 'center' }}>
     <div style={{
-      width: 72, height: 72, borderRadius: '50%', background: 'rgba(26, 82, 118, 0.08)',
+      width: 72, height: 72, borderRadius: '50%', background: 'rgba(0, 0, 0, 0.05)',
       display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem'
     }}>
       <FileText size={32} style={{ color: 'var(--color-primary)' }} />

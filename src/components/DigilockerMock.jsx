@@ -22,41 +22,43 @@ const DigilockerMock = ({ onVerify, entityType }) => {
   };
 
   return (
-    <div className="glass-card" style={{ 
+    <div style={{ 
       maxWidth: 420, margin: '0 auto', padding: '2rem', 
-      borderTop: '3px solid var(--color-secondary)', position: 'relative', overflow: 'hidden' 
+      borderTop: '3px solid #F39C12', position: 'relative', overflow: 'hidden',
+      background: '#F8FAFC', borderRadius: '1rem', border: '1px solid #E2E8F0'
     }}>
       {/* Background decoration */}
       <div style={{ position: 'absolute', top: -40, right: -40, opacity: 0.06 }}>
-        <Shield size={160} style={{ color: 'var(--color-secondary)' }} />
+        <Shield size={160} style={{ color: '#F39C12' }} />
       </div>
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', position: 'relative', zIndex: 1 }}>
         <div style={{ 
           width: 40, height: 40, borderRadius: '50%', 
-          background: 'rgba(30, 132, 73, 0.1)',
+          background: 'rgba(243, 156, 18, 0.1)',
           display: 'flex', alignItems: 'center', justifyContent: 'center' 
         }}>
-          <Shield size={20} style={{ color: 'var(--color-secondary)' }} />
+          <Shield size={20} style={{ color: '#F39C12' }} />
         </div>
-        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0 }}>DigiLocker Verification</h3>
+        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0, color: '#0F172A' }}>DigiLocker Verification</h3>
       </div>
 
       {step === 1 && (
         <form onSubmit={handleVerify} className="animate-fade-in" style={{ position: 'relative', zIndex: 1 }}>
           <div className="form-group">
-            <label className="form-label">{LABELS[entityType] || 'ID Number'}</label>
+            <label className="form-label" style={{ color: '#334155', fontWeight: 700 }}>{LABELS[entityType] || 'ID Number'}</label>
             <input
               type="text"
               className="form-input"
+              style={{ background: '#FFFFFF', color: '#0F172A', borderColor: '#CBD5E1', borderWidth: '2px' }}
               placeholder="Enter your ID for verification"
               value={idValue}
               onChange={(e) => setIdValue(e.target.value)}
               required
             />
           </div>
-          <button type="submit" className="btn btn-secondary" style={{ width: '100%' }}>
+          <button type="submit" className="btn btn-secondary" style={{ width: '100%', background: '#F39C12', color: '#FFFFFF', fontWeight: 700 }}>
             <Shield size={16} /> Verify with DigiLocker
           </button>
         </form>
@@ -67,9 +69,9 @@ const DigilockerMock = ({ onVerify, entityType }) => {
           display: 'flex', flexDirection: 'column', alignItems: 'center', 
           padding: '2.5rem 0', position: 'relative', zIndex: 1 
         }}>
-          <Loader2 size={40} className="animate-spin" style={{ color: 'var(--color-secondary)', marginBottom: '1rem' }} />
-          <p style={{ fontWeight: 600, fontSize: '0.95rem' }}>Connecting to Government Databases...</p>
-          <p style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', marginTop: '0.25rem' }}>Please wait</p>
+          <Loader2 size={40} className="animate-spin" style={{ color: '#F39C12', marginBottom: '1rem' }} />
+          <p style={{ fontWeight: 600, fontSize: '0.95rem', color: '#0F172A' }}>Connecting to Government Databases...</p>
+          <p style={{ fontSize: '0.8rem', color: '#475569', marginTop: '0.25rem' }}>Please wait</p>
         </div>
       )}
 
@@ -78,9 +80,9 @@ const DigilockerMock = ({ onVerify, entityType }) => {
           display: 'flex', flexDirection: 'column', alignItems: 'center', 
           padding: '2.5rem 0', position: 'relative', zIndex: 1 
         }}>
-          <CheckCircle size={44} style={{ color: 'var(--color-secondary)', marginBottom: '0.75rem' }} />
-          <p style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--color-secondary)' }}>Verification Successful!</p>
-          <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', marginTop: '0.25rem' }}>Redirecting to next step...</p>
+          <CheckCircle size={44} style={{ color: '#27AE60', marginBottom: '0.75rem' }} />
+          <p style={{ fontSize: '1.1rem', fontWeight: 700, color: '#27AE60' }}>Verification Successful!</p>
+          <p style={{ fontSize: '0.85rem', color: '#475569', marginTop: '0.25rem' }}>Redirecting to next step...</p>
         </div>
       )}
     </div>

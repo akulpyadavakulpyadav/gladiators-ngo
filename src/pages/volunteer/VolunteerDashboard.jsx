@@ -41,10 +41,10 @@ const DirectorySearch = () => {
             value={domainFilter}
             onChange={e => setDomainFilter(e.target.value)}
           >
-            <option value="All">All Domains</option>
-            <option value="Environment">Environment</option>
-            <option value="Education">Education</option>
-            <option value="Health">Health</option>
+            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="All">All Domains</option>
+            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Environment">Environment</option>
+            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Education">Education</option>
+            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Health">Health</option>
           </select>
         </div>
       </div>
@@ -79,9 +79,9 @@ const ImpactDashboard = () => (
   <div className="animate-fade-in space-y-6">
     <div className="grid grid-md-3">
       {[
-        { icon: Clock, label: 'Hours Volunteered', value: '120', color: 'var(--color-primary)', bg: 'rgba(26, 82, 118, 0.08)' },
-        { icon: Award, label: 'Badges Earned', value: '3', color: 'var(--color-secondary)', bg: 'rgba(30, 132, 73, 0.08)' },
-        { icon: Calendar, label: 'Events Attended', value: '8', color: 'var(--color-warning)', bg: 'rgba(245, 158, 11, 0.08)' }
+        { icon: Clock, label: 'Hours Volunteered', value: '120', color: 'var(--color-primary)', bg: 'rgba(0, 0, 0, 0.05)' },
+        { icon: Award, label: 'Badges Earned', value: '3', color: 'var(--color-secondary)', bg: 'rgba(0, 0, 0, 0.05)' },
+        { icon: Calendar, label: 'Events Attended', value: '8', color: 'var(--color-warning)', bg: 'rgba(0, 0, 0, 0.05)' }
       ].map((s, i) => (
         <div key={i} className="stat-card">
           <div className="stat-icon" style={{ background: s.bg }}>
