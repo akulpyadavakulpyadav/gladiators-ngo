@@ -1,7 +1,3 @@
-<div align="center">
-  <img src="public/images/logo.png" alt="Gladiators Logo" width="200" />
-</div>
-
 # ⚔️ GladiConnect — by Team Gladiators
 
 <div align="center">
