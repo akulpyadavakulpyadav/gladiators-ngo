@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
+import { t } from '../utils/translations';
 
 const roles = [
   {
@@ -35,6 +37,7 @@ const sdgTags = [
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  const { language } = useLanguage();
 
   // Always scroll to top when landing page mounts
   useEffect(() => {
@@ -120,7 +123,7 @@ const LandingPage = () => {
           letterSpacing: '-0.03em',
           fontFamily: "'Playfair Display', serif"
         }}>
-          Bridge the gap.
+          {t('hero_title_1', language)}
         </h1>
         <h1 style={{
           fontSize: 'clamp(2.5rem, 7vw, 5rem)',
@@ -131,7 +134,7 @@ const LandingPage = () => {
           letterSpacing: '-0.03em',
           fontFamily: "'Playfair Display', serif"
         }}>
-          Amplify impact.
+          {t('hero_title_2', language)}
         </h1>
         <p style={{
           fontSize: 'clamp(1rem, 2vw, 1.15rem)',
@@ -140,7 +143,7 @@ const LandingPage = () => {
           maxWidth: 560,
           margin: '0 auto'
         }}>
-          The unified platform connecting NGOs, volunteers, and companies to drive collective social impact aligned with UN Sustainable Development Goals.
+          {t('hero_desc', language)}
         </p>
         <p style={{
           fontSize: '1rem',
@@ -150,7 +153,7 @@ const LandingPage = () => {
           color: 'rgba(255, 255, 255, 0.45)',
           marginTop: '1rem'
         }}>
-          Unite &middot; Empower &middot; Transform
+          {t('hero_slogan', language)}
         </p>
       </div>
 
@@ -185,7 +188,7 @@ const LandingPage = () => {
               marginBottom: '0.4rem',
               letterSpacing: '0.02em'
             }}>
-              {role.title}
+              {t('role_' + role.key + '_title', language)}
             </h3>
             <p style={{
               fontSize: '0.95rem',
@@ -193,7 +196,7 @@ const LandingPage = () => {
               margin: 0,
               lineHeight: 1.4
             }}>
-              {role.description}
+              {t('role_' + role.key + '_desc', language)}
             </p>
           </div>
         ))}
@@ -210,9 +213,14 @@ const LandingPage = () => {
           color: 'rgba(255, 255, 255, 0.5)',
           fontWeight: 500
         }}>
-          Aligned with:
+          {t('aligned_with', language)}
         </span>
-        {sdgTags.map((tag, i) => (
+        {[
+          t('sdg_16', language),
+          t('sdg_17', language),
+          t('sdg_4', language),
+          t('sdg_13', language)
+        ].map((tag, i) => (
           <span key={i} className="sdg-tag">{tag}</span>
         ))}
       </div>

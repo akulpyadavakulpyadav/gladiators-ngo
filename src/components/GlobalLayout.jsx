@@ -3,6 +3,7 @@ import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { UserCircle, Phone, Globe, LogOut, ChevronDown } from 'lucide-react';
+import { t } from '../utils/translations';
 
 const GlobalLayout = () => {
   const { user, logout, isAuthenticated } = useAuth();
@@ -92,7 +93,7 @@ const GlobalLayout = () => {
                     onMouseEnter={e => e.currentTarget.style.background = '#F1F5F9'}
                     onMouseLeave={e => e.currentTarget.style.background = 'none'}
                   >
-                    <UserCircle size={16} /> Edit Profile
+                    <UserCircle size={16} /> {t('edit_profile', language)}
                   </button>
                   <button
                     onClick={handleLogout}
@@ -105,7 +106,7 @@ const GlobalLayout = () => {
                     onMouseEnter={e => e.currentTarget.style.background = '#FEF2F2'}
                     onMouseLeave={e => e.currentTarget.style.background = 'none'}
                   >
-                    <LogOut size={16} /> Logout
+                    <LogOut size={16} /> {t('logout', language)}
                   </button>
                 </div>
               )}
@@ -121,7 +122,7 @@ const GlobalLayout = () => {
             cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.8rem'
           }}>
             <Phone size={15} style={{ color: '#4A6741' }} className="pulse-animation" />
-            <span style={{ color: '#475569' }}>24/7 Helpline</span>
+            <span style={{ color: '#475569' }}>{t('helpline', language)}</span>
           </button>
 
           <button
@@ -164,7 +165,7 @@ const GlobalLayout = () => {
         letterSpacing: '0.02em',
         background: 'transparent'
       }}>
-        Made for the world by Gladiators
+        {t('made_for', language)}
       </footer>
     </div>
   );

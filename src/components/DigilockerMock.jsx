@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Shield, CheckCircle, Loader2 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
+import { t } from '../utils/translations';
 
 const LABELS = {
   ngo: 'Government Registration ID',
@@ -8,6 +10,7 @@ const LABELS = {
 };
 
 const DigilockerMock = ({ onVerify, entityType }) => {
+  const { language } = useLanguage();
   const [step, setStep] = useState(1);
   const [idValue, setIdValue] = useState('');
   const handleIdChange = (e) => {
@@ -34,7 +37,7 @@ const DigilockerMock = ({ onVerify, entityType }) => {
     if (entityType === 'volunteer') {
       const digitsOnly = idValue.replace(/\D/g, '');
       if (digitsOnly.length !== 12) {
-        alert('Please enter a valid 12-digit Aadhaar number.');
+        alert(t('alert_aadhaar', language));
         return;
       }
     }
@@ -66,25 +69,27 @@ const DigilockerMock = ({ onVerify, entityType }) => {
         }}>
           <Shield size={20} style={{ color: '#F39C12' }} />
         </div>
-        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0, color: '#0F172A' }}>DigiLocker Verification</h3>
+        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0, color: '#0F172A' }}>{t('digilocker_title', language)}</h3>
       </div>
 
       {step === 1 && (
         <form onSubmit={handleVerify} className="animate-fade-in" style={{ position: 'relative', zIndex: 1 }}>
           <div className="form-group">
-            <label className="form-label" style={{ color: '#334155', fontWeight: 700 }}>{LABELS[entityType] || 'ID Number'}</label>
+            <label className="form-label" style={{ color: '#334155', fontWeight: 700 }}>
+              {t(entityType === 'ngo' ? 'gov_reg_id' : (entityType === 'company' ? 'cin_reg_id' : 'aadhaar_num'), language)}
+            </label>
             <input
               type="text"
               className="form-input"
               style={{ background: '#FFFFFF', color: '#0F172A', borderColor: '#CBD5E1', borderWidth: '2px' }}
-              placeholder={entityType === 'volunteer' ? "XXXX XXXX XXXX" : "Enter your ID for verification"}
+              placeholder={entityType === 'volunteer' ? t('placeholder_aadhaar', language) : t('placeholder_id', language)}
               value={idValue}
               onChange={handleIdChange}
               required
             />
           </div>
           <button type="submit" className="btn btn-secondary" style={{ width: '100%', background: '#F39C12', color: '#FFFFFF', fontWeight: 700 }}>
-            <Shield size={16} /> Verify with DigiLocker
+            <Shield size={16} /> {t('verify_button', language)}
           </button>
         </form>
       )}
@@ -95,8 +100,8 @@ const DigilockerMock = ({ onVerify, entityType }) => {
           padding: '2.5rem 0', position: 'relative', zIndex: 1 
         }}>
           <Loader2 size={40} className="animate-spin" style={{ color: '#F39C12', marginBottom: '1rem' }} />
-          <p style={{ fontWeight: 600, fontSize: '0.95rem', color: '#0F172A' }}>Connecting to Government Databases...</p>
-          <p style={{ fontSize: '0.8rem', color: '#475569', marginTop: '0.25rem' }}>Please wait</p>
+          <p style={{ fontWeight: 600, fontSize: '0.95rem', color: '#0F172A' }}>{t('db_connecting', language)}</p>
+          <p style={{ fontSize: '0.8rem', color: '#475569', marginTop: '0.25rem' }}>{t('please_wait', language)}</p>
         </div>
       )}
 
@@ -106,8 +111,8 @@ const DigilockerMock = ({ onVerify, entityType }) => {
           padding: '2.5rem 0', position: 'relative', zIndex: 1 
         }}>
           <CheckCircle size={44} style={{ color: '#27AE60', marginBottom: '0.75rem' }} />
-          <p style={{ fontSize: '1.1rem', fontWeight: 700, color: '#27AE60' }}>Verification Successful!</p>
-          <p style={{ fontSize: '0.85rem', color: '#475569', marginTop: '0.25rem' }}>Redirecting to next step...</p>
+          <p style={{ fontSize: '1.1rem', fontWeight: 700, color: '#27AE60' }}>{t('verify_success', language)}</p>
+          <p style={{ fontSize: '0.85rem', color: '#475569', marginTop: '0.25rem' }}>{t('redirecting', language)}</p>
         </div>
       )}
     </div>
