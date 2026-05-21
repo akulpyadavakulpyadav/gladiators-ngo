@@ -4,11 +4,11 @@ import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { t } from '../../utils/translations';
 import DigilockerMock from '../../components/DigilockerMock';
-import { Users, Smartphone, CheckCircle, KeyRound } from 'lucide-react';
+import { Users, Smartphone, CheckCircle, KeyRound, LogIn, UserPlus } from 'lucide-react';
 
 const VolunteerOnboarding = () => {
   const { language } = useLanguage();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0);
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
   const [formData, setFormData] = useState({ name: '', interests: 'Environment' });
@@ -59,6 +59,97 @@ const VolunteerOnboarding = () => {
           <h1 style={{ fontSize: '1.75rem', marginBottom: '0.5rem', color: '#1E293B', fontWeight: 800 }}>{t('vol_reg', language)}</h1>
           <p style={{ fontSize: '0.95rem', color: '#475569' }}>{t('vol_join_sub', language)}</p>
         </div>
+
+        {/* Step 0: Gatekeeper / Choice Page */}
+        {step === 0 && (
+          <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', maxWidth: 460, margin: '0 auto' }}>
+            <button
+              onClick={() => navigate('/login?role=volunteer')}
+              style={{
+                width: '100%',
+                background: 'rgba(241, 245, 249, 0.65)',
+                border: '2px solid #E2E8F0',
+                borderRadius: '1rem',
+                padding: '1.5rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '1.25rem',
+                textAlign: 'left',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.02)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = '#4A6741';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 6px 20px rgba(74, 103, 69, 0.08)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = '#E2E8F0';
+                e.currentTarget.style.transform = 'none';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.02)';
+              }}
+            >
+              <div style={{
+                width: 48, height: 48, borderRadius: '50%', background: '#E2E8F0',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
+              }}>
+                <LogIn size={20} style={{ color: '#4A6741' }} />
+              </div>
+              <div>
+                <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#1E293B', margin: '0 0 0.15rem 0' }}>
+                  {t('login', language)}
+                </h3>
+                <p style={{ fontSize: '0.8rem', color: '#475569', margin: 0, lineHeight: 1.35 }}>
+                  {language === 'KN' ? 'ಈಗಾಗಲೇ ನೋಂದಾಯಿಸಿದ್ದರೆ ಲಾಗಿನ್ ಮಾಡಿ ಮತ್ತು ನಿಮ್ಮ ಪ್ರಭಾವವನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ' : language === 'HI' ? 'पहले से ही पंजीकृत हैं? लॉगिन करें और अपने प्रभाव को ट्रैक करें' : 'Already registered? Login to track your ongoing impact.'}
+                </p>
+              </div>
+            </button>
+
+            <button
+              onClick={() => setStep(1)}
+              style={{
+                width: '100%',
+                background: 'rgba(241, 245, 249, 0.65)',
+                border: '2px solid #E2E8F0',
+                borderRadius: '1rem',
+                padding: '1.5rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '1.25rem',
+                textAlign: 'left',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.02)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = '#4A6741';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 6px 20px rgba(74, 103, 69, 0.08)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = '#E2E8F0';
+                e.currentTarget.style.transform = 'none';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.02)';
+              }}
+            >
+              <div style={{
+                width: 48, height: 48, borderRadius: '50%', background: '#E2E8F0',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
+              }}>
+                <UserPlus size={20} style={{ color: '#4A6741' }} />
+              </div>
+              <div>
+                <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#1E293B', margin: '0 0 0.15rem 0' }}>
+                  {t('register', language)}
+                </h3>
+                <p style={{ fontSize: '0.8rem', color: '#475569', margin: 0, lineHeight: 1.35 }}>
+                  {language === 'KN' ? 'ಹೊಸ ಸ್ವಯಂಸೇವಕರಾಗಿ ನೋಂದಾಯಿಸಿ ಮತ್ತು ಸೇವೆ ಪ್ರಾರಂಭಿಸಿ' : language === 'HI' ? 'नए स्वयंसेवक के रूप में पंजीकरण करें और सेवा शुरू करें' : 'Create a new profile, verify with DigiLocker and start contributing.'}
+                </p>
+              </div>
+            </button>
+          </div>
+        )}
 
         {/* Step 1: Phone */}
         {step === 1 && (

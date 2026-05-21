@@ -171,16 +171,9 @@ const LandingPage = () => {
         {roles.map(role => (
           <div
             key={role.key}
-            className={`role-card ${selectedRoleCard === role.key ? 'role-card-active' : ''}`}
-            onClick={() => setSelectedRoleCard(selectedRoleCard === role.key ? null : role.key)}
-            style={{ 
-              padding: '1.5rem', 
-              display: 'flex', 
-              flexDirection: 'column', 
-              cursor: 'pointer',
-              position: 'relative',
-              overflow: 'hidden'
-            }}
+            className="role-card"
+            onClick={() => navigate(role.path)}
+            style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}
           >
             <div style={{
               width: '100%', height: 160, marginBottom: '1.25rem',
@@ -201,81 +194,11 @@ const LandingPage = () => {
             <p style={{
               fontSize: '0.95rem',
               color: 'rgba(255, 255, 255, 0.75)',
-              margin: '0',
-              lineHeight: 1.4,
-              flexGrow: 1
+              margin: 0,
+              lineHeight: 1.4
             }}>
               {t('role_' + role.key + '_desc', language)}
             </p>
-
-            {/* Division overlay inside the card to choose Login or Register */}
-            {selectedRoleCard === role.key && (
-              <div 
-                className="animate-fade-in"
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  background: 'rgba(15, 23, 42, 0.95)',
-                  backdropFilter: 'blur(12px)',
-                  WebkitBackdropFilter: 'blur(12px)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  padding: '1.5rem',
-                  zIndex: 10,
-                  borderRadius: 'var(--radius-lg)'
-                }}
-                onClick={(e) => e.stopPropagation()} // Prevent card toggle click
-              >
-                {/* Close Button */}
-                <button 
-                  onClick={() => setSelectedRoleCard(null)}
-                  style={{
-                    position: 'absolute',
-                    top: '0.75rem',
-                    right: '0.75rem',
-                    background: 'transparent',
-                    border: 'none',
-                    color: 'rgba(255, 255, 255, 0.5)',
-                    fontSize: '1.15rem',
-                    cursor: 'pointer',
-                    padding: '0.25rem',
-                    lineHeight: 1
-                  }}
-                >
-                  ✕
-                </button>
-
-                <h4 style={{
-                  fontSize: '1.1rem',
-                  fontWeight: 800,
-                  color: '#FFFFFF',
-                  marginBottom: '1.25rem',
-                  letterSpacing: '0.05em',
-                  textTransform: 'uppercase'
-                }}>
-                  {t('role_' + role.key + '_title', language)}
-                </h4>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%' }}>
-                  <button
-                    onClick={() => navigate(`/login?role=${role.key}`)}
-                    className="btn btn-secondary"
-                    style={{ width: '100%', padding: '0.75rem', fontSize: '0.9rem', fontWeight: 700 }}
-                  >
-                    {t('login', language)}
-                  </button>
-                  <button
-                    onClick={() => navigate(role.path)}
-                    className="btn btn-outline"
-                    style={{ width: '100%', padding: '0.75rem', fontSize: '0.9rem', fontWeight: 700 }}
-                  >
-                    {t('register', language)}
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
         ))}
       </div>
