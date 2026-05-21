@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 
@@ -36,6 +36,11 @@ const sdgTags = [
 const LandingPage = () => {
   const navigate = useNavigate();
 
+  // Always scroll to top when landing page mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
+
   return (
     <div className="hero-section" style={{
       display: 'flex', flexDirection: 'column', alignItems: 'center',
@@ -57,21 +62,32 @@ const LandingPage = () => {
 
       {/* Logo */}
       <div className="animate-fade-in" style={{ marginBottom: '2rem', position: 'relative', zIndex: 1 }}>
+        {/* Outer pulse ring */}
         <div style={{
-          width: 130, height: 130,
+          width: 220, height: 220,
           borderRadius: '50%',
-          background: 'rgba(255,255,255,0.08)',
-          border: '2px solid rgba(255,255,255,0.2)',
-          boxShadow: '0 0 48px rgba(107,143,94,0.45), 0 0 0 8px rgba(255,255,255,0.05)',
+          border: '2px solid rgba(107,143,94,0.35)',
+          boxShadow: '0 0 0 12px rgba(107,143,94,0.08), 0 0 80px rgba(107,143,94,0.4)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           margin: '0 auto',
-          backdropFilter: 'blur(8px)'
+          animation: 'pulse-ring 3s ease-in-out infinite'
         }}>
-          <img
-            src="/images/logo.png"
-            alt="Gladiators NGO Logo"
-            style={{ width: 112, height: 112, objectFit: 'contain', borderRadius: '50%' }}
-          />
+          {/* Inner glowing container */}
+          <div style={{
+            width: 190, height: 190,
+            borderRadius: '50%',
+            background: 'rgba(255,255,255,0.10)',
+            border: '2px solid rgba(255,255,255,0.25)',
+            boxShadow: '0 0 60px rgba(107,143,94,0.55), inset 0 0 30px rgba(255,255,255,0.05)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            backdropFilter: 'blur(10px)'
+          }}>
+            <img
+              src="/images/logo.png"
+              alt="Gladiators NGO Logo"
+              style={{ width: 170, height: 170, objectFit: 'contain', borderRadius: '50%' }}
+            />
+          </div>
         </div>
       </div>
 
