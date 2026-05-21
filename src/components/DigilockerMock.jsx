@@ -44,8 +44,7 @@ const DigilockerMock = ({ onVerify, entityType }) => {
 
     setStep(2);
     setTimeout(() => {
-      setStep(3);
-      setTimeout(() => onVerify({ verifiedId: idValue }), 1500);
+      setStep('error');
     }, 2000);
   };
 
@@ -113,6 +112,30 @@ const DigilockerMock = ({ onVerify, entityType }) => {
           <CheckCircle size={44} style={{ color: '#27AE60', marginBottom: '0.75rem' }} />
           <p style={{ fontSize: '1.1rem', fontWeight: 700, color: '#27AE60' }}>{t('verify_success', language)}</p>
           <p style={{ fontSize: '0.85rem', color: '#475569', marginTop: '0.25rem' }}>{t('redirecting', language)}</p>
+        </div>
+      )}
+
+      {step === 'error' && (
+        <div className="animate-fade-in" style={{ 
+          display: 'flex', flexDirection: 'column', alignItems: 'center', 
+          padding: '2rem 0', position: 'relative', zIndex: 1, textAlign: 'center' 
+        }}>
+          <span style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>⚠️</span>
+          <p style={{ fontSize: '1.1rem', fontWeight: 700, color: '#E74C3C', margin: '0 0 0.5rem 0' }}>{t('verification_failed', language)}</p>
+          <p style={{ fontSize: '0.85rem', color: '#64748B', lineHeight: 1.5, margin: '0 0 1.5rem 0' }}>
+            {t('digilocker_disabled_desc', language)}
+          </p>
+          <button 
+            type="button" 
+            className="btn btn-outline" 
+            style={{ padding: '0.5rem 1.5rem', fontSize: '0.85rem', color: '#64748B', borderColor: '#CBD5E1' }}
+            onClick={() => {
+              setIdValue('');
+              setStep(1);
+            }}
+          >
+            {t('retry', language)}
+          </button>
         </div>
       )}
     </div>
