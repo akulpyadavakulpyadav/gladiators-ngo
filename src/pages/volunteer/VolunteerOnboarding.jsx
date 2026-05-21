@@ -4,30 +4,24 @@ import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { t } from '../../utils/translations';
 import DigilockerMock from '../../components/DigilockerMock';
-import { Users, Smartphone, CheckCircle, KeyRound, LogIn, UserPlus } from 'lucide-react';
+import { Users, Mail, CheckCircle, KeyRound, LogIn, UserPlus } from 'lucide-react';
 
 const VolunteerOnboarding = () => {
   const { language } = useLanguage();
   const [step, setStep] = useState(0);
-  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [formData, setFormData] = useState({ name: '', interests: 'Environment' });
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handlePhoneChange = (e) => {
-    const value = e.target.value.replace(/\D/g, ''); // Keep only digits
-    if (value.length <= 10) {
-      setPhone(value);
-    }
-  };
-
   const handleSendOtp = (e) => {
     e.preventDefault();
-    if (phone.length === 10) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (emailRegex.test(email)) {
       setStep(1.5);
     } else {
-      alert(t('alert_phone', language));
+      alert(t('alert_email', language));
     }
   };
 
@@ -151,7 +145,7 @@ const VolunteerOnboarding = () => {
           </div>
         )}
 
-        {/* Step 1: Phone */}
+        {/* Step 1: Email */}
         {step === 1 && (
           <div className="animate-fade-in" style={{ maxWidth: 420, margin: '0 auto' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
@@ -159,20 +153,20 @@ const VolunteerOnboarding = () => {
                 width: 40, height: 40, borderRadius: '50%', background: '#F1F5F9',
                 display: 'flex', alignItems: 'center', justifyContent: 'center'
               }}>
-                <Smartphone size={18} style={{ color: '#4A6741' }} />
+                <Mail size={18} style={{ color: '#4A6741' }} />
               </div>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0, color: '#1E293B' }}>{t('phone_verify', language)}</h3>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0, color: '#1E293B' }}>{t('email_verify', language)}</h3>
             </div>
             <form onSubmit={handleSendOtp}>
               <div className="form-group">
-                <label className="form-label" style={{ color: '#334155', fontWeight: 700 }}>{t('phone_number', language)}</label>
+                <label className="form-label" style={{ color: '#334155', fontWeight: 700 }}>{t('email_address', language)}</label>
                 <input
-                  type="tel"
+                  type="email"
                   className="form-input"
                   style={{ background: '#FFFFFF', color: '#0F172A', borderColor: '#CBD5E1', borderWidth: '2px' }}
-                  placeholder={t('placeholder_phone', language)}
-                  value={phone}
-                  onChange={handlePhoneChange}
+                  placeholder={t('placeholder_email_vol', language)}
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
                   required
                 />
               </div>
@@ -194,7 +188,7 @@ const VolunteerOnboarding = () => {
               <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0, color: '#1E293B' }}>{t('enter_otp', language)}</h3>
             </div>
             <p style={{ fontSize: '0.85rem', marginBottom: '1rem', color: '#475569' }}>
-              {t('otp_sent_to', language)} <strong style={{ color: '#0F172A' }}>{phone}</strong>. <em>{t('otp_hint', language)}</em>
+              {t('otp_sent_to', language)} <strong style={{ color: '#0F172A' }}>{email}</strong>. <em>{t('otp_hint', language)}</em>
             </p>
             <form onSubmit={handleVerifyOtp}>
               <div className="form-group">
@@ -209,7 +203,7 @@ const VolunteerOnboarding = () => {
                   required
                 />
               </div>
-              <button type="submit" className="btn btn-secondary" style={{ width: '100%', background: '#4A6741', color: '#FFFFFF', fontSize: '1rem', padding: '0.85rem' }}>{t('verify_phone_btn', language)}</button>
+              <button type="submit" className="btn btn-secondary" style={{ width: '100%', background: '#4A6741', color: '#FFFFFF', fontSize: '1rem', padding: '0.85rem' }}>{t('verify_email_btn', language)}</button>
             </form>
           </div>
         )}

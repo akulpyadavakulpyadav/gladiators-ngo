@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { t } from '../utils/translations';
-import { Users, Smartphone, KeyRound, CheckCircle, ShieldAlert, Award } from 'lucide-react';
+import { Users, Mail, KeyRound, CheckCircle, ShieldAlert, Award } from 'lucide-react';
 import DigilockerMock from '../components/DigilockerMock';
 
 const LoginPage = () => {
@@ -17,7 +17,7 @@ const LoginPage = () => {
   const [loginStep, setLoginStep] = useState(1); // 1 = Entry, 1.5 = OTP verification (for volunteer), 2 = DigiLocker
   
   // Input fields state
-  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [orgId, setOrgId] = useState('');
   const [orgEmail, setOrgEmail] = useState('');
@@ -39,19 +39,13 @@ const LoginPage = () => {
   }, [searchParams]);
 
   // Form validations & handlers
-  const handlePhoneChange = (e) => {
-    const value = e.target.value.replace(/\D/g, ''); // Keep only digits
-    if (value.length <= 10) {
-      setPhone(value);
-    }
-  };
-
   const handleSendOtp = (e) => {
     e.preventDefault();
-    if (phone.length === 10) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (emailRegex.test(email)) {
       setLoginStep(1.5);
     } else {
-      alert(t('alert_phone', language));
+      alert(t('alert_email', language));
     }
   };
 
@@ -60,7 +54,7 @@ const LoginPage = () => {
     if (otp === '1234') {
       login({
         role: 'volunteer',
-        name: phone === '9876543210' ? 'Aniruddha' : 'Demo Volunteer',
+        name: email === 'volunteer@example.com' ? 'Aniruddha' : 'Demo Volunteer',
         id: 'vol_' + Math.random().toString(36).substr(2, 9),
         interests: 'Environment'
       });
@@ -177,16 +171,16 @@ const LoginPage = () => {
             {selectedRole === 'volunteer' && (
               <form onSubmit={handleSendOtp} className="space-y-4">
                 <div className="form-group">
-                  <label className="form-label">{t('phone_number', language)}</label>
+                  <label className="form-label">{t('email_address', language)}</label>
                   <div style={{ position: 'relative' }}>
-                    <Smartphone size={18} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-secondary)' }} />
+                    <Mail size={18} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-secondary)' }} />
                     <input
-                      type="tel"
+                      type="email"
                       className="form-input"
                       style={{ paddingLeft: '2.5rem' }}
-                      placeholder={t('placeholder_phone', language)}
-                      value={phone}
-                      onChange={handlePhoneChange}
+                      placeholder={t('placeholder_email_vol', language)}
+                      value={email}
+                      onChange={e => setEmail(e.target.value)}
                       required
                     />
                   </div>
@@ -288,7 +282,7 @@ const LoginPage = () => {
               <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0, color: 'var(--color-text-primary)' }}>{t('enter_otp', language)}</h3>
             </div>
             <p style={{ fontSize: '0.85rem', marginBottom: '1.5rem', color: 'var(--color-text-secondary)' }}>
-              {t('otp_sent_to', language)} <strong style={{ color: 'var(--color-text-primary)' }}>{phone}</strong>. <em>{t('otp_hint', language)}</em>
+              {t('otp_sent_to', language)} <strong style={{ color: 'var(--color-text-primary)' }}>{email}</strong>. <em>{t('otp_hint', language)}</em>
             </p>
             <form onSubmit={handleVerifyOtp} className="space-y-4">
               <div className="form-group">
@@ -304,7 +298,7 @@ const LoginPage = () => {
                 />
               </div>
               <button type="submit" className="btn btn-secondary" style={{ width: '100%', padding: '0.8rem' }}>
-                {t('verify_phone_btn', language)}
+                {t('verify_email_btn', language)}
               </button>
               <button
                 type="button"
