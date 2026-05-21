@@ -65,7 +65,16 @@ const GlobalLayout = () => {
     if (isAuthenticated && user?.role) {
       navigate(`/${user.role}/dashboard`);
     } else {
-      navigate('/');
+      if (location.pathname === '/') {
+        const heroSection = document.querySelector('.hero-section');
+        if (heroSection) {
+          heroSection.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      } else {
+        navigate('/');
+      }
     }
   };
 
