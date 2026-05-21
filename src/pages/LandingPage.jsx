@@ -171,8 +171,7 @@ const LandingPage = () => {
           <div
             key={role.key}
             className="role-card"
-            onClick={() => navigate(role.path)}
-            style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}
+            style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', cursor: 'default' }}
           >
             <div style={{
               width: '100%', height: 160, marginBottom: '1.25rem',
@@ -193,11 +192,28 @@ const LandingPage = () => {
             <p style={{
               fontSize: '0.95rem',
               color: 'rgba(255, 255, 255, 0.75)',
-              margin: 0,
-              lineHeight: 1.4
+              margin: '0 0 1.25rem 0',
+              lineHeight: 1.4,
+              flexGrow: 1
             }}>
               {t('role_' + role.key + '_desc', language)}
             </p>
+            <div style={{ display: 'flex', gap: '0.5rem', marginTop: 'auto' }}>
+              <button
+                onClick={() => navigate(`/login?role=${role.key}`)}
+                className="btn btn-secondary"
+                style={{ flex: 1, padding: '0.55rem 0.25rem', fontSize: '0.85rem', whiteSpace: 'nowrap' }}
+              >
+                {t('login', language)}
+              </button>
+              <button
+                onClick={() => navigate(role.path)}
+                className="btn btn-outline"
+                style={{ flex: 1, padding: '0.55rem 0.25rem', fontSize: '0.85rem', whiteSpace: 'nowrap' }}
+              >
+                {t('register', language)}
+              </button>
+            </div>
           </div>
         ))}
       </div>

@@ -6,6 +6,7 @@ import GlobalLayout from './components/GlobalLayout';
 
 // Pages
 import LandingPage from './pages/LandingPage';
+import LoginPage from './pages/Login';
 import NgoOnboarding from './pages/ngo/NgoOnboarding';
 import NgoDashboard from './pages/ngo/NgoDashboard';
 import VolunteerOnboarding from './pages/volunteer/VolunteerOnboarding';
@@ -46,6 +47,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<GlobalLayout />}>
               <Route index element={<LandingPage />} />
+              <Route path="login" element={<LoginPage />} />
               
               {/* NGO Routes */}
               <Route path="ngo/onboarding" element={<NgoOnboarding />} />
