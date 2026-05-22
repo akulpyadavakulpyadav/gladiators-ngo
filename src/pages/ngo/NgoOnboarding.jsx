@@ -28,6 +28,8 @@ const NgoOnboarding = () => {
     website: '',
     hqAddress: '',
     darpanId: '',
+    domain: 'Environment', // default focus domain
+    customDomain: '',      // custom text for focus domain
     pocName: '',
     pocPhone: '',
     pocDesignation: '',
@@ -37,6 +39,12 @@ const NgoOnboarding = () => {
     confirmPin: '',
     pocAadhaar: ''
   });
+
+  const [alertBanner, setAlertBanner] = useState({ text: '', type: 'info' });
+
+  const showAlert = (text, type = 'error') => {
+    setAlertBanner({ text, type });
+  };
 
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
@@ -49,19 +57,19 @@ const NgoOnboarding = () => {
   // Handle OTP Simulation
   const handleSendOtp = () => {
     if (!formData.pocEmail || !formData.pocEmail.includes('@')) {
-      alert('Please enter a valid POC email address');
+      showAlert('Please enter a valid POC email address', 'error');
       return;
     }
     setOtpSent(true);
-    alert('OTP simulation: Use "123456" to verify the NGO point of contact email address.');
+    showAlert('OTP simulation: Use "123456" to verify the NGO point of contact email address.', 'info');
   };
 
   const handleVerifyOtp = () => {
     if (formData.otp === '123456') {
       setOtpVerified(true);
-      alert('POC email verified successfully!');
+      showAlert('POC email verified successfully!', 'success');
     } else {
-      alert('Invalid OTP. Please enter 123456');
+      showAlert('Invalid OTP. Please enter 123456', 'error');
     }
   };
 
@@ -72,6 +80,7 @@ const NgoOnboarding = () => {
     if (!formData.hqAddress.trim()) return 'Headquarters Address is compulsory';
     if (!formData.website.trim() || !formData.website.startsWith('http')) return 'Please enter a valid website URL starting with http:// or https://';
     if (formData.darpanId.trim().length !== 21) return 'NGO Darpan ID must be exactly 21 characters compulsorily';
+    if (formData.domain === 'Other' && !formData.customDomain.trim()) return 'Please specify your other domain';
     return null;
   };
 
@@ -91,24 +100,26 @@ const NgoOnboarding = () => {
   };
 
   const handleNextStep = () => {
+    // Clear alerts on next step
+    setAlertBanner({ text: '', type: 'info' });
     if (step === 1) {
       const err = validateStep1();
       if (err) {
-        alert(err);
+        showAlert(err, 'error');
         return;
       }
       setStep(2);
     } else if (step === 2) {
       const err = validateStep2();
       if (err) {
-        alert(err);
+        showAlert(err, 'error');
         return;
       }
       setStep(3);
     } else if (step === 3) {
       const err = validateStep3();
       if (err) {
-        alert(err);
+        showAlert(err, 'error');
         return;
       }
       setStep(4);
@@ -120,11 +131,11 @@ const NgoOnboarding = () => {
     e.preventDefault();
     const digitsOnly = formData.pocAadhaar.replace(/\D/g, '');
     if (digitsOnly.length !== 12) {
-      alert('POC Aadhaar number must be exactly 12 digits');
+      showAlert('POC Aadhaar number must be exactly 12 digits', 'error');
       return;
     }
     if (formData.darpanId.trim().length !== 21) {
-      alert('NGO Darpan ID must be exactly 21 characters compulsorily to register');
+      showAlert('NGO Darpan ID must be exactly 21 characters compulsorily to register', 'error');
       return;
     }
 
@@ -159,7 +170,7 @@ const NgoOnboarding = () => {
             pocDesignation: formData.pocDesignation,
             pocEmail: formData.pocEmail,
             pocAadhaar: digitsOnly,
-            domain: 'SDG 16: Peace & Justice' // Default domain compatibility
+            domain: formData.domain === 'Other' ? formData.customDomain : formData.domain
           };
 
           // Save to AuthContext
@@ -298,10 +309,40 @@ const NgoOnboarding = () => {
               <h1 style={{ fontSize: '1.65rem', marginBottom: '0.5rem', color: '#1E293B', fontWeight: 800 }}>
                 {step === 0 ? 'NGO Portal' : 'NGO Onboarding'}
               </h1>
-              <p style={{ fontSize: '0.9rem', color: '#475569' }}>
+             <p style={{ fontSize: '0.9rem', color: '#475569' }}>
                 {step === 0 ? 'Register your non-profit or log in to manage your campaigns.' : `Step ${step} of 4: Enter details`}
               </p>
             </div>
+
+            {alertBanner.text && (
+              <div style={{
+                padding: '0.85rem 1.25rem',
+                marginBottom: '1.5rem',
+                borderRadius: '0.75rem',
+                background: alertBanner.type === 'success' ? '#E8F5E9' : alertBanner.type === 'info' ? '#E0F2F1' : '#FEF2F2',
+                border: `1.5px solid ${alertBanner.type === 'success' ? '#81C784' : alertBanner.type === 'info' ? '#4DB6AC' : '#FCA5A5'}`,
+                color: alertBanner.type === 'success' ? '#2E7D32' : alertBanner.type === 'info' ? '#00695C' : '#EF4444',
+                fontSize: '0.85rem',
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '0.5rem',
+                animation: 'fadeIn 0.2s ease-out'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  {alertBanner.type === 'success' ? <CheckCircle size={16} /> : <Shield size={16} />}
+                  <span>{alertBanner.text}</span>
+                </div>
+                <button 
+                  type="button" 
+                  onClick={() => setAlertBanner({ text: '', type: 'info' })}
+                  style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', display: 'flex', padding: 0 }}
+                >
+                  <X size={15} />
+                </button>
+              </div>
+            )}
 
             {/* Step 0: Gatekeeper */}
             {step === 0 && (
@@ -396,6 +437,37 @@ const NgoOnboarding = () => {
                     style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem', resize: 'vertical' }}
                   />
                 </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>NGO Focus Domain *</label>
+                  <select
+                    value={formData.domain}
+                    onChange={e => setFormData({ ...formData, domain: e.target.value })}
+                    style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem', background: '#FFFFFF', outline: 'none' }}
+                  >
+                    <option value="Environment">Environment</option>
+                    <option value="Education">Education</option>
+                    <option value="Healthcare">Healthcare</option>
+                    <option value="Disaster Relief">Disaster Relief</option>
+                    <option value="SDG 16">SDG 16: Peace & Justice</option>
+                    <option value="SDG 17">SDG 17: Partnerships for Goals</option>
+                    <option value="Other">Other (Specify below)</option>
+                  </select>
+                </div>
+
+                {formData.domain === 'Other' && (
+                  <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Specify Focus Domain *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Animal Welfare, Women Empowerment"
+                      value={formData.customDomain}
+                      onChange={e => setFormData({ ...formData, customDomain: e.target.value })}
+                      style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem' }}
+                    />
+                  </div>
+                )}
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
