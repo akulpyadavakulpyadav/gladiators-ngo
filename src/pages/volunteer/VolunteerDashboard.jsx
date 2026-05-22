@@ -9,7 +9,18 @@ const DirectorySearch = () => {
   const { user } = useAuth();
   const { language } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
-  const [domainFilter, setDomainFilter] = useState(user?.interests || 'All');
+  const getInitialDomain = () => {
+    if (Array.isArray(user?.interests) && user.interests.length > 0) {
+      const firstInterest = user.interests[0];
+      if (['Environment', 'Education', 'Health'].includes(firstInterest)) {
+        return firstInterest;
+      }
+    } else if (typeof user?.interests === 'string' && ['Environment', 'Education', 'Health'].includes(user.interests)) {
+      return user.interests;
+    }
+    return 'All';
+  };
+  const [domainFilter, setDomainFilter] = useState(getInitialDomain());
 
   const ngos = [
     // Environment
