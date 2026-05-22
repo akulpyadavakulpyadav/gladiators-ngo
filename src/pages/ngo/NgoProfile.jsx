@@ -169,10 +169,10 @@ const NgoProfile = () => {
       )}
 
       {/* Main Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem', alignItems: 'start' }} className="grid-md-3-custom">
+      <div className="grid-md-3-custom">
         
         {/* Left Summary Card */}
-        <div className="glass-card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', height: '100%', position: 'sticky', top: '9rem' }}>
+        <div className="glass-card profile-sidebar" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
           
           {/* Avatar Icon */}
           <div style={{ position: 'relative', marginBottom: '1.25rem' }}>
@@ -215,7 +215,13 @@ const NgoProfile = () => {
           {/* Darpan ID Registry */}
           <div style={{ width: '100%', padding: '0.75rem', background: '#F8FAFC', borderRadius: 'var(--radius-sm)', border: '1px solid #E2E8F0', marginBottom: '1.25rem' }}>
             <span style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 600, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em' }}>NGO Darpan ID</span>
-            <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#334155', fontFamily: 'monospace', wordBreak: 'break-all' }}>{user.ngoDarpanId}</span>
+            <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#334155', fontFamily: 'monospace', wordBreak: 'break-all' }}>
+              {(() => {
+                const darpan = user.ngoDarpanId || '';
+                const clean = darpan.replace(/\s/g, '');
+                return clean.slice(0, 2) + 'X'.repeat(Math.max(0, clean.length - 2));
+              })()}
+            </span>
           </div>
 
           {/* Sector focus display */}
@@ -230,21 +236,19 @@ const NgoProfile = () => {
               onClick={() => setShowLogoutConfirm(true)}
               className="btn"
               style={{
-                width: '100%', padding: '0.75rem', background: '#FEF2F2', color: '#EF4444',
-                border: '1px solid #FCA5A5', borderRadius: 'var(--radius-md)', fontWeight: 700,
+                width: '100%', padding: '0.75rem', background: '#EF4444', color: '#FFFFFF',
+                border: 'none', borderRadius: 'var(--radius-md)', fontWeight: 700,
                 fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
                 transition: 'all 0.2s'
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.background = '#EF4444';
-                e.currentTarget.style.color = '#FFFFFF';
+                e.currentTarget.style.background = '#DC2626';
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.background = '#FEF2F2';
-                e.currentTarget.style.color = '#EF4444';
+                e.currentTarget.style.background = '#EF4444';
               }}
             >
-              <LogOut size={16} /> Logout NGO
+              <LogOut size={16} /> Logout
             </button>
           </div>
         </div>
