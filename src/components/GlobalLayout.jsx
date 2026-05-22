@@ -211,19 +211,35 @@ const GlobalLayout = () => {
 
       {/* Left-Side Profile Widget */}
       {isAuthenticated && user && !isLandingPage && (
-        <div style={{ position: 'fixed', left: '1.5rem', top: '7.5rem', zIndex: 900 }}>
-          {/* Floating profile avatar with verified badge beside it */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <div style={{
+          position: 'fixed', left: '1.5rem', top: '7.5rem', zIndex: 900,
+          background: '#FFFFFF',
+          borderRadius: '1.25rem',
+          padding: '1rem 1.25rem',
+          boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05)',
+          borderLeft: `8px solid ${
+            user.role === 'volunteer' ? '#4A6741' :
+            user.role === 'ngo' ? '#00695C' : '#B8860B'
+          }`,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '1rem',
+          animation: 'fadeIn 0.3s ease-out'
+        }}>
+          {/* Left Column: Avatar */}
+          <div style={{ position: 'relative' }}>
             <button
               onClick={() => navigate(`/${user.role}/profile`)}
               style={{
-                width: 50, height: 50, borderRadius: '50%',
-                background: 'linear-gradient(135deg, #4A6741, #3D5A34)',
+                width: 60, height: 60, borderRadius: '50%',
+                background: user.role === 'volunteer' ? 'linear-gradient(135deg, #4A6741, #3D5A34)' :
+                            user.role === 'ngo' ? 'linear-gradient(135deg, #00695C, #004D40)' :
+                            'linear-gradient(135deg, #B8860B, #8B6508)',
                 border: '2px solid #FFFFFF', color: '#FFFFFF',
-                fontSize: '1.25rem', fontWeight: 800, cursor: 'pointer',
+                fontSize: '1.5rem', fontWeight: 800, cursor: 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-                position: 'relative', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 outline: 'none'
               }}
               onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.08)'}
@@ -231,73 +247,115 @@ const GlobalLayout = () => {
               title="View Profile Details"
             >
               {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
-              {/* Tiny check mark badge overlay on bottom right */}
-              <div style={{
-                position: 'absolute', bottom: -2, right: -2,
-                background: '#10B981', border: '2px solid #FFFFFF',
-                borderRadius: '50%', width: 18, height: 18,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: '#FFFFFF', boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-              }}>
-                <Check size={10} strokeWidth={3} />
-              </div>
             </button>
+            {/* Check mark badge overlay on bottom right */}
+            <div style={{
+              position: 'absolute', bottom: -2, right: -2,
+              background: '#10B981', border: '2px solid #FFFFFF',
+              borderRadius: '50%', width: 20, height: 20,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: '#FFFFFF', boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+            }}>
+              <Check size={12} strokeWidth={3} />
+            </div>
+          </div>
 
-            {/* Verified badge beside the profile icon */}
-            <div style={{ animation: 'fadeIn 0.3s ease-out' }}>
-              {(() => {
-                const logoSize = 16;
-                const iconSize = 12;
-                const padding = '0.25rem 0.6rem';
-                const fontSize = '0.75rem';
+          {/* Right Column: Name, Badge, ID */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', alignItems: 'flex-start' }}>
+            {/* Name */}
+            <span style={{
+              fontSize: '1.2rem',
+              fontWeight: 800,
+              color: '#1E293B',
+              fontFamily: '"Outfit", "Inter", sans-serif',
+              lineHeight: 1
+            }}>
+              {user.name}
+            </span>
 
-                if (user.role === 'volunteer') {
-                  return (
-                    <div style={{
-                      display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-                      padding, fontSize, fontWeight: 700, borderRadius: '2rem',
-                      background: 'linear-gradient(135deg, #E8F5E9, #C8E6C9)',
-                      border: '1px solid #81C784', color: '#2E7D32',
-                      boxShadow: '0 2px 4px rgba(46, 125, 50, 0.1)'
-                    }}>
-                      <img src="/images/logo.png" alt="" style={{ width: logoSize, height: logoSize, borderRadius: '50%' }} />
-                      <Heart size={iconSize} fill="#2E7D32" />
-                      <span className="hidden-mobile">GC-VLT Verified</span>
-                    </div>
-                  );
-                }
-                if (user.role === 'ngo') {
-                  return (
-                    <div style={{
-                      display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-                      padding, fontSize, fontWeight: 700, borderRadius: '2rem',
-                      background: 'linear-gradient(135deg, #E0F2F1, #B2DFDB)',
-                      border: '1px solid #4DB6AC', color: '#00695C',
-                      boxShadow: '0 2px 4px rgba(0, 105, 92, 0.1)'
-                    }}>
-                      <img src="/images/logo.png" alt="" style={{ width: logoSize, height: logoSize, borderRadius: '50%' }} />
-                      <Building2 size={iconSize} />
-                      <span className="hidden-mobile">GC-NGO Verified</span>
-                    </div>
-                  );
-                }
-                if (user.role === 'company') {
-                  return (
-                    <div style={{
-                      display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-                      padding, fontSize, fontWeight: 700, borderRadius: '2rem',
-                      background: 'linear-gradient(135deg, #FFF9C4, #FFF59D)',
-                      border: '1px solid #FBC02D', color: '#F57F17',
-                      boxShadow: '0 2px 4px rgba(245, 127, 23, 0.1)'
-                    }}>
-                      <img src="/images/logo.png" alt="" style={{ width: logoSize, height: logoSize, borderRadius: '50%' }} />
-                      <Briefcase size={iconSize} />
-                      <span className="hidden-mobile">GC-CPY Verified</span>
-                    </div>
-                  );
-                }
-                return null;
-              })()}
+            {/* Verified Badge */}
+            {(() => {
+              const logoSize = 14;
+              const iconSize = 10;
+              const padding = '0.2rem 0.5rem';
+              const fontSize = '0.7rem';
+
+              if (user.role === 'volunteer') {
+                return (
+                  <div style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
+                    padding, fontSize, fontWeight: 700, borderRadius: '2rem',
+                    background: 'linear-gradient(135deg, #E8F5E9, #C8E6C9)',
+                    border: '1px solid #81C784', color: '#2E7D32',
+                    boxShadow: '0 2px 4px rgba(46, 125, 50, 0.05)'
+                  }}>
+                    <Heart size={iconSize} fill="#2E7D32" />
+                    <span>GC-VLT Verified</span>
+                  </div>
+                );
+              }
+              if (user.role === 'ngo') {
+                return (
+                  <div style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
+                    padding, fontSize, fontWeight: 700, borderRadius: '2rem',
+                    background: 'linear-gradient(135deg, #E0F2F1, #B2DFDB)',
+                    border: '1px solid #4DB6AC', color: '#00695C',
+                    boxShadow: '0 2px 4px rgba(0, 105, 92, 0.05)'
+                  }}>
+                    <Building2 size={iconSize} />
+                    <span>GC-NGO Verified</span>
+                  </div>
+                );
+              }
+              if (user.role === 'company') {
+                return (
+                  <div style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
+                    padding, fontSize, fontWeight: 700, borderRadius: '2rem',
+                    background: 'linear-gradient(135deg, #FFF9C4, #FFF59D)',
+                    border: '1px solid #FBC02D', color: '#F57F17',
+                    boxShadow: '0 2px 4px rgba(245, 127, 23, 0.05)'
+                  }}>
+                    <Briefcase size={iconSize} />
+                    <span>GC-CPY Verified</span>
+                  </div>
+                );
+              }
+              return null;
+            })()}
+
+            {/* GladiConnect ID Box */}
+            <div style={{
+              background: '#F8FAFC',
+              border: '1px solid #E2E8F0',
+              borderRadius: '0.5rem',
+              padding: '0.25rem 0.5rem',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              gap: '0.1rem',
+              width: '100%',
+              boxSizing: 'border-box'
+            }}>
+              <span style={{
+                fontSize: '0.6rem',
+                fontWeight: 700,
+                color: '#94A3B8',
+                letterSpacing: '0.05em',
+                lineHeight: 1
+              }}>
+                GLADICONNECT ID
+              </span>
+              <span style={{
+                fontSize: '0.85rem',
+                fontWeight: 800,
+                color: '#334155',
+                fontFamily: 'monospace',
+                lineHeight: 1
+              }}>
+                {user.gcId}
+              </span>
             </div>
           </div>
 
