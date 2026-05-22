@@ -165,92 +165,98 @@ const VolunteerProfile = () => {
       {/* Main Grid Layout */}
       <div className="grid-md-3-custom">
         {/* Left Side: Summary Card (Redacts Sensitive Aadhaar/PIN) */}
-        <div className="glass-card profile-sidebar" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-          
-          {/* Avatar & Badges */}
-          <div style={{ position: 'relative', marginBottom: '1.25rem' }}>
-            <div style={{
-              width: 100, height: 100, borderRadius: '50%',
-              background: 'linear-gradient(135deg, #4A6741, #2D4A22)',
-              border: '4px solid #FFFFFF', color: '#FFFFFF',
-              fontSize: '2.5rem', fontWeight: 800,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: 'var(--shadow-md)'
-            }}>
-              {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
-            </div>
-            <div style={{
-              position: 'absolute', bottom: 2, right: 2,
-              background: '#10B981', border: '2.5px solid #FFFFFF',
-              borderRadius: '50%', width: 26, height: 26,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: '#FFFFFF', boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-            }}>
-              <Check size={16} strokeWidth={3} />
-            </div>
-          </div>
+        <div className="glass-card profile-sidebar" style={{ padding: '2rem' }}>
+          <div className="profile-summary-container">
+            
+            {/* Group 1: Avatar + Name + ID */}
+            <div className="profile-summary-info">
+              {/* Avatar & Badges */}
+              <div style={{ position: 'relative', flexShrink: 0 }}>
+                <div style={{
+                  width: 100, height: 100, borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #4A6741, #2D4A22)',
+                  border: '4px solid #FFFFFF', color: '#FFFFFF',
+                  fontSize: '2.5rem', fontWeight: 800,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: 'var(--shadow-md)'
+                }}>
+                  {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                </div>
+                <div style={{
+                  position: 'absolute', bottom: 2, right: 2,
+                  background: '#10B981', border: '2.5px solid #FFFFFF',
+                  borderRadius: '50%', width: 26, height: 26,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: '#FFFFFF', boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                }}>
+                  <Check size={16} strokeWidth={3} />
+                </div>
+              </div>
 
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1E293B', margin: '0 0 0.25rem' }}>{user.name}</h2>
-          
-          <div style={{ margin: '0.5rem 0 1rem' }}>
-            <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-              padding: '0.35rem 0.75rem', fontSize: '0.8rem', fontWeight: 700, borderRadius: '2rem',
-              background: 'linear-gradient(135deg, #E8F5E9, #C8E6C9)',
-              border: '1px solid #81C784', color: '#2E7D32',
-              boxShadow: '0 2px 4px rgba(46, 125, 50, 0.05)'
-            }}>
-              <Heart size={14} fill="#2E7D32" />
-              <span>GC-VLT Verified</span>
+              <div className="profile-summary-info-text">
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1E293B', margin: '0 0 0.25rem' }}>{user.name}</h2>
+                <div style={{ margin: '0.25rem 0' }}>
+                  <div style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                    padding: '0.35rem 0.75rem', fontSize: '0.8rem', fontWeight: 700, borderRadius: '2rem',
+                    background: 'linear-gradient(135deg, #E8F5E9, #C8E6C9)',
+                    border: '1px solid #81C784', color: '#2E7D32',
+                    boxShadow: '0 2px 4px rgba(46, 125, 50, 0.05)'
+                  }}>
+                    <Heart size={14} fill="#2E7D32" />
+                    <span>GC-VLT Verified</span>
+                  </div>
+                </div>
+                <div style={{ padding: '0.4rem 0.75rem', background: '#F8FAFC', borderRadius: 'var(--radius-sm)', border: '1px solid #E2E8F0', fontSize: '0.9rem', fontWeight: 700, color: '#334155', fontFamily: 'monospace' }}>
+                  <span style={{ fontSize: '0.7rem', color: '#64748B', display: 'block', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', lineHeight: 1.2, marginBottom: '0.15rem' }}>GladiConnect ID</span>
+                  {user.gcId}
+                </div>
+              </div>
             </div>
-          </div>
 
-          <div style={{ width: '100%', padding: '0.75rem', background: '#F8FAFC', borderRadius: 'var(--radius-sm)', border: '1px solid #E2E8F0', marginBottom: '1.5rem' }}>
-            <span style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 600, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em' }}>GladiConnect ID</span>
-            <span style={{ fontSize: '1.1rem', fontWeight: 700, color: '#334155', fontFamily: 'monospace' }}>{user.gcId}</span>
-          </div>
+            {/* Group 2: Stats Block */}
+            <div className="profile-summary-stats">
+              <div style={{ flex: 1, minWidth: '70px', padding: '0.75rem 0.5rem', background: '#E8F5E9', borderRadius: 'var(--radius-sm)', border: '1px solid #C8E6C9', textAlign: 'center' }}>
+                <span style={{ display: 'block', fontSize: '1.25rem', fontWeight: 800, color: '#2E7D32' }}>120</span>
+                <span style={{ fontSize: '0.7rem', color: '#2E7D32', fontWeight: 600 }}>Hours</span>
+              </div>
+              <div style={{ flex: 1, minWidth: '70px', padding: '0.75rem 0.5rem', background: '#FFF9C4', borderRadius: 'var(--radius-sm)', border: '1px solid #FFF59D', textAlign: 'center' }}>
+                <span style={{ display: 'block', fontSize: '1.25rem', fontWeight: 800, color: '#F57F17' }}>3</span>
+                <span style={{ fontSize: '0.7rem', color: '#F57F17', fontWeight: 600 }}>Badges</span>
+              </div>
+              <div style={{ flex: 1, minWidth: '70px', padding: '0.75rem 0.5rem', background: '#E3F2FD', borderRadius: 'var(--radius-sm)', border: '1px solid #BBDEFB', textAlign: 'center' }}>
+                <span style={{ display: 'block', fontSize: '1.25rem', fontWeight: 800, color: '#1565C0' }}>8</span>
+                <span style={{ fontSize: '0.7rem', color: '#1565C0', fontWeight: 600 }}>Events</span>
+              </div>
+            </div>
 
-          {/* Quick Stats to make the profile page look premium */}
-          <div style={{ display: 'flex', gap: '1rem', width: '100%', marginBottom: '2rem' }}>
-            <div style={{ flex: 1, padding: '0.75rem 0.5rem', background: '#E8F5E9', borderRadius: 'var(--radius-sm)', border: '1px solid #C8E6C9' }}>
-              <span style={{ display: 'block', fontSize: '1.25rem', fontWeight: 800, color: '#2E7D32' }}>120</span>
-              <span style={{ fontSize: '0.7rem', color: '#2E7D32', fontWeight: 600 }}>Hours</span>
+            {/* Group 3: Logout Action */}
+            <div className="profile-summary-actions">
+              <button
+                onClick={() => setShowLogoutConfirm(true)}
+                className="btn"
+                style={{
+                  width: '100%', padding: '0.75rem', background: '#EF4444', color: '#FFFFFF',
+                  border: 'none', borderRadius: 'var(--radius-md)', fontWeight: 700,
+                  fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = '#DC2626';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = '#EF4444';
+                }}
+              >
+                <LogOut size={16} /> Logout
+              </button>
             </div>
-            <div style={{ flex: 1, padding: '0.75rem 0.5rem', background: '#FFF9C4', borderRadius: 'var(--radius-sm)', border: '1px solid #FFF59D' }}>
-              <span style={{ display: 'block', fontSize: '1.25rem', fontWeight: 800, color: '#F57F17' }}>3</span>
-              <span style={{ fontSize: '0.7rem', color: '#F57F17', fontWeight: 600 }}>Badges</span>
-            </div>
-            <div style={{ flex: 1, padding: '0.75rem 0.5rem', background: '#E3F2FD', borderRadius: 'var(--radius-sm)', border: '1px solid #BBDEFB' }}>
-              <span style={{ display: 'block', fontSize: '1.25rem', fontWeight: 800, color: '#1565C0' }}>8</span>
-              <span style={{ fontSize: '0.7rem', color: '#1565C0', fontWeight: 600 }}>Events</span>
-            </div>
-          </div>
 
-          {/* Logout Trigger */}
-          <div style={{ width: '100%', marginTop: 'auto' }}>
-            <button
-              onClick={() => setShowLogoutConfirm(true)}
-              className="btn"
-              style={{
-                width: '100%', padding: '0.75rem', background: '#EF4444', color: '#FFFFFF',
-                border: 'none', borderRadius: 'var(--radius-md)', fontWeight: 700,
-                fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-                transition: 'all 0.2s'
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.background = '#DC2626';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.background = '#EF4444';
-              }}
-            >
-              <LogOut size={16} /> Logout
-            </button>
           </div>
         </div>
 
         {/* Right Side: Professional Info Display (Redacts PIN & Aadhaar) */}
-        <div style={{ gridColumn: 'span 2' }}>
+        <div>
           <div className="glass-card" style={{ padding: '2rem' }}>
             
             {/* Header section with toggle */}

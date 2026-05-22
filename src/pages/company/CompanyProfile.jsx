@@ -166,89 +166,94 @@ const CompanyProfile = () => {
       <div className="grid-md-3-custom">
         
         {/* Left Side Corporate Panel */}
-        <div className="glass-card profile-sidebar" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-          
-          {/* Corporate Logo / Avatar */}
-          <div style={{ position: 'relative', marginBottom: '1.25rem' }}>
-            <div style={{
-              width: 100, height: 100, borderRadius: '50%',
-              background: 'linear-gradient(135deg, #B8860B, #8B6508)',
-              border: '4px solid #FFFFFF', color: '#FFFFFF',
-              fontSize: '2.2rem', fontWeight: 800,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: 'var(--shadow-md)'
-            }}>
-              {user.name ? user.name.substring(0, 2).toUpperCase() : 'CO'}
+        <div className="glass-card profile-sidebar" style={{ padding: '2rem' }}>
+          <div className="profile-summary-container">
+            
+            {/* Group 1: Avatar + Name + ID */}
+            <div className="profile-summary-info">
+              {/* Corporate Logo / Avatar */}
+              <div style={{ position: 'relative', flexShrink: 0 }}>
+                <div style={{
+                  width: 100, height: 100, borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #B8860B, #8B6508)',
+                  border: '4px solid #FFFFFF', color: '#FFFFFF',
+                  fontSize: '2.2rem', fontWeight: 800,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: 'var(--shadow-md)'
+                }}>
+                  {user.name ? user.name.substring(0, 2).toUpperCase() : 'CO'}
+                </div>
+                <div style={{
+                  position: 'absolute', bottom: 2, right: 2,
+                  background: '#FBC02D', border: '2.5px solid #FFFFFF',
+                  borderRadius: '50%', width: 26, height: 26,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: '#FFFFFF', boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                }}>
+                  <Check size={16} strokeWidth={3} />
+                </div>
+              </div>
+
+              <div className="profile-summary-info-text">
+                <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#1E293B', margin: '0 0 0.25rem', lineHeight: 1.3 }}>{user.name}</h2>
+                <div style={{ margin: '0.25rem 0' }}>
+                  <div style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                    padding: '0.35rem 0.75rem', fontSize: '0.8rem', fontWeight: 700, borderRadius: '2rem',
+                    background: 'linear-gradient(135deg, #FFF9C4, #FFF59D)',
+                    border: '1px solid #FBC02D', color: '#F57F17',
+                    boxShadow: '0 2px 4px rgba(245, 127, 23, 0.05)'
+                  }}>
+                    <Briefcase size={14} />
+                    <span>GC-CPY Verified</span>
+                  </div>
+                </div>
+                <div style={{ padding: '0.4rem 0.75rem', background: '#F8FAFC', borderRadius: 'var(--radius-sm)', border: '1px solid #E2E8F0', fontSize: '0.9rem', fontWeight: 700, color: '#334155', fontFamily: 'monospace' }}>
+                  <span style={{ fontSize: '0.7rem', color: '#64748B', display: 'block', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', lineHeight: 1.2, marginBottom: '0.15rem' }}>Corporate CIN Number</span>
+                  {(() => {
+                    const cin = user.cin || '';
+                    const clean = cin.replace(/\s/g, '');
+                    return clean.slice(0, 2) + 'X'.repeat(Math.max(0, clean.length - 2));
+                  })()}
+                </div>
+              </div>
             </div>
-            <div style={{
-              position: 'absolute', bottom: 2, right: 2,
-              background: '#FBC02D', border: '2.5px solid #FFFFFF',
-              borderRadius: '50%', width: 26, height: 26,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: '#FFFFFF', boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-            }}>
-              <Check size={16} strokeWidth={3} />
+
+            {/* Group 2: Budget display */}
+            <div className="profile-summary-stats" style={{ display: 'flex', justifyContent: 'center' }}>
+              <div style={{ width: '100%', maxWidth: '240px', padding: '0.75rem 1rem', background: '#FFF9C4', borderRadius: 'var(--radius-sm)', border: '1px solid #FFF59D', textAlign: 'center' }}>
+                <span style={{ fontSize: '0.72rem', color: '#F57F17', fontWeight: 600, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.15rem' }}>Industry Sector</span>
+                <span style={{ fontSize: '1rem', fontWeight: 700, color: '#E65100' }}>{user.industrySector || 'CSR Funder'}</span>
+              </div>
             </div>
-          </div>
 
-          <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#1E293B', margin: '0 0 0.25rem', lineHeight: 1.3 }}>{user.name}</h2>
-          
-          <div style={{ margin: '0.5rem 0 1rem' }}>
-            <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-              padding: '0.35rem 0.75rem', fontSize: '0.8rem', fontWeight: 700, borderRadius: '2rem',
-              background: 'linear-gradient(135deg, #FFF9C4, #FFF59D)',
-              border: '1px solid #FBC02D', color: '#F57F17',
-              boxShadow: '0 2px 4px rgba(245, 127, 23, 0.05)'
-            }}>
-              <Briefcase size={14} />
-              <span>GC-CPY Verified</span>
+            {/* Group 3: Logout Action */}
+            <div className="profile-summary-actions">
+              <button
+                onClick={() => setShowLogoutConfirm(true)}
+                className="btn"
+                style={{
+                  width: '100%', padding: '0.75rem', background: '#EF4444', color: '#FFFFFF',
+                  border: 'none', borderRadius: 'var(--radius-md)', fontWeight: 700,
+                  fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = '#DC2626';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = '#EF4444';
+                }}
+              >
+                <LogOut size={16} /> Logout
+              </button>
             </div>
-          </div>
 
-          {/* CIN Identifier Registry */}
-          <div style={{ width: '100%', padding: '0.75rem', background: '#F8FAFC', borderRadius: 'var(--radius-sm)', border: '1px solid #E2E8F0', marginBottom: '1.25rem' }}>
-            <span style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 600, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Corporate CIN Number</span>
-            <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#334155', fontFamily: 'monospace', wordBreak: 'break-all' }}>
-              {(() => {
-                const cin = user.cin || '';
-                const clean = cin.replace(/\s/g, '');
-                return clean.slice(0, 2) + 'X'.repeat(Math.max(0, clean.length - 2));
-              })()}
-            </span>
-          </div>
-
-          {/* Budget display */}
-          <div style={{ width: '100%', padding: '0.75rem', background: '#FFF9C4', borderRadius: 'var(--radius-sm)', border: '1px solid #FFF59D', marginBottom: '2rem' }}>
-            <span style={{ fontSize: '0.75rem', color: '#F57F17', fontWeight: 600, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Industry Sector</span>
-            <span style={{ fontSize: '1rem', fontWeight: 700, color: '#E65100' }}>{user.industrySector || 'CSR Funder'}</span>
-          </div>
-
-          {/* Logout Action */}
-          <div style={{ width: '100%', marginTop: 'auto' }}>
-            <button
-              onClick={() => setShowLogoutConfirm(true)}
-              className="btn"
-              style={{
-                width: '100%', padding: '0.75rem', background: '#EF4444', color: '#FFFFFF',
-                border: 'none', borderRadius: 'var(--radius-md)', fontWeight: 700,
-                fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-                transition: 'all 0.2s'
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.background = '#DC2626';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.background = '#EF4444';
-              }}
-            >
-              <LogOut size={16} /> Logout
-            </button>
           </div>
         </div>
 
         {/* Right Details Panel */}
-        <div style={{ gridColumn: 'span 2' }}>
+        <div>
           <div className="glass-card" style={{ padding: '2rem' }}>
             
             {/* Header toggle */}

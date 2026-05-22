@@ -540,21 +540,86 @@ a:hover { color: var(--color-primary-light); }
   grid-template-columns: 1fr;
   gap: 1.5rem;
   align-items: start;
+  width: 100%;
 }
 
 .profile-sidebar {
   position: relative;
+  width: 100%;
   height: auto;
 }
 
+/* Inner layout container inside .profile-sidebar */
+.profile-summary-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+/* Group 1: Avatar + Name + ID */
+.profile-summary-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.profile-summary-info-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Group 2: Stats Block */
+.profile-summary-stats {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  justify-content: center;
+}
+
+/* Group 3: Action Buttons */
+.profile-summary-actions {
+  width: 100%;
+}
+
 @media (min-width: 1024px) {
-  .grid-md-3-custom {
-    grid-template-columns: 1fr 2fr !important;
+  .profile-summary-container {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
   }
-  .profile-sidebar {
-    position: sticky !important;
-    top: 9rem !important;
-    height: 100% !important;
+
+  .profile-summary-info {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    gap: 1.5rem;
+    width: auto;
+    flex: 2;
+  }
+
+  .profile-summary-info-text {
+    align-items: flex-start;
+  }
+
+  .profile-summary-stats {
+    width: auto;
+    flex: 2;
+    margin-bottom: 0 !important;
+  }
+
+  .profile-summary-actions {
+    width: auto;
+    flex: 1;
+    max-width: 220px;
   }
 }
+
 

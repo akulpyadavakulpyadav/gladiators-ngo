@@ -172,89 +172,94 @@ const NgoProfile = () => {
       <div className="grid-md-3-custom">
         
         {/* Left Summary Card */}
-        <div className="glass-card profile-sidebar" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-          
-          {/* Avatar Icon */}
-          <div style={{ position: 'relative', marginBottom: '1.25rem' }}>
-            <div style={{
-              width: 100, height: 100, borderRadius: '50%',
-              background: 'linear-gradient(135deg, #00695C, #004D40)',
-              border: '4px solid #FFFFFF', color: '#FFFFFF',
-              fontSize: '2.2rem', fontWeight: 800,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: 'var(--shadow-md)'
-            }}>
-              {user.name ? user.name.substring(0, 2).toUpperCase() : 'NG'}
+        <div className="glass-card profile-sidebar" style={{ padding: '2rem' }}>
+          <div className="profile-summary-container">
+            
+            {/* Group 1: Avatar + Name + ID */}
+            <div className="profile-summary-info">
+              {/* Avatar Icon */}
+              <div style={{ position: 'relative', flexShrink: 0 }}>
+                <div style={{
+                  width: 100, height: 100, borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #00695C, #004D40)',
+                  border: '4px solid #FFFFFF', color: '#FFFFFF',
+                  fontSize: '2.2rem', fontWeight: 800,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: 'var(--shadow-md)'
+                }}>
+                  {user.name ? user.name.substring(0, 2).toUpperCase() : 'NG'}
+                </div>
+                <div style={{
+                  position: 'absolute', bottom: 2, right: 2,
+                  background: '#009688', border: '2.5px solid #FFFFFF',
+                  borderRadius: '50%', width: 26, height: 26,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: '#FFFFFF', boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                }}>
+                  <Check size={16} strokeWidth={3} />
+                </div>
+              </div>
+
+              <div className="profile-summary-info-text">
+                <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#1E293B', margin: '0 0 0.25rem', lineHeight: 1.3 }}>{user.name}</h2>
+                <div style={{ margin: '0.25rem 0' }}>
+                  <div style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                    padding: '0.35rem 0.75rem', fontSize: '0.8rem', fontWeight: 700, borderRadius: '2rem',
+                    background: 'linear-gradient(135deg, #E0F2F1, #B2DFDB)',
+                    border: '1px solid #4DB6AC', color: '#00695C',
+                    boxShadow: '0 2px 4px rgba(0, 105, 92, 0.05)'
+                  }}>
+                    <Building2 size={14} />
+                    <span>GC-NGO Verified</span>
+                  </div>
+                </div>
+                <div style={{ padding: '0.4rem 0.75rem', background: '#F8FAFC', borderRadius: 'var(--radius-sm)', border: '1px solid #E2E8F0', fontSize: '0.9rem', fontWeight: 700, color: '#334155', fontFamily: 'monospace' }}>
+                  <span style={{ fontSize: '0.7rem', color: '#64748B', display: 'block', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', lineHeight: 1.2, marginBottom: '0.15rem' }}>NGO Darpan ID</span>
+                  {(() => {
+                    const darpan = user.ngoDarpanId || '';
+                    const clean = darpan.replace(/\s/g, '');
+                    return clean.slice(0, 2) + 'X'.repeat(Math.max(0, clean.length - 2));
+                  })()}
+                </div>
+              </div>
             </div>
-            <div style={{
-              position: 'absolute', bottom: 2, right: 2,
-              background: '#009688', border: '2.5px solid #FFFFFF',
-              borderRadius: '50%', width: 26, height: 26,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: '#FFFFFF', boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-            }}>
-              <Check size={16} strokeWidth={3} />
+
+            {/* Group 2: Sector focus display */}
+            <div className="profile-summary-stats" style={{ display: 'flex', justifyContent: 'center' }}>
+              <div style={{ width: '100%', maxWidth: '240px', padding: '0.75rem 1rem', background: '#E0F2F1', borderRadius: 'var(--radius-sm)', border: '1px solid #B2DFDB', textAlign: 'center' }}>
+                <span style={{ fontSize: '0.72rem', color: '#00695C', fontWeight: 600, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.15rem' }}>Primary focus domain</span>
+                <span style={{ fontSize: '1rem', fontWeight: 700, color: '#004D40' }}>{user.domain}</span>
+              </div>
             </div>
-          </div>
 
-          <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#1E293B', margin: '0 0 0.25rem', lineHeight: 1.3 }}>{user.name}</h2>
-          
-          <div style={{ margin: '0.5rem 0 1rem' }}>
-            <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-              padding: '0.35rem 0.75rem', fontSize: '0.8rem', fontWeight: 700, borderRadius: '2rem',
-              background: 'linear-gradient(135deg, #E0F2F1, #B2DFDB)',
-              border: '1px solid #4DB6AC', color: '#00695C',
-              boxShadow: '0 2px 4px rgba(0, 105, 92, 0.05)'
-            }}>
-              <Building2 size={14} />
-              <span>GC-NGO Verified</span>
+            {/* Group 3: Logout Action */}
+            <div className="profile-summary-actions">
+              <button
+                onClick={() => setShowLogoutConfirm(true)}
+                className="btn"
+                style={{
+                  width: '100%', padding: '0.75rem', background: '#EF4444', color: '#FFFFFF',
+                  border: 'none', borderRadius: 'var(--radius-md)', fontWeight: 700,
+                  fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = '#DC2626';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = '#EF4444';
+                }}
+              >
+                <LogOut size={16} /> Logout
+              </button>
             </div>
-          </div>
 
-          {/* Darpan ID Registry */}
-          <div style={{ width: '100%', padding: '0.75rem', background: '#F8FAFC', borderRadius: 'var(--radius-sm)', border: '1px solid #E2E8F0', marginBottom: '1.25rem' }}>
-            <span style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 600, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em' }}>NGO Darpan ID</span>
-            <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#334155', fontFamily: 'monospace', wordBreak: 'break-all' }}>
-              {(() => {
-                const darpan = user.ngoDarpanId || '';
-                const clean = darpan.replace(/\s/g, '');
-                return clean.slice(0, 2) + 'X'.repeat(Math.max(0, clean.length - 2));
-              })()}
-            </span>
-          </div>
-
-          {/* Sector focus display */}
-          <div style={{ width: '100%', padding: '0.75rem', background: '#E0F2F1', borderRadius: 'var(--radius-sm)', border: '1px solid #B2DFDB', marginBottom: '2rem' }}>
-            <span style={{ fontSize: '0.75rem', color: '#00695C', fontWeight: 600, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Primary focus domain</span>
-            <span style={{ fontSize: '1rem', fontWeight: 700, color: '#004D40' }}>{user.domain}</span>
-          </div>
-
-          {/* Logout Action */}
-          <div style={{ width: '100%', marginTop: 'auto' }}>
-            <button
-              onClick={() => setShowLogoutConfirm(true)}
-              className="btn"
-              style={{
-                width: '100%', padding: '0.75rem', background: '#EF4444', color: '#FFFFFF',
-                border: 'none', borderRadius: 'var(--radius-md)', fontWeight: 700,
-                fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-                transition: 'all 0.2s'
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.background = '#DC2626';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.background = '#EF4444';
-              }}
-            >
-              <LogOut size={16} /> Logout
-            </button>
           </div>
         </div>
 
         {/* Right Info Display */}
-        <div style={{ gridColumn: 'span 2' }}>
+        <div>
           <div className="glass-card" style={{ padding: '2rem' }}>
             
             {/* Header toggle */}
