@@ -215,7 +215,7 @@ const GlobalLayout = () => {
           {/* Floating profile avatar with verified badge beside it */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <button
-              onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+              onClick={() => navigate(`/${user.role}/profile`)}
               style={{
                 width: 50, height: 50, borderRadius: '50%',
                 background: 'linear-gradient(135deg, #4A6741, #3D5A34)',
@@ -262,7 +262,7 @@ const GlobalLayout = () => {
                     }}>
                       <img src="/images/logo.png" alt="" style={{ width: logoSize, height: logoSize, borderRadius: '50%' }} />
                       <Heart size={iconSize} fill="#2E7D32" />
-                      <span>GC-VLT Verified</span>
+                      <span className="hidden-mobile">GC-VLT Verified</span>
                     </div>
                   );
                 }
@@ -277,7 +277,7 @@ const GlobalLayout = () => {
                     }}>
                       <img src="/images/logo.png" alt="" style={{ width: logoSize, height: logoSize, borderRadius: '50%' }} />
                       <Building2 size={iconSize} />
-                      <span>GC-NGO Verified</span>
+                      <span className="hidden-mobile">GC-NGO Verified</span>
                     </div>
                   );
                 }
@@ -292,7 +292,7 @@ const GlobalLayout = () => {
                     }}>
                       <img src="/images/logo.png" alt="" style={{ width: logoSize, height: logoSize, borderRadius: '50%' }} />
                       <Briefcase size={iconSize} />
-                      <span>GC-CPY Verified</span>
+                      <span className="hidden-mobile">GC-CPY Verified</span>
                     </div>
                   );
                 }
@@ -472,7 +472,7 @@ const GlobalLayout = () => {
       )}
 
       {/* Main Content */}
-      <main className={isLandingPage ? '' : 'container'} style={{ flex: 1, paddingTop: isLandingPage ? 0 : '7.5rem', paddingBottom: isLandingPage ? 0 : '1.5rem' }}>
+      <main className={isLandingPage ? '' : `container ${isAuthenticated ? 'dashboard-content-shifted' : ''}`} style={{ flex: 1, paddingTop: isLandingPage ? 0 : '7.5rem', paddingBottom: isLandingPage ? 0 : '1.5rem' }}>
         <Outlet />
       </main>
 

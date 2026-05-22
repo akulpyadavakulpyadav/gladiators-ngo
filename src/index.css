@@ -516,3 +516,21 @@ a:hover { color: var(--color-primary-light); }
 /* ─── Responsive helpers ─── */
 .hidden-mobile { display: none; }
 @media (min-width: 768px) { .hidden-mobile { display: flex; } }
+
+/* ─── Dashboard Shifting to Prevent Overlaps ─── */
+.dashboard-content-shifted {
+  transition: padding-left 0.3s ease;
+}
+
+@media (min-width: 1024px) {
+  .dashboard-content-shifted {
+    padding-left: 14rem !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .dashboard-content-shifted {
+    padding-left: 11rem !important;
+  }
+}
+
