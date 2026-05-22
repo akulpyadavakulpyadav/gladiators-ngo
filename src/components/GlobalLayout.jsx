@@ -236,7 +236,7 @@ const GlobalLayout = () => {
       )}
 
       {/* Main Content */}
-      <main className={isLandingPage ? '' : 'container'} style={{ flex: 1, paddingTop: isLandingPage ? 0 : '5rem', paddingBottom: isLandingPage ? 0 : '1rem' }}>
+      <main className={isLandingPage ? '' : 'container'} style={{ flex: 1, paddingTop: isLandingPage ? 0 : '7.5rem', paddingBottom: isLandingPage ? 0 : '1.5rem' }}>
         <Outlet />
       </main>
 
