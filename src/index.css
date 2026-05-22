@@ -534,3 +534,27 @@ a:hover { color: var(--color-primary-light); }
   }
 }
 
+/* ─── Profile Layouts ─── */
+.grid-md-3-custom {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.profile-sidebar {
+  position: relative;
+  height: auto;
+}
+
+@media (min-width: 1024px) {
+  .grid-md-3-custom {
+    grid-template-columns: 1fr 2fr !important;
+  }
+  .profile-sidebar {
+    position: sticky !important;
+    top: 9rem !important;
+    height: 100% !important;
+  }
+}
+
