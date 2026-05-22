@@ -151,23 +151,18 @@ const GlobalLayout = () => {
             <button
               onClick={() => setShowLogoutConfirm(true)}
               style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                width: 38, height: 38, borderRadius: '50%',
-                background: '#FEF2F2', border: '1.5px solid #FCA5A5',
-                color: '#EF4444', cursor: 'pointer', transition: 'all 0.2s ease',
-                boxShadow: '0 2px 6px rgba(239, 68, 68, 0.15)'
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                background: '#EF4444', color: '#FFFFFF', border: 'none',
+                borderRadius: '9999px', padding: '0.5rem 1.25rem', fontWeight: 700, fontSize: '0.85rem',
+                cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(239, 68, 68, 0.2)',
+                transition: 'all 0.2s ease', outline: 'none'
               }}
-              onMouseEnter={e => {
-                e.currentTarget.style.background = '#EF4444';
-                e.currentTarget.style.color = '#FFFFFF';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.background = '#FEF2F2';
-                e.currentTarget.style.color = '#EF4444';
-              }}
-              title="Close & Logout"
+              onMouseEnter={e => e.currentTarget.style.background = '#DC2626'}
+              onMouseLeave={e => e.currentTarget.style.background = '#EF4444'}
+              title="Logout"
             >
-              <X size={18} />
+              <LogOut size={15} />
+              <span>Logout</span>
             </button>
           )}
 
@@ -493,7 +488,6 @@ const GlobalLayout = () => {
                     </>
                   )}
                 </div>
-
                 {/* Action Buttons */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                   <button
@@ -515,10 +509,13 @@ const GlobalLayout = () => {
                       setShowLogoutConfirm(true);
                     }}
                     style={{
-                      width: '100%', padding: '0.6rem', background: '#FEF2F2', color: '#EF4444',
-                      border: '1px solid #FCA5A5', borderRadius: '0.5rem', fontWeight: 700,
-                      fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem'
+                      width: '100%', padding: '0.6rem 1.25rem', background: '#EF4444', color: '#FFFFFF',
+                      border: 'none', borderRadius: '9999px', fontWeight: 700,
+                      fontSize: '0.85rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                      transition: 'all 0.2s ease', outline: 'none', boxShadow: '0 4px 6px -1px rgba(239, 68, 68, 0.2)'
                     }}
+                    onMouseEnter={e => e.currentTarget.style.background = '#DC2626'}
+                    onMouseLeave={e => e.currentTarget.style.background = '#EF4444'}
                   >
                     <LogOut size={15} /> Logout
                   </button>
@@ -1064,11 +1061,15 @@ const GlobalLayout = () => {
                 }}
                 className="btn"
                 style={{
-                  flex: 1, padding: '0.75rem', background: '#EF4444', color: '#FFFFFF',
-                  borderRadius: '0.5rem', fontWeight: 700, cursor: 'pointer'
+                  flex: 1, padding: '0.75rem 1.5rem', background: '#EF4444', color: '#FFFFFF',
+                  border: 'none', borderRadius: '9999px', fontWeight: 700, cursor: 'pointer',
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                  transition: 'all 0.2s ease', outline: 'none', boxShadow: '0 4px 6px -1px rgba(239, 68, 68, 0.2)'
                 }}
+                onMouseEnter={e => e.currentTarget.style.background = '#DC2626'}
+                onMouseLeave={e => e.currentTarget.style.background = '#EF4444'}
               >
-                Logout
+                <LogOut size={16} /> Logout
               </button>
             </div>
           </div>

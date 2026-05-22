@@ -233,10 +233,10 @@ const CompanyProfile = () => {
                 onClick={() => setShowLogoutConfirm(true)}
                 className="btn"
                 style={{
-                  width: '100%', padding: '0.75rem', background: '#EF4444', color: '#FFFFFF',
-                  border: 'none', borderRadius: 'var(--radius-md)', fontWeight: 700,
-                  fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-                  transition: 'all 0.2s'
+                  width: '100%', padding: '0.75rem 1.5rem', background: '#EF4444', color: '#FFFFFF',
+                  border: 'none', borderRadius: '9999px', fontWeight: 700,
+                  fontSize: '0.9rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                  transition: 'all 0.2s', boxShadow: '0 4px 6px -1px rgba(239, 68, 68, 0.2)'
                 }}
                 onMouseEnter={e => {
                   e.currentTarget.style.background = '#DC2626';
@@ -666,11 +666,15 @@ const CompanyProfile = () => {
                 }}
                 className="btn"
                 style={{
-                  flex: 1, padding: '0.75rem', background: '#EF4444', color: '#FFFFFF',
-                  borderRadius: '0.5rem', fontWeight: 700, cursor: 'pointer'
+                  flex: 1, padding: '0.75rem 1.5rem', background: '#EF4444', color: '#FFFFFF',
+                  border: 'none', borderRadius: '9999px', fontWeight: 700, cursor: 'pointer',
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                  transition: 'all 0.2s ease', outline: 'none', boxShadow: '0 4px 6px -1px rgba(239, 68, 68, 0.2)'
                 }}
+                onMouseEnter={e => e.currentTarget.style.background = '#DC2626'}
+                onMouseLeave={e => e.currentTarget.style.background = '#EF4444'}
               >
-                Logout
+                <LogOut size={16} /> Logout
               </button>
             </div>
           </div>
