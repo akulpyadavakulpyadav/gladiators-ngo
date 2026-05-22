@@ -163,9 +163,9 @@ const VolunteerProfile = () => {
       )}
 
       {/* Main Grid Layout */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem', alignItems: 'start' }} className="grid-md-3-custom">
+      <div className="grid-md-3-custom">
         {/* Left Side: Summary Card (Redacts Sensitive Aadhaar/PIN) */}
-        <div className="glass-card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', height: '100%', position: 'sticky', top: '9rem' }}>
+        <div className="glass-card profile-sidebar" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
           
           {/* Avatar & Badges */}
           <div style={{ position: 'relative', marginBottom: '1.25rem' }}>
@@ -232,21 +232,19 @@ const VolunteerProfile = () => {
               onClick={() => setShowLogoutConfirm(true)}
               className="btn"
               style={{
-                width: '100%', padding: '0.75rem', background: '#FEF2F2', color: '#EF4444',
-                border: '1px solid #FCA5A5', borderRadius: 'var(--radius-md)', fontWeight: 700,
+                width: '100%', padding: '0.75rem', background: '#EF4444', color: '#FFFFFF',
+                border: 'none', borderRadius: 'var(--radius-md)', fontWeight: 700,
                 fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
                 transition: 'all 0.2s'
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.background = '#EF4444';
-                e.currentTarget.style.color = '#FFFFFF';
+                e.currentTarget.style.background = '#DC2626';
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.background = '#FEF2F2';
-                e.currentTarget.style.color = '#EF4444';
+                e.currentTarget.style.background = '#EF4444';
               }}
             >
-              <LogOut size={16} /> Logout Account
+              <LogOut size={16} /> Logout
             </button>
           </div>
         </div>
@@ -381,13 +379,16 @@ const VolunteerProfile = () => {
 
                   {/* Redacted Identity Verification (Aadhaar / PIN) */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#EF4444', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Aadhaar & PIN Security</label>
-                    <div style={{ padding: '0.75rem 1rem', background: '#FEF2F2', borderRadius: 'var(--radius-sm)', border: '1px dashed #FCA5A5', color: '#C62828', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#EF4444', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Aadhaar Number (Masked)</label>
+                    <div style={{ padding: '0.75rem 1rem', background: '#FEF2F2', borderRadius: 'var(--radius-sm)', border: '1px dashed #FCA5A5', color: '#C62828', fontWeight: 600, fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'monospace' }}>
                       <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#EF4444' }} />
-                      Sensitive Government Data Redacted
+                      {(() => {
+                        const aadhaar = user.aadhaar || '123412341234';
+                        const clean = aadhaar.replace(/\s/g, '');
+                        return clean.slice(0, 2) + 'X'.repeat(Math.max(0, clean.length - 2));
+                      })()}
                     </div>
                   </div>
-
                 </div>
 
                 {/* Full Address */}
