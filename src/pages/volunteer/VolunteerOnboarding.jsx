@@ -15,7 +15,7 @@ const VolunteerOnboarding = () => {
 
   // Steps: 
   // 0 - Choice (Login vs Register)
-  // 1 - Personal Info (Name, Phone, Email, OTP, Age, Location)
+  // 1 - Personal Info (Name, Phone, Email, OTP, Age, Full Address)
   // 2 - Primary Interests Tag Box
   // 3 - Set 6-Digit PIN
   // 4 - DigiLocker Verification (Aadhaar 12-digit)
@@ -28,12 +28,18 @@ const VolunteerOnboarding = () => {
     email: '',
     otp: '',
     age: '',
-    location: '',
+    fullAddress: '',
     interests: [],
     pin: '',
     confirmPin: '',
     aadhaar: ''
   });
+
+  const [alertBanner, setAlertBanner] = useState({ text: '', type: 'info' });
+
+  const showAlert = (text, type = 'error') => {
+    setAlertBanner({ text, type });
+  };
 
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
@@ -50,19 +56,19 @@ const VolunteerOnboarding = () => {
   // Handle OTP Simulation
   const handleSendOtp = () => {
     if (!formData.email || !formData.email.includes('@')) {
-      alert('Please enter a valid email address');
+      showAlert('Please enter a valid email address', 'error');
       return;
     }
     setOtpSent(true);
-    alert('OTP simulation: Use "123456" to verify the volunteer email address.');
+    showAlert('OTP simulation: Use "123456" to verify the volunteer email address.', 'info');
   };
 
   const handleVerifyOtp = () => {
     if (formData.otp === '123456') {
       setOtpVerified(true);
-      alert('Email verified successfully!');
+      showAlert('Email verified successfully!', 'success');
     } else {
-      alert('Invalid OTP. Please enter 123456');
+      showAlert('Invalid OTP. Please enter 123456', 'error');
     }
   };
 
@@ -93,7 +99,7 @@ const VolunteerOnboarding = () => {
     if (!formData.email.trim()) return 'Email is compulsory';
     if (!otpVerified) return 'Please verify your email with the OTP first';
     if (!formData.age || parseInt(formData.age) <= 0) return 'Please enter a valid age';
-    if (!formData.location.trim()) return 'Location is compulsory';
+    if (!formData.fullAddress.trim()) return 'Full Address is compulsory';
     return null;
   };
 
@@ -112,21 +118,21 @@ const VolunteerOnboarding = () => {
     if (step === 1) {
       const err = validateStep1();
       if (err) {
-        alert(err);
+        showAlert(err, 'error');
         return;
       }
       setStep(2);
     } else if (step === 2) {
       const err = validateStep2();
       if (err) {
-        alert(err);
+        showAlert(err, 'error');
         return;
       }
       setStep(3);
     } else if (step === 3) {
       const err = validateStep3();
       if (err) {
-        alert(err);
+        showAlert(err, 'error');
         return;
       }
       setStep(4);
@@ -138,7 +144,7 @@ const VolunteerOnboarding = () => {
     e.preventDefault();
     const digitsOnly = formData.aadhaar.replace(/\D/g, '');
     if (digitsOnly.length !== 12) {
-      alert('Aadhaar number must be exactly 12 digits');
+      showAlert('Aadhaar number must be exactly 12 digits', 'error');
       return;
     }
 
@@ -167,7 +173,8 @@ const VolunteerOnboarding = () => {
             phone: formData.phone,
             email: formData.email,
             age: formData.age,
-            location: formData.location,
+            fullAddress: formData.fullAddress,
+            location: formData.fullAddress,
             interests: formData.interests,
             aadhaar: digitsOnly
           };
@@ -313,6 +320,36 @@ const VolunteerOnboarding = () => {
               </p>
             </div>
 
+            {alertBanner.text && (
+              <div style={{
+                padding: '0.85rem 1.25rem',
+                marginBottom: '1.5rem',
+                borderRadius: '0.75rem',
+                background: alertBanner.type === 'success' ? '#E8F5E9' : alertBanner.type === 'info' ? '#E0F2F1' : '#FEF2F2',
+                border: `1.5px solid ${alertBanner.type === 'success' ? '#81C784' : alertBanner.type === 'info' ? '#4DB6AC' : '#FCA5A5'}`,
+                color: alertBanner.type === 'success' ? '#2E7D32' : alertBanner.type === 'info' ? '#00695C' : '#EF4444',
+                fontSize: '0.85rem',
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '0.5rem',
+                animation: 'fadeIn 0.2s ease-out'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  {alertBanner.type === 'success' ? <CheckCircle size={16} /> : <Shield size={16} />}
+                  <span>{alertBanner.text}</span>
+                </div>
+                <button 
+                  type="button" 
+                  onClick={() => setAlertBanner({ text: '', type: 'info' })}
+                  style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', display: 'flex', padding: 0 }}
+                >
+                  <X size={15} />
+                </button>
+              </div>
+            )}
+
             {/* Step 0: Gatekeeper */}
             {step === 0 && (
               <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
@@ -375,23 +412,24 @@ const VolunteerOnboarding = () => {
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                     <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Age *</label>
                     <input
-                      type="number"
+                      type="text"
+                      inputMode="numeric"
                       required
                       placeholder="e.g. 21"
                       value={formData.age}
-                      onChange={e => setFormData({ ...formData, age: e.target.value })}
+                      onChange={e => setFormData({ ...formData, age: e.target.value.replace(/\D/g, '') })}
                       style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem' }}
                     />
                   </div>
-                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Location *</label>
-                    <input
-                      type="text"
+                  <div style={{ flex: 2, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Full Address *</label>
+                    <textarea
                       required
-                      placeholder="City/HQ Address"
-                      value={formData.location}
-                      onChange={e => setFormData({ ...formData, location: e.target.value })}
-                      style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem' }}
+                      rows={1}
+                      placeholder="Street, City, State, PIN"
+                      value={formData.fullAddress}
+                      onChange={e => setFormData({ ...formData, fullAddress: e.target.value })}
+                      style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem', fontFamily: 'inherit', resize: 'vertical' }}
                     />
                   </div>
                 </div>
