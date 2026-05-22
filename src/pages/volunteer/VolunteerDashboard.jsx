@@ -12,10 +12,26 @@ const DirectorySearch = () => {
   const [domainFilter, setDomainFilter] = useState(user?.interests || 'All');
 
   const ngos = [
+    // Environment
     { id: 1, name: 'Global Green Initiative', domain: 'Environment', location: 'Bangalore', verified: true },
-    { id: 2, name: 'EduCare Foundation', domain: 'Education', location: 'Delhi', verified: true },
-    { id: 3, name: 'HealthFirst NGO', domain: 'Health', location: 'Mumbai', verified: false },
-    { id: 4, name: 'OceanSavers Network', domain: 'Environment', location: 'Chennai', verified: true }
+    { id: 2, name: 'OceanSavers Network', domain: 'Environment', location: 'Chennai', verified: true },
+    { id: 3, name: 'GreenSpace Alliance', domain: 'Environment', location: 'Mysore', verified: true },
+    { id: 4, name: 'EarthRestore Foundation', domain: 'Environment', location: 'Kochi', verified: false },
+    { id: 5, name: 'CanopyProtection Trust', domain: 'Environment', location: 'Pune', verified: true },
+    
+    // Education
+    { id: 6, name: 'EduCare Foundation', domain: 'Education', location: 'Delhi', verified: true },
+    { id: 7, name: 'LiteracyForAll Trust', domain: 'Education', location: 'Hyderabad', verified: true },
+    { id: 8, name: 'SparkMind Academy', domain: 'Education', location: 'Mumbai', verified: false },
+    { id: 9, name: 'FutureLeaders NGO', domain: 'Education', location: 'Kolkata', verified: true },
+    { id: 10, name: 'Sharda Vidya Mandir', domain: 'Education', location: 'Bangalore', verified: true },
+    
+    // Health
+    { id: 11, name: 'HealthFirst NGO', domain: 'Health', location: 'Mumbai', verified: false },
+    { id: 12, name: 'MedLife Foundation', domain: 'Health', location: 'Bangalore', verified: true },
+    { id: 13, name: 'CarePlus Clinic NGO', domain: 'Health', location: 'Ahmedabad', verified: true },
+    { id: 14, name: 'HealIndia Society', domain: 'Health', location: 'Delhi', verified: true },
+    { id: 15, name: 'Aarogya Seva', domain: 'Health', location: 'Pune', verified: false }
   ];
 
   const getDomainTranslationKey = (domain) => {
