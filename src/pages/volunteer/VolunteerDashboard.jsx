@@ -10,13 +10,11 @@ const DirectorySearch = () => {
   const { language } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
   const getInitialDomain = () => {
-    if (Array.isArray(user?.interests) && user.interests.length > 0) {
-      const firstInterest = user.interests[0];
-      if (['Environment', 'Education', 'Health'].includes(firstInterest)) {
-        return firstInterest;
-      }
-    } else if (typeof user?.interests === 'string' && ['Environment', 'Education', 'Health'].includes(user.interests)) {
-      return user.interests;
+    const interests = Array.isArray(user?.interests)
+      ? user.interests
+      : (typeof user?.interests === 'string' && user.interests ? [user.interests] : []);
+    if (interests.length > 0) {
+      return 'My Interests';
     }
     return 'All';
   };
@@ -42,20 +40,53 @@ const DirectorySearch = () => {
     { id: 12, name: 'MedLife Foundation', domain: 'Health', location: 'Bangalore', verified: true },
     { id: 13, name: 'CarePlus Clinic NGO', domain: 'Health', location: 'Ahmedabad', verified: true },
     { id: 14, name: 'HealIndia Society', domain: 'Health', location: 'Delhi', verified: true },
-    { id: 15, name: 'Aarogya Seva', domain: 'Health', location: 'Pune', verified: false }
+    { id: 15, name: 'Aarogya Seva', domain: 'Health', location: 'Pune', verified: false },
+
+    // Disaster Relief
+    { id: 16, name: 'RapidResponse India', domain: 'Disaster Relief', location: 'Delhi', verified: true },
+    { id: 17, name: 'SankatMochan Foundation', domain: 'Disaster Relief', location: 'Mumbai', verified: true },
+    { id: 18, name: 'RescueForce NGO', domain: 'Disaster Relief', location: 'Bangalore', verified: false },
+    { id: 19, name: 'AapdaMitra Society', domain: 'Disaster Relief', location: 'Kochi', verified: true },
+    { id: 20, name: 'RedCross Relief Alliance', domain: 'Disaster Relief', location: 'Chennai', verified: true },
+
+    // Animal Welfare
+    { id: 21, name: 'Paws & Claws Sanctuary', domain: 'Animal Welfare', location: 'Bangalore', verified: true },
+    { id: 22, name: 'Jeev Daya Trust', domain: 'Animal Welfare', location: 'Ahmedabad', verified: true },
+    { id: 23, name: 'FaunaShield Alliance', domain: 'Animal Welfare', location: 'Pune', verified: false },
+    { id: 24, name: 'WildlifeRescue India', domain: 'Animal Welfare', location: 'Delhi', verified: true },
+    { id: 25, name: 'StrayCare Foundation', domain: 'Animal Welfare', location: 'Mumbai', verified: true },
+
+    // Rural Development
+    { id: 26, name: 'Gram Vikas Samiti', domain: 'Rural Development', location: 'Pune', verified: true },
+    { id: 27, name: 'VillageProgress Trust', domain: 'Rural Development', location: 'Bangalore', verified: true },
+    { id: 28, name: 'KrishiSahay NGO', domain: 'Rural Development', location: 'Hyderabad', verified: false },
+    { id: 29, name: 'RuralElevate Foundation', domain: 'Rural Development', location: 'Kolkata', verified: true },
+    { id: 30, name: 'GraminSeva Mandir', domain: 'Rural Development', location: 'Delhi', verified: true }
   ];
 
   const getDomainTranslationKey = (domain) => {
     if (domain === 'Environment') return 'filter_env';
     if (domain === 'Education') return 'filter_edu';
     if (domain === 'Health') return 'filter_health';
+    if (domain === 'Disaster Relief') return 'filter_relief';
+    if (domain === 'Animal Welfare') return 'filter_animal';
+    if (domain === 'Rural Development') return 'filter_rural';
     return domain;
   };
 
-  const filtered = ngos.filter(ngo =>
-    (domainFilter === 'All' || ngo.domain === domainFilter) &&
-    ngo.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filtered = ngos.filter(ngo => {
+    const matchesSearch = ngo.name.toLowerCase().includes(searchTerm.toLowerCase());
+    if (domainFilter === 'All') {
+      return matchesSearch;
+    }
+    if (domainFilter === 'My Interests') {
+      const interests = Array.isArray(user?.interests) 
+        ? user.interests 
+        : (typeof user?.interests === 'string' && user.interests ? [user.interests] : []);
+      return interests.includes(ngo.domain) && matchesSearch;
+    }
+    return ngo.domain === domainFilter && matchesSearch;
+  });
 
   return (
     <div className="animate-fade-in space-y-6">
@@ -80,9 +111,15 @@ const DirectorySearch = () => {
             onChange={e => setDomainFilter(e.target.value)}
           >
             <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="All">{t('filter_all', language)}</option>
+            {((Array.isArray(user?.interests) && user.interests.length > 0) || (typeof user?.interests === 'string' && user?.interests)) && (
+              <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="My Interests">{t('filter_my_interests', language)}</option>
+            )}
             <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Environment">{t('filter_env', language)}</option>
             <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Education">{t('filter_edu', language)}</option>
             <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Health">{t('filter_health', language)}</option>
+            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Disaster Relief">{t('filter_relief', language)}</option>
+            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Animal Welfare">{t('filter_animal', language)}</option>
+            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Rural Development">{t('filter_rural', language)}</option>
           </select>
         </div>
       </div>
