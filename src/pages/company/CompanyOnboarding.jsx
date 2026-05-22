@@ -41,6 +41,12 @@ const CompanyOnboarding = () => {
     pocAadhaar: ''
   });
 
+  const [alertBanner, setAlertBanner] = useState({ text: '', type: 'info' });
+
+  const showAlert = (text, type = 'error') => {
+    setAlertBanner({ text, type });
+  };
+
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
   const [csrInput, setCsrInput] = useState('');
@@ -56,19 +62,19 @@ const CompanyOnboarding = () => {
   // Handle OTP Simulation
   const handleSendOtp = () => {
     if (!formData.pocEmail || !formData.pocEmail.includes('@')) {
-      alert('Please enter a valid POC email address');
+      showAlert('Please enter a valid POC email address', 'error');
       return;
     }
     setOtpSent(true);
-    alert('OTP simulation: Use "123456" to verify the Company point of contact email address.');
+    showAlert('OTP simulation: Use "123456" to verify the Company point of contact email address.', 'info');
   };
 
   const handleVerifyOtp = () => {
     if (formData.otp === '123456') {
       setOtpVerified(true);
-      alert('POC email verified successfully!');
+      showAlert('POC email verified successfully!', 'success');
     } else {
-      alert('Invalid OTP. Please enter 123456');
+      showAlert('Invalid OTP. Please enter 123456', 'error');
     }
   };
 
@@ -123,31 +129,32 @@ const CompanyOnboarding = () => {
   };
 
   const handleNextStep = () => {
+    setAlertBanner({ text: '', type: 'info' });
     if (step === 1) {
       const err = validateStep1();
       if (err) {
-        alert(err);
+        showAlert(err, 'error');
         return;
       }
       setStep(2);
     } else if (step === 2) {
       const err = validateStep2();
       if (err) {
-        alert(err);
+        showAlert(err, 'error');
         return;
       }
       setStep(3);
     } else if (step === 3) {
       const err = validateStep3();
       if (err) {
-        alert(err);
+        showAlert(err, 'error');
         return;
       }
       setStep(4);
     } else if (step === 4) {
       const err = validateStep4();
       if (err) {
-        alert(err);
+        showAlert(err, 'error');
         return;
       }
       setStep(5);
@@ -159,11 +166,11 @@ const CompanyOnboarding = () => {
     e.preventDefault();
     const digitsOnly = formData.pocAadhaar.replace(/\D/g, '');
     if (digitsOnly.length !== 12) {
-      alert('POC Aadhaar number must be exactly 12 digits');
+      showAlert('POC Aadhaar number must be exactly 12 digits', 'error');
       return;
     }
     if (formData.cin.trim().length !== 21) {
-      alert('Company CIN must be exactly 21 digits/characters compulsorily to register');
+      showAlert('Company CIN must be exactly 21 digits/characters compulsorily to register', 'error');
       return;
     }
 
@@ -343,6 +350,36 @@ const CompanyOnboarding = () => {
                 {step === 0 ? 'Register your enterprise or log in to coordinate CSR activities.' : `Step ${step} of 5: Enter details`}
               </p>
             </div>
+
+            {alertBanner.text && (
+              <div style={{
+                padding: '0.85rem 1.25rem',
+                marginBottom: '1.5rem',
+                borderRadius: '0.75rem',
+                background: alertBanner.type === 'success' ? '#E8F5E9' : alertBanner.type === 'info' ? '#E0F2F1' : '#FEF2F2',
+                border: `1.5px solid ${alertBanner.type === 'success' ? '#81C784' : alertBanner.type === 'info' ? '#4DB6AC' : '#FCA5A5'}`,
+                color: alertBanner.type === 'success' ? '#2E7D32' : alertBanner.type === 'info' ? '#00695C' : '#EF4444',
+                fontSize: '0.85rem',
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '0.5rem',
+                animation: 'fadeIn 0.2s ease-out'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  {alertBanner.type === 'success' ? <CheckCircle size={16} /> : <Shield size={16} />}
+                  <span>{alertBanner.text}</span>
+                </div>
+                <button 
+                  type="button" 
+                  onClick={() => setAlertBanner({ text: '', type: 'info' })}
+                  style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', display: 'flex', padding: 0 }}
+                >
+                  <X size={15} />
+                </button>
+              </div>
+            )}
 
             {/* Step 0: Gatekeeper */}
             {step === 0 && (
