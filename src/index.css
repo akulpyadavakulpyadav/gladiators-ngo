@@ -524,13 +524,13 @@ a:hover { color: var(--color-primary-light); }
 
 @media (min-width: 1024px) {
   .dashboard-content-shifted {
-    padding-left: 14rem !important;
+    padding-left: 21rem !important;
   }
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
   .dashboard-content-shifted {
-    padding-left: 11rem !important;
+    padding-left: 17rem !important;
   }
 }
 
