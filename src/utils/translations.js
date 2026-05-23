@@ -20,6 +20,12 @@ const translations = {
     login_corp: 'Login with Corporate Credentials',
     verify_login_otp: 'Verify OTP to Login',
     login_via_digilocker: 'Secure Login with DigiLocker',
+    login_desc: 'Enter your GC-ID and 6-digit PIN to access your portal',
+    gc_id_label: 'GC-ID *',
+    pin_label: '6-Digit Secure PIN *',
+    no_account: 'Don\'t have a registered GC Account?',
+    register_new: 'Register a new profile here',
+    live_session_notice: 'Live Session: Refreshing will wipe all registered details.',
 
     // Landing Page
     hero_title_1: 'Bridge the gap.',
@@ -203,6 +209,12 @@ const translations = {
     login_corp: 'कॉर्पोरेट क्रेडेंशियल से लॉगिन करें',
     verify_login_otp: 'लॉगिन करने के लिए ओटीपी सत्यापित करें',
     login_via_digilocker: 'डिजीलॉकर के साथ सुरक्षित लॉगिन',
+    login_desc: 'अपने पोर्टल तक पहुंचने के लिए अपना GC-ID और 6-अंकीय पिन दर्ज करें',
+    gc_id_label: 'GC-ID *',
+    pin_label: '6-अंकीय सुरक्षित पिन *',
+    no_account: 'क्या आपके पास पंजीकृत GC खाता नहीं है?',
+    register_new: 'यहां एक नई प्रोफ़ाइल पंजीकृत करें',
+    live_session_notice: 'लाइव सत्र: ताज़ा करने से सभी पंजीकृत विवरण मिट जाएंगे।',
 
     // Landing Page
     hero_title_1: 'अंतर को पाटें।',
@@ -386,6 +398,12 @@ const translations = {
     login_corp: 'ಕಾರ್ಪೊರೇಟ್ ರುಜುವಾತುಗಳೊಂದಿಗೆ ಲಾಗಿನ್ ಮಾಡಿ',
     verify_login_otp: 'ಲಾಗಿನ್ ಮಾಡಲು ಒಟಿಪಿ ಪರಿಶೀಲಿಸಿ',
     login_via_digilocker: 'ಡಿಜಿಲಾಕರ್‌ನೊಂದಿಗೆ ಸುರಕ್ಷಿತ ಲಾಗಿನ್',
+    login_desc: 'ನಿಮ್ಮ ಪೋರ್ಟಲ್ ಪ್ರವೇಶಿಸಲು ನಿಮ್ಮ GC-ID ಮತ್ತು 6-ಅಂಕಿಯ ಪಿನ್ ನಮೂದಿಸಿ',
+    gc_id_label: 'GC-ID *',
+    pin_label: '6-ಅಂಕಿಯ ಸುರಕ್ಷಿತ ಪಿನ್ *',
+    no_account: 'ನೋಂದಾಯಿತ ಜಿಸಿ ಖಾತೆ ಇಲ್ಲವೇ?',
+    register_new: 'ಹೊಸ ಪ್ರೊಫೈಲ್ ಅನ್ನು ಇಲ್ಲಿ ನೋಂದಾಯಿಸಿ',
+    live_session_notice: 'ಲೈವ್ ಸೆಷನ್: ರಿಫ್ರೆಶ್ ಮಾಡುವುದರಿಂದ ಎಲ್ಲಾ ನೋಂದಾಯಿತ ವಿವರಗಳು ಅಳಿಸಿಹೋಗುತ್ತವೆ.',
 
     // Landing Page
     hero_title_1: 'ಅಂತರವನ್ನು ಕಡಿಮೆ ಮಾಡಿ.',
