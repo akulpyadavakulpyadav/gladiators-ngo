@@ -210,7 +210,7 @@ const GlobalLayout = () => {
               title="Logout"
             >
               <LogOut size={15} />
-              <span>Logout</span>
+              <span>{t('logout', language)}</span>
             </button>
           )}
 
@@ -333,7 +333,7 @@ const GlobalLayout = () => {
                     boxShadow: '0 2px 4px rgba(46, 125, 50, 0.05)'
                   }}>
                     <Heart size={iconSize} fill="#2E7D32" />
-                    <span>GC-VLT Verified</span>
+                    <span>{t('gc_vlt_verified', language)}</span>
                   </div>
                 );
               }
@@ -347,7 +347,7 @@ const GlobalLayout = () => {
                     boxShadow: '0 2px 4px rgba(0, 105, 92, 0.05)'
                   }}>
                     <Building2 size={iconSize} />
-                    <span>GC-NGO Verified</span>
+                    <span>{t('gc_ngo_verified', language)}</span>
                   </div>
                 );
               }
@@ -361,7 +361,7 @@ const GlobalLayout = () => {
                     boxShadow: '0 2px 4px rgba(245, 127, 23, 0.05)'
                   }}>
                     <Briefcase size={iconSize} />
-                    <span>GC-CPY Verified</span>
+                    <span>{t('gc_cpy_verified', language)}</span>
                   </div>
                 );
               }
@@ -451,7 +451,7 @@ const GlobalLayout = () => {
                           }}>
                             <img src="/images/logo.png" alt="" style={{ width: logoSize, height: logoSize, borderRadius: '50%' }} />
                             <Heart size={iconSize} fill="#2E7D32" />
-                            <span>GC-VLT Verified</span>
+                            <span>{t('gc_vlt_verified', language)}</span>
                           </div>
                         );
                       }
@@ -466,7 +466,7 @@ const GlobalLayout = () => {
                           }}>
                             <img src="/images/logo.png" alt="" style={{ width: logoSize, height: logoSize, borderRadius: '50%' }} />
                             <Building2 size={iconSize} />
-                            <span>GC-NGO Verified</span>
+                            <span>{t('gc_ngo_verified', language)}</span>
                           </div>
                         );
                       }
@@ -481,7 +481,7 @@ const GlobalLayout = () => {
                           }}>
                             <img src="/images/logo.png" alt="" style={{ width: logoSize, height: logoSize, borderRadius: '50%' }} />
                             <Briefcase size={iconSize} />
-                            <span>GC-CPY Verified</span>
+                            <span>{t('gc_cpy_verified', language)}</span>
                           </div>
                         );
                       }
@@ -500,11 +500,11 @@ const GlobalLayout = () => {
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><User size={14} /> <span>Age: {user.age}</span></div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Phone size={14} /> <span>{user.phone}</span></div>
                       <div style={{ marginTop: '0.5rem' }}>
-                        <div style={{ fontWeight: 700, fontSize: '0.8rem', color: '#334155', marginBottom: '0.25rem' }}>Interests:</div>
+                        <div style={{ fontWeight: 700, fontSize: '0.8rem', color: '#334155', marginBottom: '0.25rem' }}>{t('interests', language)}</div>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem' }}>
                           {user.interests?.map((interest, i) => (
                             <span key={i} style={{ background: '#F1F5F9', color: '#475569', padding: '0.15rem 0.4rem', borderRadius: '0.25rem', fontSize: '0.75rem', fontWeight: 600 }}>{interest}</span>
-                          )) || <span style={{ fontStyle: 'italic' }}>None specified</span>}
+                          )) || <span style={{ fontStyle: 'italic' }}>{t('none_specified', language)}</span>}
                         </div>
                       </div>
                     </>
@@ -526,11 +526,11 @@ const GlobalLayout = () => {
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Phone size={14} /> <span>{user.pocPhone}</span></div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Hash size={14} /> <span style={{ fontSize: '0.75rem', wordBreak: 'break-all' }}>CIN: {user.cin}</span></div>
                       <div style={{ marginTop: '0.5rem' }}>
-                        <div style={{ fontWeight: 700, fontSize: '0.8rem', color: '#334155', marginBottom: '0.25rem' }}>Preferred CSR Focus:</div>
+                        <div style={{ fontWeight: 700, fontSize: '0.8rem', color: '#334155', marginBottom: '0.25rem' }}>{t('preferred_csr_focus', language)}</div>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem' }}>
                           {user.csrFocus?.map((focus, i) => (
                             <span key={i} style={{ background: '#FFF9C4', color: '#F57F17', padding: '0.15rem 0.4rem', borderRadius: '0.25rem', fontSize: '0.75rem', fontWeight: 600 }}>{focus}</span>
-                          )) || <span style={{ fontStyle: 'italic' }}>None specified</span>}
+                          )) || <span style={{ fontStyle: 'italic' }}>{t('none_specified_1', language)}</span>}
                         </div>
                       </div>
                     </>
@@ -629,7 +629,7 @@ const GlobalLayout = () => {
               {editFormData.role === 'volunteer' && (
                 <>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Name as per records</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('name_as_per_records_1', language)}</label>
                     <input
                       type="text"
                       required
@@ -640,7 +640,7 @@ const GlobalLayout = () => {
                   </div>
                   <div style={{ display: 'flex', gap: '1rem' }}>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Phone Number</label>
+                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('phone_number', language)}</label>
                       <input
                         type="text"
                         required
@@ -650,7 +650,7 @@ const GlobalLayout = () => {
                       />
                     </div>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Age</label>
+                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('age_1', language)}</label>
                       <input
                         type="number"
                         required
@@ -662,7 +662,7 @@ const GlobalLayout = () => {
                   </div>
                   <div style={{ display: 'flex', gap: '1rem' }}>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Email</label>
+                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('email', language)}</label>
                       <input
                         type="email"
                         required
@@ -672,7 +672,7 @@ const GlobalLayout = () => {
                       />
                     </div>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Location</label>
+                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('location', language)}</label>
                       <input
                         type="text"
                         required
@@ -685,7 +685,7 @@ const GlobalLayout = () => {
 
                   {/* Volunteer Tag Interests */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Primary Interests</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('primary_interests', language)}</label>
                     <div style={{
                       display: 'flex', flexWrap: 'wrap', gap: '0.4rem',
                       border: '1px solid #E2E8F0', padding: '0.5rem',
@@ -715,13 +715,13 @@ const GlobalLayout = () => {
                           </span>
                         ))
                       ) : (
-                        <span style={{ fontSize: '0.8rem', color: '#94A3B8', fontStyle: 'italic' }}>No interests selected yet</span>
+                        <span style={{ fontSize: '0.8rem', color: '#94A3B8', fontStyle: 'italic' }}>{t('no_interests_selecte', language)}</span>
                       )}
                     </div>
                     <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.25rem' }}>
                       <input
                         type="text"
-                        placeholder="Add an interest..."
+                        placeholder={t('add_an_interest', language)}
                         value={interestInput}
                         onChange={e => setInterestInput(e.target.value)}
                         onKeyDown={e => {
@@ -761,7 +761,7 @@ const GlobalLayout = () => {
               {editFormData.role === 'ngo' && (
                 <>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Name of the NGO</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('name_of_the_ngo_1', language)}</label>
                     <input
                       type="text"
                       required
@@ -772,7 +772,7 @@ const GlobalLayout = () => {
                   </div>
                   <div style={{ display: 'flex', gap: '1rem' }}>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Official Email ID</label>
+                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('official_email_id', language)}</label>
                       <input
                         type="email"
                         required
@@ -782,7 +782,7 @@ const GlobalLayout = () => {
                       />
                     </div>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Official Website URL</label>
+                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('official_website_url', language)}</label>
                       <input
                         type="url"
                         required
@@ -793,7 +793,7 @@ const GlobalLayout = () => {
                     </div>
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Headquarters Address</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('headquarters_address_2', language)}</label>
                     <input
                       type="text"
                       required
@@ -804,10 +804,10 @@ const GlobalLayout = () => {
                   </div>
 
                   <div style={{ background: '#F8FAFC', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #E2E8F0', marginTop: '0.5rem' }}>
-                    <h4 style={{ margin: '0 0 0.75rem 0', fontSize: '0.9rem', fontWeight: 700, color: '#334155' }}>Primary Point of Contact Details</h4>
+                    <h4 style={{ margin: '0 0 0.75rem 0', fontSize: '0.9rem', fontWeight: 700, color: '#334155' }}>{t('primary_point_of_con', language)}</h4>
                     <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.75rem' }}>
                       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                        <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>Full Name</label>
+                        <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>{t('full_name', language)}</label>
                         <input
                           type="text"
                           required
@@ -817,7 +817,7 @@ const GlobalLayout = () => {
                         />
                       </div>
                       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                        <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>Phone Number</label>
+                        <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>{t('phone_number', language)}</label>
                         <input
                           type="text"
                           required
@@ -829,7 +829,7 @@ const GlobalLayout = () => {
                     </div>
                     <div style={{ display: 'flex', gap: '1rem' }}>
                       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                        <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>Designation</label>
+                        <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>{t('designation', language)}</label>
                         <input
                           type="text"
                           required
@@ -839,7 +839,7 @@ const GlobalLayout = () => {
                         />
                       </div>
                       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                        <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>Professional Email ID</label>
+                        <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>{t('professional_email_i', language)}</label>
                         <input
                           type="email"
                           required
@@ -856,7 +856,7 @@ const GlobalLayout = () => {
               {editFormData.role === 'company' && (
                 <>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Name of the Company</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('name_of_the_company_1', language)}</label>
                     <input
                       type="text"
                       required
@@ -867,7 +867,7 @@ const GlobalLayout = () => {
                   </div>
                   <div style={{ display: 'flex', gap: '1rem' }}>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Official Email ID</label>
+                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('official_email_id_1', language)}</label>
                       <input
                         type="email"
                         required
@@ -877,7 +877,7 @@ const GlobalLayout = () => {
                       />
                     </div>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Website URL</label>
+                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('website_url', language)}</label>
                       <input
                         type="url"
                         required
@@ -889,7 +889,7 @@ const GlobalLayout = () => {
                   </div>
                   <div style={{ display: 'flex', gap: '1rem' }}>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Headquarters Address</label>
+                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('headquarters_address_2', language)}</label>
                       <input
                         type="text"
                         required
@@ -899,7 +899,7 @@ const GlobalLayout = () => {
                       />
                     </div>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Industry Sector</label>
+                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('industry_sector_2', language)}</label>
                       <input
                         type="text"
                         required
@@ -912,7 +912,7 @@ const GlobalLayout = () => {
 
                   {/* Company Tag CSR Areas */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Preferred CSR Focus Areas</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('preferred_csr_focus__1', language)}</label>
                     <div style={{
                       display: 'flex', flexWrap: 'wrap', gap: '0.4rem',
                       border: '1px solid #E2E8F0', padding: '0.5rem',
@@ -942,13 +942,13 @@ const GlobalLayout = () => {
                           </span>
                         ))
                       ) : (
-                        <span style={{ fontSize: '0.8rem', color: '#94A3B8', fontStyle: 'italic' }}>No CSR areas selected yet</span>
+                        <span style={{ fontSize: '0.8rem', color: '#94A3B8', fontStyle: 'italic' }}>{t('no_csr_areas_selecte', language)}</span>
                       )}
                     </div>
                     <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.25rem' }}>
                       <input
                         type="text"
-                        placeholder="Add CSR area..."
+                        placeholder={t('add_csr_area', language)}
                         value={csrFocusInput}
                         onChange={e => setCsrFocusInput(e.target.value)}
                         onKeyDown={e => {
@@ -984,10 +984,10 @@ const GlobalLayout = () => {
                   </div>
 
                   <div style={{ background: '#F8FAFC', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #E2E8F0', marginTop: '0.5rem' }}>
-                    <h4 style={{ margin: '0 0 0.75rem 0', fontSize: '0.9rem', fontWeight: 700, color: '#334155' }}>Primary Point of Contact Details</h4>
+                    <h4 style={{ margin: '0 0 0.75rem 0', fontSize: '0.9rem', fontWeight: 700, color: '#334155' }}>{t('primary_point_of_con_2', language)}</h4>
                     <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.75rem' }}>
                       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                        <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>Full Name</label>
+                        <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>{t('full_name', language)}</label>
                         <input
                           type="text"
                           required
@@ -997,7 +997,7 @@ const GlobalLayout = () => {
                         />
                       </div>
                       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                        <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>Phone Number</label>
+                        <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>{t('phone_number', language)}</label>
                         <input
                           type="text"
                           required
@@ -1009,7 +1009,7 @@ const GlobalLayout = () => {
                     </div>
                     <div style={{ display: 'flex', gap: '1rem' }}>
                       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                        <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>Designation</label>
+                        <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>{t('designation_2', language)}</label>
                         <input
                           type="text"
                           required
@@ -1019,7 +1019,7 @@ const GlobalLayout = () => {
                         />
                       </div>
                       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                        <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>Professional Email ID</label>
+                        <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>{t('professional_email_i_1', language)}</label>
                         <input
                           type="email"
                           required
