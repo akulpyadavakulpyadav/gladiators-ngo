@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
+import { t } from '../../utils/translations';
 import { useNavigate } from 'react-router-dom';
 import { Briefcase, Mail, Phone, MapPin, Globe, User, Shield, Hash, ArrowLeft, Save, Edit3, LogOut, Check, X, Award } from 'lucide-react';
 
