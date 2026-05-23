@@ -278,13 +278,6 @@ const VolunteerOnboarding = () => {
                   {generatedUser.pin}
                 </div>
               </div>
-              <div style={{
-                background: '#E8F5E9', border: '1px solid #C8E6C9', borderRadius: '0.5rem',
-                padding: '0.5rem 0.75rem', fontSize: '0.75rem', color: '#2E7D32', fontWeight: 600,
-                display: 'flex', alignItems: 'center', gap: '0.35rem', marginTop: '0.5rem'
-              }}>
-                <Shield size={14} /> Memory-Only Store: Credential deletes completely upon page refresh.
-              </div>
             </div>
 
             <button 

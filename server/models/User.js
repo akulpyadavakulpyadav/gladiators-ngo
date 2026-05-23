@@ -48,7 +48,8 @@ const userSchema = new mongoose.Schema({
   pocName: String,
   pocPhone: String,
   pocDesignation: String,
-  pocEmail: String
+  pocEmail: String,
+  pocAadhaar: String
 }, {
   timestamps: true,
   toJSON: { virtuals: true },

@@ -158,8 +158,8 @@ const NgoOnboarding = () => {
             name: formData.name,
             email: formData.email,
             website: formData.website,
-            hqAddress: formData.hqAddress,
-            darpanId: formData.darpanId,
+            headquarters: formData.hqAddress,
+            ngoDarpanId: formData.darpanId,
             pocName: formData.pocName,
             pocPhone: formData.pocPhone,
             pocDesignation: formData.pocDesignation,
@@ -271,13 +271,6 @@ const NgoOnboarding = () => {
                 <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1E293B', marginTop: '0.2rem' }}>
                   {generatedUser.pin}
                 </div>
-              </div>
-              <div style={{
-                background: '#E8F5E9', border: '1px solid #C8E6C9', borderRadius: '0.5rem',
-                padding: '0.5rem 0.75rem', fontSize: '0.75rem', color: '#2E7D32', fontWeight: 600,
-                display: 'flex', alignItems: 'center', gap: '0.35rem', marginTop: '0.5rem'
-              }}>
-                <Shield size={14} /> Memory-Only Store: Credential deletes completely upon page refresh.
               </div>
             </div>
 
