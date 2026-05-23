@@ -160,14 +160,9 @@ const VolunteerOnboarding = () => {
         // Step 3 of buffer: Registering
         setBufferStatus('registering');
         
-        setTimeout(() => {
-          // Generate VLT + 6 random digits GC-ID
-          const randomDigits = Math.floor(100000 + Math.random() * 900000);
-          const gcId = `VLT${randomDigits}`;
-
+        setTimeout(async () => {
           const newUser = {
             role: 'volunteer',
-            gcId: gcId,
             pin: formData.pin,
             name: formData.name,
             phone: formData.phone,
@@ -179,9 +174,13 @@ const VolunteerOnboarding = () => {
             aadhaar: digitsOnly
           };
 
-          // Save to AuthContext
-          registerUser(newUser);
-          setGeneratedUser(newUser);
+          // Save to Backend
+          const result = await registerUser(newUser);
+          if (result.success) {
+            setGeneratedUser(result.user);
+          } else {
+            showAlert(result.message || 'Registration failed', 'error');
+          }
           setIsBuffering(false);
         }, 1500);
       }, 1500);

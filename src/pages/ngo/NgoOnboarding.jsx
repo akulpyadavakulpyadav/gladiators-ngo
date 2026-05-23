@@ -151,14 +151,9 @@ const NgoOnboarding = () => {
         // Step 3 of buffer: Registering
         setBufferStatus('registering');
         
-        setTimeout(() => {
-          // Generate NGO + 6 random digits GC-ID
-          const randomDigits = Math.floor(100000 + Math.random() * 900000);
-          const gcId = `NGO${randomDigits}`;
-
+        setTimeout(async () => {
           const newUser = {
             role: 'ngo',
-            gcId: gcId,
             pin: formData.pin,
             name: formData.name,
             email: formData.email,
@@ -173,9 +168,13 @@ const NgoOnboarding = () => {
             domain: formData.domain === 'Other' ? formData.customDomain : formData.domain
           };
 
-          // Save to AuthContext
-          registerUser(newUser);
-          setGeneratedUser(newUser);
+          // Save to Backend
+          const result = await registerUser(newUser);
+          if (result.success) {
+            setGeneratedUser(result.user);
+          } else {
+            showAlert(result.message || 'Registration failed', 'error');
+          }
           setIsBuffering(false);
         }, 1500);
       }, 1500);

@@ -186,14 +186,9 @@ const CompanyOnboarding = () => {
         // Step 3 of buffer: Registering
         setBufferStatus('registering');
         
-        setTimeout(() => {
-          // Generate CPY + 6 random digits GC-ID
-          const randomDigits = Math.floor(100000 + Math.random() * 900000);
-          const gcId = `CPY${randomDigits}`;
-
+        setTimeout(async () => {
           const newUser = {
             role: 'company',
-            gcId: gcId,
             pin: formData.pin,
             name: formData.name,
             email: formData.email,
@@ -210,9 +205,13 @@ const CompanyOnboarding = () => {
             budget: '5000000' // Default budget compatibility
           };
 
-          // Save to AuthContext
-          registerUser(newUser);
-          setGeneratedUser(newUser);
+          // Save to Backend
+          const result = await registerUser(newUser);
+          if (result.success) {
+            setGeneratedUser(result.user);
+          } else {
+            showAlert(result.message || 'Registration failed', 'error');
+          }
           setIsBuffering(false);
         }, 1500);
       }, 1500);

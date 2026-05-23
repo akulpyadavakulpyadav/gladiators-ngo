@@ -6,7 +6,7 @@ import { t } from '../utils/translations';
 import { Users, Shield, KeyRound, Lock, ArrowRight, AlertCircle, Building2, Briefcase } from 'lucide-react';
 
 const LoginPage = () => {
-  const { login, registeredUsers } = useAuth();
+  const { login } = useAuth();
   const { language } = useLanguage();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -34,7 +34,7 @@ const LoginPage = () => {
   }, [searchParams]);
 
   // Handle standard submit using GC-ID and PIN
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage('');
 
@@ -51,23 +51,12 @@ const LoginPage = () => {
       return;
     }
 
-    // Authenticate against in-memory registeredUsers in AuthContext
-    const matchedUser = registeredUsers.find(
-      (u) => u.gcId.toUpperCase() === formattedId && u.role === selectedRole
-    );
+    const result = await login({ gcId: formattedId, pin: cleanPin, role: selectedRole });
 
-    if (!matchedUser) {
-      setErrorMessage(`No registered user found with ID "${formattedId}" for the ${selectedRole} role. Or the page was refreshed wiping the database.`);
+    if (!result.success) {
+      setErrorMessage(result.message || 'Login failed.');
       return;
     }
-
-    if (matchedUser.pin !== cleanPin) {
-      setErrorMessage('Invalid 6-digit PIN. Please try again.');
-      return;
-    }
-
-    // Successful login!
-    login(matchedUser);
 
     // Redirect to respective dashboard
     if (selectedRole === 'volunteer') {

@@ -8,88 +8,98 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // In-memory store for registered users. Wiped completely on page refresh.
-  const [registeredUsers, setRegisteredUsers] = useState([
-    {
-      role: 'volunteer',
-      gcId: 'VLT123456',
-      pin: '123456',
-      name: 'Aniruddha',
-      aadhaar: '123412341234',
-      phone: '9876543210',
-      email: 'volunteer@example.com',
-      age: '22',
-      location: 'Bangalore',
-      interests: ['Environment', 'Education']
-    },
-    {
-      role: 'ngo',
-      gcId: 'NGO123456',
-      pin: '123456',
-      name: 'Global Green Initiative',
-      ngoDarpanId: 'NGODARPAN123456789012', // 21 chars compulsorily
-      email: 'contact@globalgreen.org',
-      headquarters: 'Bangalore',
-      website: 'https://globalgreen.org',
-      domain: 'Environment',
-      pocName: 'Rajesh Kumar',
-      pocPhone: '9876543211',
-      pocDesignation: 'Director',
-      pocEmail: 'rajesh@globalgreen.org'
-    },
-    {
-      role: 'company',
-      gcId: 'CPY123456',
-      pin: '123456',
-      name: 'Tata CSR',
-      cin: 'L27020MH1958PLC011107', // 21 chars compulsorily
-      email: 'csr@tata.com',
-      headquarters: 'Mumbai',
-      website: 'https://tata.com',
-      industrySector: 'Manufacturing',
-      csrFocus: ['Education', 'Environment'],
-      pocName: 'Sunita Sharma',
-      pocPhone: '9876543212',
-      pocDesignation: 'CSR Head',
-      pocEmail: 'sunita.sharma@tata.com'
-    }
-  ]);
+  // We have removed the in-memory registeredUsers array as requested.
+  // The database will now serve as the single source of truth.
 
   useEffect(() => {
-    // Memory-only session: clear localStorage to ensure nothing is persisted across refreshes
-    localStorage.removeItem('gladiconnect_user');
+    // Attempt to load session from localStorage if desired
+    const storedUser = localStorage.getItem('gladiconnect_user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
     setLoading(false);
   }, []);
 
-  const login = (userData) => {
-    // userData format: { role: 'ngo' | 'volunteer' | 'company', name: '...', gcId: '...', ... }
-    setUser(userData);
+  const login = async (credentials) => {
+    // credentials should include { gcId, pin, role }
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(credentials)
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
+      }
+      
+      setUser(data.user);
+      localStorage.setItem('gladiconnect_user', JSON.stringify(data.user));
+      return { success: true, user: data.user };
+    } catch (error) {
+      console.error('AuthContext Login Error:', error);
+      return { success: false, message: error.message };
+    }
   };
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem('gladiconnect_user');
   };
 
-  const registerUser = (newUserData) => {
-    setRegisteredUsers((prev) => [...prev, newUserData]);
+  const registerUser = async (newUserData) => {
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newUserData)
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Registration failed');
+      }
+      
+      // Auto-login after registration
+      setUser(data.user);
+      localStorage.setItem('gladiconnect_user', JSON.stringify(data.user));
+      return { success: true, user: data.user };
+    } catch (error) {
+      console.error('AuthContext Registration Error:', error);
+      return { success: false, message: error.message };
+    }
   };
 
-  const updateUserProfile = (updatedData) => {
-    setUser((prev) => {
-      const nextUser = { ...prev, ...updatedData };
+  const updateUserProfile = async (updatedData) => {
+    if (!user || !user._id) return { success: false, message: 'Not logged in' };
+    
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ gcId: user._id, updatedData })
+      });
       
-      // Update in registeredUsers list too
-      setRegisteredUsers((prevList) =>
-        prevList.map((u) => (u.gcId === prev.gcId ? { ...u, ...updatedData } : u))
-      );
+      const data = await response.json();
       
-      return nextUser;
-    });
+      if (!response.ok) {
+        throw new Error(data.message || 'Profile update failed');
+      }
+      
+      setUser(data.user);
+      localStorage.setItem('gladiconnect_user', JSON.stringify(data.user));
+      return { success: true, user: data.user };
+    } catch (error) {
+      console.error('AuthContext Update Error:', error);
+      return { success: false, message: error.message };
+    }
   };
 
   const value = {
     user,
-    registeredUsers,
     login,
     logout,
     registerUser,
