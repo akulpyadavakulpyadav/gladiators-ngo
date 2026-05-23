@@ -1,3 +1,4 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 const User = require('./models/User');
 
@@ -5,7 +6,7 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/gladiators
 
 const seedDatabase = async () => {
   try {
-    await mongoose.connect(MONGO_URI);
+    await mongoose.connect(MONGO_URI, { family: 4 });
     console.log('Connected to MongoDB for seeding...');
 
     // Clear existing users
