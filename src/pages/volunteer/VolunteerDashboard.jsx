@@ -14,7 +14,7 @@ const DirectorySearch = () => {
       ? user.interests
       : (typeof user?.interests === 'string' && user.interests ? [user.interests] : []);
     if (interests.length > 0) {
-      return 'My Interests';
+      return interests[0];
     }
     return 'All';
   };
