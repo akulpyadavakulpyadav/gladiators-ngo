@@ -254,7 +254,7 @@ const CompanyOnboarding = () => {
             {bufferStatus === 'verifying' && (
               <>
                 <Loader2 size={36} className="animate-spin" style={{ color: '#F39C12', marginBottom: '1rem' }} />
-                <p style={{ fontWeight: 700, fontSize: '1.1rem', color: '#334155' }}>Connecting to DigiLocker Aadhaar Gateway...</p>
+                <p style={{ fontWeight: 700, fontSize: '1.1rem', color: '#334155' }}>{t('connecting_to_digilo', language)}</p>
                 <p style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '0.25rem' }}>Verifying POC Aadhaar and {formData.cin.length} character corporate CIN.</p>
               </>
             )}
@@ -262,16 +262,16 @@ const CompanyOnboarding = () => {
             {bufferStatus === 'verified_success' && (
               <>
                 <CheckCircle size={44} style={{ color: '#2E7D32', marginBottom: '1rem' }} />
-                <h3 style={{ fontWeight: 800, fontSize: '1.5rem', color: '#2E7D32', margin: 0 }}>Verified Successfully</h3>
-                <p style={{ fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem' }}>Corporate CIN & Aadhaar matching checks completed.</p>
+                <h3 style={{ fontWeight: 800, fontSize: '1.5rem', color: '#2E7D32', margin: 0 }}>{t('verified_successfull', language)}</h3>
+                <p style={{ fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem' }}>{t('corporate_cin_aadhaa', language)}</p>
               </>
             )}
 
             {bufferStatus === 'registering' && (
               <>
                 <Loader2 size={36} className="animate-spin" style={{ color: '#2E7D32', marginBottom: '1rem' }} />
-                <h3 style={{ fontWeight: 800, fontSize: '1.5rem', color: '#2E7D32', margin: 0 }}>Registering</h3>
-                <p style={{ fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem' }}>Creating secure GC-Company credentials...</p>
+                <h3 style={{ fontWeight: 800, fontSize: '1.5rem', color: '#2E7D32', margin: 0 }}>{t('registering', language)}</h3>
+                <p style={{ fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem' }}>{t('creating_secure_gc_c', language)}</p>
               </>
             )}
           </div>
@@ -287,7 +287,7 @@ const CompanyOnboarding = () => {
             }}>
               <CheckCircle size={36} />
             </div>
-            <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#1E293B', marginBottom: '0.5rem' }}>Company Onboarded!</h2>
+            <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#1E293B', marginBottom: '0.5rem' }}>{t('company_onboarded', language)}</h2>
             <p style={{ fontSize: '0.95rem', color: '#475569', marginBottom: '2rem' }}>
               Your company has been verified and registered successfully. Please record your login credentials.
             </p>
@@ -298,14 +298,14 @@ const CompanyOnboarding = () => {
               textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '0.75rem' 
             }}>
               <div>
-                <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>GC-Company ID</span>
+                <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>{t('gc_company_id', language)}</span>
                 <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#3D5A34', fontFamily: 'monospace', letterSpacing: '0.05em', marginTop: '0.2rem' }}>
                   {generatedUser.gcId}
                 </div>
               </div>
               <hr style={{ border: 'none', borderTop: '1px solid #E2E8F0', margin: '0.25rem 0' }} />
               <div>
-                <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>Secure 6-Digit PIN</span>
+                <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>{t('secure_6_digit_pin', language)}</span>
                 <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1E293B', marginTop: '0.2rem' }}>
                   {generatedUser.pin}
                 </div>
@@ -398,8 +398,8 @@ const CompanyOnboarding = () => {
                     <Lock size={18} style={{ color: '#4A6741' }} />
                   </div>
                   <div>
-                    <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#1E293B', margin: '0 0 0.15rem 0' }}>Login</h3>
-                    <p style={{ fontSize: '0.8rem', color: '#475569', margin: 0 }}>Access your corporate CSR portal using your GC-Company ID and 6-digit PIN.</p>
+                    <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#1E293B', margin: '0 0 0.15rem 0' }}>{t('login', language)}</h3>
+                    <p style={{ fontSize: '0.8rem', color: '#475569', margin: 0 }}>{t('access_your_corporat', language)}</p>
                   </div>
                 </button>
 
@@ -417,8 +417,8 @@ const CompanyOnboarding = () => {
                     <Plus size={18} style={{ color: '#4A6741' }} />
                   </div>
                   <div>
-                    <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#1E293B', margin: '0 0 0.15rem 0' }}>Register Enterprise</h3>
-                    <p style={{ fontSize: '0.8rem', color: '#475569', margin: 0 }}>Validate via Corporate CIN and DigiLocker to start matching CSR opportunities.</p>
+                    <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#1E293B', margin: '0 0 0.15rem 0' }}>{t('register_enterprise', language)}</h3>
+                    <p style={{ fontSize: '0.8rem', color: '#475569', margin: 0 }}>{t('validate_via_corpora', language)}</p>
                   </div>
                 </button>
               </div>
@@ -428,11 +428,11 @@ const CompanyOnboarding = () => {
             {step === 1 && (
               <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Name of the Company *</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('name_of_the_company', language)}</label>
                   <input
                     type="text"
                     required
-                    placeholder="Enter registered corporate name"
+                    placeholder={t('enter_registered_cor', language)}
                     value={formData.name}
                     onChange={e => setFormData({ ...formData, name: e.target.value })}
                     style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem' }}
@@ -441,26 +441,26 @@ const CompanyOnboarding = () => {
 
                 <div style={{ display: 'flex', gap: '1rem' }}>
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Industry Sector *</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('industry_sector', language)}</label>
                     <select
                       value={formData.sector}
                       onChange={e => setFormData({ ...formData, sector: e.target.value })}
                       style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem', background: '#FFFFFF' }}
                     >
-                      <option value="Technology">Technology</option>
-                      <option value="Finance & Banking">Finance & Banking</option>
-                      <option value="Manufacturing">Manufacturing</option>
-                      <option value="Healthcare">Healthcare</option>
-                      <option value="Energy & Utilities">Energy & Utilities</option>
-                      <option value="Consumer Goods">Consumer Goods</option>
+                      <option value="Technology">{t('technology', language)}</option>
+                      <option value="Finance & Banking">{t('finance_banking', language)}</option>
+                      <option value="Manufacturing">{t('manufacturing', language)}</option>
+                      <option value="Healthcare">{t('healthcare', language)}</option>
+                      <option value="Energy & Utilities">{t('energy_utilities', language)}</option>
+                      <option value="Consumer Goods">{t('consumer_goods', language)}</option>
                     </select>
                   </div>
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Official Website URL *</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('official_website_url', language)}</label>
                     <input
                       type="text"
                       required
-                      placeholder="https://www.company.com"
+                      placeholder={t('https_www_company_co', language)}
                       value={formData.website}
                       onChange={e => setFormData({ ...formData, website: e.target.value })}
                       style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem' }}
@@ -469,11 +469,11 @@ const CompanyOnboarding = () => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Official Corporate Email ID *</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('official_corporate_e', language)}</label>
                   <input
                     type="email"
                     required
-                    placeholder="csr@company.com"
+                    placeholder={t('placeholder_csr_email', language)}
                     value={formData.email}
                     onChange={e => setFormData({ ...formData, email: e.target.value })}
                     style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem' }}
@@ -481,11 +481,11 @@ const CompanyOnboarding = () => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Headquarters Address *</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('headquarters_address', language)}</label>
                   <textarea
                     required
                     rows={2}
-                    placeholder="Corporate HQ address"
+                    placeholder={t('corporate_hq_address', language)}
                     value={formData.hqAddress}
                     onChange={e => setFormData({ ...formData, hqAddress: e.target.value })}
                     style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem', resize: 'vertical' }}
@@ -494,7 +494,7 @@ const CompanyOnboarding = () => {
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>CIN Number (exactly 21 characters/digits) *</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('cin_number_exactly_2', language)}</label>
                     <span style={{ fontSize: '0.75rem', fontWeight: 600, color: formData.cin.length === 21 ? '#2E7D32' : '#E67E22' }}>
                       {formData.cin.length} / 21
                     </span>
@@ -503,7 +503,7 @@ const CompanyOnboarding = () => {
                     type="text"
                     required
                     maxLength={21}
-                    placeholder="e.g. L01234KA2026PLC012345"
+                    placeholder={t('e_g_l01234ka2026plc0', language)}
                     value={formData.cin}
                     onChange={e => setFormData({ ...formData, cin: e.target.value.toUpperCase() })}
                     style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem', fontFamily: 'monospace', letterSpacing: '0.05em' }}
@@ -534,7 +534,7 @@ const CompanyOnboarding = () => {
             {step === 2 && (
               <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.85rem', fontWeight: 700, color: '#475569' }}>Selected CSR Focus Areas *</label>
+                  <label style={{ fontSize: '0.85rem', fontWeight: 700, color: '#475569' }}>{t('selected_csr_focus_a', language)}</label>
                   <div style={{
                     display: 'flex', flexWrap: 'wrap', gap: '0.4rem',
                     border: '2px solid #CBD5E1', padding: '0.75rem',
@@ -559,7 +559,7 @@ const CompanyOnboarding = () => {
                         </span>
                       ))
                     ) : (
-                      <span style={{ fontSize: '0.85rem', color: '#94A3B8', fontStyle: 'italic' }}>Please select target CSR priorities from below or enter custom sectors</span>
+                      <span style={{ fontSize: '0.85rem', color: '#94A3B8', fontStyle: 'italic' }}>{t('please_select_target', language)}</span>
                     )}
                   </div>
                 </div>
@@ -567,7 +567,7 @@ const CompanyOnboarding = () => {
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
                   <input
                     type="text"
-                    placeholder="Type custom sector..."
+                    placeholder={t('type_custom_sector', language)}
                     value={csrInput}
                     onChange={e => setCsrInput(e.target.value)}
                     onKeyDown={e => {
@@ -590,7 +590,7 @@ const CompanyOnboarding = () => {
                 </div>
 
                 <div>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#64748B', display: 'block', marginBottom: '0.5rem' }}>Predefined CSR Sectors:</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#64748B', display: 'block', marginBottom: '0.5rem' }}>{t('predefined_csr_secto', language)}</label>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
                     {quickCsrFocus.map((csr, i) => {
                       const selected = formData.csrFocusAreas.includes(csr);
@@ -638,26 +638,26 @@ const CompanyOnboarding = () => {
             {/* Step 3: Primary Contact Person Details & OTP */}
             {step === 3 && (
               <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#1E293B', borderBottom: '1px solid #E2E8F0', paddingBottom: '0.5rem', margin: 0 }}>Primary Point of Contact</h3>
+                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#1E293B', borderBottom: '1px solid #E2E8F0', paddingBottom: '0.5rem', margin: 0 }}>{t('primary_point_of_con', language)}</h3>
                 
                 <div style={{ display: 'flex', gap: '1rem' }}>
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Full Name *</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('full_name_1', language)}</label>
                     <input
                       type="text"
                       required
-                      placeholder="POC Full Name"
+                      placeholder={t('poc_full_name', language)}
                       value={formData.pocName}
                       onChange={e => setFormData({ ...formData, pocName: e.target.value })}
                       style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem' }}
                     />
                   </div>
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Designation *</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('designation', language)}</label>
                     <input
                       type="text"
                       required
-                      placeholder="e.g. CSR Head, VP HR"
+                      placeholder={t('e_g_csr_head_vp_hr', language)}
                       value={formData.pocDesignation}
                       onChange={e => setFormData({ ...formData, pocDesignation: e.target.value })}
                       style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem' }}
@@ -666,12 +666,12 @@ const CompanyOnboarding = () => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Phone Number *</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('phone_number_1', language)}</label>
                   <input
                     type="text"
                     required
                     maxLength={10}
-                    placeholder="10-digit POC phone number"
+                    placeholder={t('10_digit_poc_phone_n', language)}
                     value={formData.pocPhone}
                     onChange={e => setFormData({ ...formData, pocPhone: e.target.value.replace(/\D/g, '') })}
                     style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem' }}
@@ -681,13 +681,13 @@ const CompanyOnboarding = () => {
                 {/* POC Email Verification Block */}
                 <div style={{ background: '#F8FAFC', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid #E2E8F0', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>POC Professional Email *</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('poc_professional_ema', language)}</label>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
                       <input
                         type="email"
                         required
                         disabled={otpVerified}
-                        placeholder="poc.name@company.com"
+                        placeholder={t('poc_name_company_com', language)}
                         value={formData.pocEmail}
                         onChange={e => setFormData({ ...formData, pocEmail: e.target.value })}
                         style={{ flex: 1, padding: '0.6rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem', background: otpVerified ? '#E2E8F0' : '#FFFFFF' }}
@@ -706,12 +706,12 @@ const CompanyOnboarding = () => {
 
                   {otpSent && !otpVerified && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', animation: 'fadeIn 0.2s ease-out' }}>
-                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>Enter 6-Digit OTP *</label>
+                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>{t('enter_6_digit_otp', language)}</label>
                       <div style={{ display: 'flex', gap: '0.5rem' }}>
                         <input
                            type="text"
                            maxLength={6}
-                           placeholder="e.g. 123456"
+                           placeholder={t('e_g_123456', language)}
                            value={formData.otp}
                            onChange={e => setFormData({ ...formData, otp: e.target.value.replace(/\D/g, '') })}
                            style={{ flex: 1, padding: '0.5rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem', textAlign: 'center', letterSpacing: '0.2em', fontWeight: 700 }}
@@ -766,12 +766,12 @@ const CompanyOnboarding = () => {
                 }}>
                   <Shield size={18} style={{ color: '#4A6741', flexShrink: 0 }} />
                   <div>
-                    <strong>Secure Login Setup:</strong> Set a 6-digit PIN which will be required along with your GC-Company ID to access your portal in future sessions.
+                    <strong>{t('secure_login_setup', language)}</strong> Set a 6-digit PIN which will be required along with your GC-Company ID to access your portal in future sessions.
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Enter 6-Digit PIN *</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('enter_6_digit_pin', language)}</label>
                   <input
                     type="password"
                     maxLength={6}
@@ -784,7 +784,7 @@ const CompanyOnboarding = () => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Confirm 6-Digit PIN *</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('confirm_6_digit_pin', language)}</label>
                   <input
                     type="password"
                     maxLength={6}
@@ -828,14 +828,14 @@ const CompanyOnboarding = () => {
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
                     <Shield size={20} style={{ color: '#F39C12' }} />
-                    <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#1E293B' }}>DigiLocker Verified Gateway</h3>
+                    <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#1E293B' }}>{t('digilocker_verified_', language)}</h3>
                   </div>
                   <p style={{ fontSize: '0.8rem', color: '#475569', margin: '0 0 1rem 0', lineHeight: 1.45 }}>
-                    To finalize corporate registration, verify the identity of primary contact person <strong>{formData.pocName}</strong> via DigiLocker database. Enter their <strong>12-digit Aadhaar number</strong>.
+                    To finalize corporate registration, verify the identity of primary contact person <strong>{formData.pocName}</strong> {t('via_digilocker_datab', language)} <strong>{t('12_digit_aadhaar_num', language)}</strong>.
                   </p>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Primary Contact Aadhaar Number *</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('primary_contact_aadh', language)}</label>
                     <input
                       type="text"
                       required

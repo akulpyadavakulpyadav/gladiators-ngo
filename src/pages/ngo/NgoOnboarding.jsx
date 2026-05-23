@@ -217,7 +217,7 @@ const NgoOnboarding = () => {
             {bufferStatus === 'verifying' && (
               <>
                 <Loader2 size={36} className="animate-spin" style={{ color: '#F39C12', marginBottom: '1rem' }} />
-                <p style={{ fontWeight: 700, fontSize: '1.1rem', color: '#334155' }}>Connecting to DigiLocker Aadhaar Gateway...</p>
+                <p style={{ fontWeight: 700, fontSize: '1.1rem', color: '#334155' }}>{t('connecting_to_digilo_1', language)}</p>
                 <p style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '0.25rem' }}>Verifying POC Aadhaar and {formData.darpanId.length} character NGO Darpan ID.</p>
               </>
             )}
@@ -225,16 +225,16 @@ const NgoOnboarding = () => {
             {bufferStatus === 'verified_success' && (
               <>
                 <CheckCircle size={44} style={{ color: '#2E7D32', marginBottom: '1rem' }} />
-                <h3 style={{ fontWeight: 800, fontSize: '1.5rem', color: '#2E7D32', margin: 0 }}>Verified Successfully</h3>
-                <p style={{ fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem' }}>Darpan ID & Aadhaar matching checks completed.</p>
+                <h3 style={{ fontWeight: 800, fontSize: '1.5rem', color: '#2E7D32', margin: 0 }}>{t('verified_successfull_1', language)}</h3>
+                <p style={{ fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem' }}>{t('darpan_id_aadhaar_ma', language)}</p>
               </>
             )}
 
             {bufferStatus === 'registering' && (
               <>
                 <Loader2 size={36} className="animate-spin" style={{ color: '#2E7D32', marginBottom: '1rem' }} />
-                <h3 style={{ fontWeight: 800, fontSize: '1.5rem', color: '#2E7D32', margin: 0 }}>Registering</h3>
-                <p style={{ fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem' }}>Creating secure GC-NGO credentials...</p>
+                <h3 style={{ fontWeight: 800, fontSize: '1.5rem', color: '#2E7D32', margin: 0 }}>{t('registering_1', language)}</h3>
+                <p style={{ fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem' }}>{t('creating_secure_gc_n', language)}</p>
               </>
             )}
           </div>
@@ -250,7 +250,7 @@ const NgoOnboarding = () => {
             }}>
               <CheckCircle size={36} />
             </div>
-            <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#1E293B', marginBottom: '0.5rem' }}>NGO Verified & Registered!</h2>
+            <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#1E293B', marginBottom: '0.5rem' }}>{t('ngo_verified_registe', language)}</h2>
             <p style={{ fontSize: '0.95rem', color: '#475569', marginBottom: '2rem' }}>
               Your NGO has been created and verified successfully. Please record your login credentials.
             </p>
@@ -261,14 +261,14 @@ const NgoOnboarding = () => {
               textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '0.75rem' 
             }}>
               <div>
-                <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>GC-NGO ID</span>
+                <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>{t('gc_ngo_id', language)}</span>
                 <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#3D5A34', fontFamily: 'monospace', letterSpacing: '0.05em', marginTop: '0.2rem' }}>
                   {generatedUser.gcId}
                 </div>
               </div>
               <hr style={{ border: 'none', borderTop: '1px solid #E2E8F0', margin: '0.25rem 0' }} />
               <div>
-                <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>Secure 6-Digit PIN</span>
+                <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>{t('secure_6_digit_pin_1', language)}</span>
                 <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1E293B', marginTop: '0.2rem' }}>
                   {generatedUser.pin}
                 </div>
@@ -361,8 +361,8 @@ const NgoOnboarding = () => {
                     <Lock size={18} style={{ color: '#4A6741' }} />
                   </div>
                   <div>
-                    <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#1E293B', margin: '0 0 0.15rem 0' }}>Login</h3>
-                    <p style={{ fontSize: '0.8rem', color: '#475569', margin: 0 }}>Access your NGO dashboard using your GC-NGO ID and 6-digit PIN.</p>
+                    <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#1E293B', margin: '0 0 0.15rem 0' }}>{t('login', language)}</h3>
+                    <p style={{ fontSize: '0.8rem', color: '#475569', margin: 0 }}>{t('access_your_ngo_dash', language)}</p>
                   </div>
                 </button>
 
@@ -380,8 +380,8 @@ const NgoOnboarding = () => {
                     <Plus size={18} style={{ color: '#4A6741' }} />
                   </div>
                   <div>
-                    <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#1E293B', margin: '0 0 0.15rem 0' }}>Register NGO</h3>
-                    <p style={{ fontSize: '0.8rem', color: '#475569', margin: 0 }}>Validate via NGO Darpan ID and DigiLocker to start posting opportunities.</p>
+                    <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#1E293B', margin: '0 0 0.15rem 0' }}>{t('register_ngo', language)}</h3>
+                    <p style={{ fontSize: '0.8rem', color: '#475569', margin: 0 }}>{t('validate_via_ngo_dar', language)}</p>
                   </div>
                 </button>
               </div>
@@ -391,11 +391,11 @@ const NgoOnboarding = () => {
             {step === 1 && (
               <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Name of the NGO *</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('name_of_the_ngo', language)}</label>
                   <input
                     type="text"
                     required
-                    placeholder="Enter NGO registered name"
+                    placeholder={t('enter_ngo_registered', language)}
                     value={formData.name}
                     onChange={e => setFormData({ ...formData, name: e.target.value })}
                     style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem' }}
@@ -403,11 +403,11 @@ const NgoOnboarding = () => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>NGO Official Email ID *</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('ngo_official_email_i', language)}</label>
                   <input
                     type="email"
                     required
-                    placeholder="ngo@domain.org"
+                    placeholder={t('ngo_domain_org', language)}
                     value={formData.email}
                     onChange={e => setFormData({ ...formData, email: e.target.value })}
                     style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem' }}
@@ -415,11 +415,11 @@ const NgoOnboarding = () => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Official Website URL *</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('official_website_url_1', language)}</label>
                   <input
                     type="text"
                     required
-                    placeholder="https://www.ngo.org"
+                    placeholder={t('https_www_ngo_org', language)}
                     value={formData.website}
                     onChange={e => setFormData({ ...formData, website: e.target.value })}
                     style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem' }}
@@ -427,11 +427,11 @@ const NgoOnboarding = () => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Headquarters Address *</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('headquarters_address_1', language)}</label>
                   <textarea
                     required
                     rows={2}
-                    placeholder="Full HQ postal address"
+                    placeholder={t('full_hq_postal_addre', language)}
                     value={formData.hqAddress}
                     onChange={e => setFormData({ ...formData, hqAddress: e.target.value })}
                     style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem', resize: 'vertical' }}
@@ -439,29 +439,29 @@ const NgoOnboarding = () => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>NGO Focus Domain *</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('ngo_focus_domain', language)}</label>
                   <select
                     value={formData.domain}
                     onChange={e => setFormData({ ...formData, domain: e.target.value })}
                     style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem', background: '#FFFFFF', outline: 'none' }}
                   >
-                    <option value="Environment">Environment</option>
-                    <option value="Education">Education</option>
-                    <option value="Healthcare">Healthcare</option>
-                    <option value="Disaster Relief">Disaster Relief</option>
-                    <option value="SDG 16">SDG 16: Peace & Justice</option>
-                    <option value="SDG 17">SDG 17: Partnerships for Goals</option>
-                    <option value="Other">Other (Specify below)</option>
+                    <option value="Environment">{t('filter_env', language)}</option>
+                    <option value="Education">{t('filter_edu', language)}</option>
+                    <option value="Healthcare">{t('healthcare_1', language)}</option>
+                    <option value="Disaster Relief">{t('interest_relief', language)}</option>
+                    <option value="SDG 16">{t('sdg_16_peace_justice', language)}</option>
+                    <option value="SDG 17">{t('sdg_17_partnerships_', language)}</option>
+                    <option value="Other">{t('other_specify_below', language)}</option>
                   </select>
                 </div>
 
                 {formData.domain === 'Other' && (
                   <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Specify Focus Domain *</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('specify_focus_domain', language)}</label>
                     <input
                       type="text"
                       required
-                      placeholder="e.g. Animal Welfare, Women Empowerment"
+                      placeholder={t('e_g_animal_welfare_w', language)}
                       value={formData.customDomain}
                       onChange={e => setFormData({ ...formData, customDomain: e.target.value })}
                       style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem' }}
@@ -471,7 +471,7 @@ const NgoOnboarding = () => {
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>NGO Darpan ID (exactly 21 characters) *</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('ngo_darpan_id_exactl', language)}</label>
                     <span style={{ fontSize: '0.75rem', fontWeight: 600, color: formData.darpanId.length === 21 ? '#2E7D32' : '#E67E22' }}>
                       {formData.darpanId.length} / 21
                     </span>
@@ -480,7 +480,7 @@ const NgoOnboarding = () => {
                     type="text"
                     required
                     maxLength={21}
-                    placeholder="e.g. KA/2026/0123456789012"
+                    placeholder={t('e_g_ka_2026_01234567', language)}
                     value={formData.darpanId}
                     onChange={e => setFormData({ ...formData, darpanId: e.target.value.toUpperCase() })}
                     style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem', fontFamily: 'monospace', letterSpacing: '0.05em' }}
@@ -510,26 +510,26 @@ const NgoOnboarding = () => {
             {/* Step 2: Primary Contact Person Details & OTP */}
             {step === 2 && (
               <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#1E293B', borderBottom: '1px solid #E2E8F0', paddingBottom: '0.5rem', margin: 0 }}>Primary Point of Contact</h3>
+                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#1E293B', borderBottom: '1px solid #E2E8F0', paddingBottom: '0.5rem', margin: 0 }}>{t('primary_point_of_con_1', language)}</h3>
                 
                 <div style={{ display: 'flex', gap: '1rem' }}>
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Full Name *</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('full_name_2', language)}</label>
                     <input
                       type="text"
                       required
-                      placeholder="POC Full Name"
+                      placeholder={t('poc_full_name_2', language)}
                       value={formData.pocName}
                       onChange={e => setFormData({ ...formData, pocName: e.target.value })}
                       style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem' }}
                     />
                   </div>
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Designation *</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('designation_1', language)}</label>
                     <input
                       type="text"
                       required
-                      placeholder="e.g. Director, Manager"
+                      placeholder={t('e_g_director_manager', language)}
                       value={formData.pocDesignation}
                       onChange={e => setFormData({ ...formData, pocDesignation: e.target.value })}
                       style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem' }}
@@ -538,12 +538,12 @@ const NgoOnboarding = () => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Phone Number *</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('phone_number_2', language)}</label>
                   <input
                     type="text"
                     required
                     maxLength={10}
-                    placeholder="10-digit phone number"
+                    placeholder={t('10_digit_phone_numbe', language)}
                     value={formData.pocPhone}
                     onChange={e => setFormData({ ...formData, pocPhone: e.target.value.replace(/\D/g, '') })}
                     style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem' }}
@@ -553,13 +553,13 @@ const NgoOnboarding = () => {
                 {/* POC Email Verification Block */}
                 <div style={{ background: '#F8FAFC', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid #E2E8F0', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>POC Professional Email *</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('poc_professional_ema_1', language)}</label>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
                       <input
                         type="email"
                         required
                         disabled={otpVerified}
-                        placeholder="poc.name@ngo.org"
+                        placeholder={t('poc_name_ngo_org', language)}
                         value={formData.pocEmail}
                         onChange={e => setFormData({ ...formData, pocEmail: e.target.value })}
                         style={{ flex: 1, padding: '0.6rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem', background: otpVerified ? '#E2E8F0' : '#FFFFFF' }}
@@ -578,12 +578,12 @@ const NgoOnboarding = () => {
 
                   {otpSent && !otpVerified && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', animation: 'fadeIn 0.2s ease-out' }}>
-                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>Enter 6-Digit OTP *</label>
+                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>{t('enter_6_digit_otp_1', language)}</label>
                       <div style={{ display: 'flex', gap: '0.5rem' }}>
                         <input
                            type="text"
                            maxLength={6}
-                           placeholder="e.g. 123456"
+                           placeholder={t('e_g_123456_1', language)}
                            value={formData.otp}
                            onChange={e => setFormData({ ...formData, otp: e.target.value.replace(/\D/g, '') })}
                            style={{ flex: 1, padding: '0.5rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem', textAlign: 'center', letterSpacing: '0.2em', fontWeight: 700 }}
@@ -638,12 +638,12 @@ const NgoOnboarding = () => {
                 }}>
                   <Shield size={18} style={{ color: '#4A6741', flexShrink: 0 }} />
                   <div>
-                    <strong>Secure Login Setup:</strong> Set a 6-digit PIN which will be required along with your GC-NGO ID to access your portal in future sessions.
+                    <strong>{t('secure_login_setup_1', language)}</strong> Set a 6-digit PIN which will be required along with your GC-NGO ID to access your portal in future sessions.
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Enter 6-Digit PIN *</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('enter_6_digit_pin_1', language)}</label>
                   <input
                     type="password"
                     maxLength={6}
@@ -656,7 +656,7 @@ const NgoOnboarding = () => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Confirm 6-Digit PIN *</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('confirm_6_digit_pin_1', language)}</label>
                   <input
                     type="password"
                     maxLength={6}
@@ -700,14 +700,14 @@ const NgoOnboarding = () => {
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
                     <Shield size={20} style={{ color: '#F39C12' }} />
-                    <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#1E293B' }}>DigiLocker Verified Gateway</h3>
+                    <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#1E293B' }}>{t('digilocker_verified__1', language)}</h3>
                   </div>
                   <p style={{ fontSize: '0.8rem', color: '#475569', margin: '0 0 1rem 0', lineHeight: 1.45 }}>
-                    To finalize NGO registration, verify the identity of primary contact person <strong>{formData.pocName}</strong> via DigiLocker database. Enter their <strong>12-digit Aadhaar number</strong>.
+                    To finalize NGO registration, verify the identity of primary contact person <strong>{formData.pocName}</strong> {t('via_digilocker_datab_1', language)} <strong>{t('12_digit_aadhaar_num_1', language)}</strong>.
                   </p>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Primary Contact Aadhaar Number *</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('primary_contact_aadh_1', language)}</label>
                     <input
                       type="text"
                       required

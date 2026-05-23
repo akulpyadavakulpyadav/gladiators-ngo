@@ -61,7 +61,7 @@ const LandingPage = () => {
       {/* SDG Badge */}
       <div className="sdg-badge animate-fade-in" style={{ marginBottom: '2rem', position: 'relative', zIndex: 1 }}>
         <span>🌱</span>
-        <span>SDG 16 &amp; 17 · GLADICONNECT</span>
+        <span>{t('sdg_16_amp_17_gladic', language)}</span>
       </div>
 
       {/* Logo — aesthetically sized, centered, glow effect */}
