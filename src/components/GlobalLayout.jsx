@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import {
   UserCircle, Phone, Globe, LogOut, ChevronDown, X, Heart, Building2,
-  Briefcase, ShieldCheck, Check, Edit3, Save, User, MapPin, Hash, UserCheck, Trash2
+  Briefcase, ShieldCheck, Check, Edit3, Save, User, MapPin, Hash, UserCheck, Trash2, Home, ArrowLeft
 } from 'lucide-react';
 import { t } from '../utils/translations';
 
@@ -93,6 +93,22 @@ const GlobalLayout = () => {
     }
   };
 
+  const handleBack = () => {
+    if (isAuthenticated && user?.role && location.pathname.startsWith(`/${user.role}/dashboard`)) {
+      setShowLogoutConfirm(true);
+    } else {
+      navigate(-1);
+    }
+  };
+
+  const handleHome = () => {
+    if (isAuthenticated && user?.role) {
+      navigate(`/${user.role}/dashboard`);
+    } else {
+      navigate('/');
+    }
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <nav className="glass-panel" style={{
@@ -147,6 +163,38 @@ const GlobalLayout = () => {
 
         {/* Right side */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <button
+            onClick={handleBack}
+            style={{
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem',
+              background: 'transparent', color: '#475569', border: '1px solid #E2E8F0',
+              borderRadius: 'var(--radius-md)', padding: '0.5rem 0.9rem', fontWeight: 600, fontSize: '0.8rem',
+              cursor: 'pointer', transition: 'all 0.2s ease', outline: 'none'
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = '#F1F5F9'; e.currentTarget.style.color = '#1E293B'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#475569'; }}
+            title={t('back', language)}
+          >
+            <ArrowLeft size={15} />
+            <span className="hidden-mobile">{t('back', language)}</span>
+          </button>
+
+          <button
+            onClick={handleHome}
+            style={{
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem',
+              background: '#F8FAFC', color: '#1E293B', border: '1px solid #E2E8F0',
+              borderRadius: 'var(--radius-md)', padding: '0.5rem 0.9rem', fontWeight: 600, fontSize: '0.8rem',
+              cursor: 'pointer', transition: 'all 0.2s ease', outline: 'none'
+            }}
+            onMouseEnter={e => e.currentTarget.style.background = '#F1F5F9'}
+            onMouseLeave={e => e.currentTarget.style.background = '#F8FAFC'}
+            title={t('home', language)}
+          >
+            <Home size={15} />
+            <span className="hidden-mobile">{t('home', language)}</span>
+          </button>
+
           {isAuthenticated && (
             <button
               onClick={() => setShowLogoutConfirm(true)}
