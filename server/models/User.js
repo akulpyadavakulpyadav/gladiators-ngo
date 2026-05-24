@@ -38,6 +38,7 @@ const userSchema = new mongoose.Schema({
   headquarters: String,
   website: String,
   domain: String,
+  about: String,
   
   // Company specific
   cin: String,
