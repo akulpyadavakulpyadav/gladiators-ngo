@@ -22,7 +22,8 @@ const NgoProfile = () => {
     pocName: user?.pocName || '',
     pocPhone: user?.pocPhone || '',
     pocDesignation: user?.pocDesignation || '',
-    pocEmail: user?.pocEmail || ''
+    pocEmail: user?.pocEmail || '',
+    about: user?.about || ''
   });
 
   const [isCustomDomain, setIsCustomDomain] = useState(
@@ -118,7 +119,8 @@ const NgoProfile = () => {
       pocName: formData.pocName,
       pocPhone: formData.pocPhone,
       pocDesignation: formData.pocDesignation,
-      pocEmail: formData.pocEmail
+      pocEmail: formData.pocEmail,
+      about: formData.about
     });
 
     setIsEditing(false);
@@ -281,7 +283,8 @@ const NgoProfile = () => {
                       pocName: user.pocName || '',
                       pocPhone: user.pocPhone || '',
                       pocDesignation: user.pocDesignation || '',
-                      pocEmail: user.pocEmail || ''
+                      pocEmail: user.pocEmail || '',
+                      about: user.about || ''
                     });
                     setIsCustomDomain(!standardDomains.includes(user.domain));
                     setIsEditing(true);
@@ -390,6 +393,26 @@ const NgoProfile = () => {
                     <div style={{ padding: '0.85rem 1rem', background: '#F8FAFC', borderRadius: 'var(--radius-sm)', border: '1px solid #E2E8F0', color: '#1E293B', fontWeight: 600, display: 'flex', alignItems: 'flex-start', gap: '0.5rem', lineHeight: 1.5 }}>
                       <MapPin size={16} style={{ color: '#64748B', marginTop: '0.15rem', flexShrink: 0 }} />
                       <span style={{ whiteSpace: 'pre-wrap' }}>{user.headquarters}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* About NGO */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                  <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>About NGO</label>
+                  {isEditing ? (
+                    <textarea
+                      name="about"
+                      className="form-input"
+                      rows="3"
+                      style={{ color: '#1E293B', background: '#FFFFFF', border: '1.5px solid #CBD5E1', minHeight: 80, resize: 'vertical', padding: '0.6rem 0.75rem' }}
+                      value={formData.about}
+                      onChange={handleChange}
+                      placeholder="Write about your NGO..."
+                    />
+                  ) : (
+                    <div style={{ padding: '0.85rem 1rem', background: '#F8FAFC', borderRadius: 'var(--radius-sm)', border: '1px solid #E2E8F0', color: '#1E293B', fontWeight: 600, display: 'flex', alignItems: 'flex-start', gap: '0.5rem', lineHeight: 1.5 }}>
+                      <span style={{ whiteSpace: 'pre-wrap' }}>{user.about || 'No information provided.'}</span>
                     </div>
                   )}
                 </div>
