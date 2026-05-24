@@ -3,7 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { t } from '../../utils/translations';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Phone, MapPin, Edit3, ArrowLeft, Save, LogOut, Building2, Check, Globe, Briefcase } from 'lucide-react';
+import { Building2, Mail, Phone, MapPin, Globe, User, Shield, Hash, ArrowLeft, Save, Edit3, LogOut, Check, X, Briefcase } from 'lucide-react';
 import ProfilePhotoUploader from '../../components/ProfilePhotoUploader';
 
 const NgoProfile = () => {
