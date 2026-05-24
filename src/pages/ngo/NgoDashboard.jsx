@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Camera, Users, WifiOff, Wifi, IndianRupee, MessageSquare, Plus, Save, Building2 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
+import NgoProfile from './NgoProfile';
+import CollabHub from '../../components/chat/CollabHub';
 import { t } from '../../utils/translations';
 
 /* ─── Impact Profile ─── */
@@ -269,25 +271,7 @@ const FinanceSuite = () => {
   );
 };
 
-/* ─── Collab Hub ─── */
-const CollabHub = () => {
-  const { language } = useLanguage();
-  return (
-    <div className="animate-fade-in glass-card" style={{ padding: '3rem 2rem', textAlign: 'center' }}>
-      <div style={{ 
-        width: 72, height: 72, borderRadius: '50%', background: 'rgba(0, 0, 0, 0.05)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem'
-      }}>
-        <MessageSquare size={32} style={{ color: 'var(--color-primary)' }} />
-      </div>
-      <h2 className="text-gradient" style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{t('collab_hub_title', language)}</h2>
-      <p style={{ fontSize: '0.95rem', maxWidth: 480, margin: '0 auto 1.5rem' }}>
-        {t('collab_hub_desc', language)}
-      </p>
-      <button className="btn btn-primary">{t('explore_partnerships', language)}</button>
-    </div>
-  );
-};
+/* ─── Collab Hub Placeholder removed, using imported component ─── */
 
 /* ─── NGO Dashboard ─── */
 const NgoDashboard = () => {
