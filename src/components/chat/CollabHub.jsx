@@ -201,11 +201,12 @@ const CollabHub = () => {
                 </div>
                 {unreadCounts[contact._id] > 0 && (
                   <div style={{
-                    background: '#2E7D32', color: 'white', borderRadius: '50%',
-                    minWidth: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: '0.7rem', fontWeight: 'bold', padding: '0 6px'
+                    background: '#EF4444', color: 'white', borderRadius: '50%',
+                    minWidth: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: '0.7rem', fontWeight: 'bold', padding: '0 4px',
+                    boxShadow: '0 2px 4px rgba(239, 68, 68, 0.3)'
                   }}>
-                    {unreadCounts[contact._id]}
+                    {unreadCounts[contact._id] > 99 ? '99+' : unreadCounts[contact._id]}
                   </div>
                 )}
               </div>

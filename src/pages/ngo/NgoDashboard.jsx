@@ -324,11 +324,14 @@ const NgoDashboard = () => {
             {tab.label}
             {tab.badge > 0 && (
               <span style={{
-                position: 'absolute', top: '-4px', right: '-4px',
-                background: '#EF4444', color: 'white', fontSize: '0.65rem',
-                fontWeight: 'bold', padding: '0.1rem 0.35rem', borderRadius: '10px'
+                position: 'absolute', top: '-6px', right: '-6px',
+                background: '#EF4444', color: 'white', fontSize: '0.7rem',
+                fontWeight: 'bold', minWidth: '20px', height: '20px',
+                borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: '0 2px 4px rgba(239, 68, 68, 0.3)', border: '2px solid #F8FAFC',
+                padding: '0 4px'
               }}>
-                {tab.badge}
+                {tab.badge > 99 ? '99+' : tab.badge}
               </span>
             )}
           </button>
