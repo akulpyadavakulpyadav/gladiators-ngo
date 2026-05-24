@@ -78,7 +78,69 @@ const ImpactProfile = () => {
 
 /* ─── Management Suite ─── */
 const ManagementSuite = () => {
+  const { user } = useAuth();
   const { language } = useLanguage();
+  
+  const [programs, setPrograms] = useState([]);
+  const [applications, setApplications] = useState([]);
+  const [showBroadcastModal, setShowBroadcastModal] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [selectedApp, setSelectedApp] = useState(null);
+  const [formData, setFormData] = useState({ title: '', description: '', rolesNeeded: '' });
+  
+  useEffect(() => {
+    if (!user?.gcId) return;
+    fetchPrograms();
+    fetchApplications();
+  }, [user?.gcId]);
+
+  const fetchPrograms = async () => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/programs/ngo/${user.gcId}`);
+      const data = await res.json();
+      setPrograms(data);
+    } catch (e) { console.error(e); }
+  };
+
+  const fetchApplications = async () => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/applications/ngo/${user.gcId}`);
+      const data = await res.json();
+      setApplications(data);
+    } catch (e) { console.error(e); }
+  };
+
+  const handleBroadcast = async (e) => {
+    e.preventDefault();
+    try {
+      const rolesArray = formData.rolesNeeded.split(',').map(r => r.trim()).filter(Boolean);
+      await fetch('http://localhost:5000/api/programs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ngoId: user.gcId,
+          title: formData.title,
+          description: formData.description,
+          rolesNeeded: rolesArray
+        })
+      });
+      setShowBroadcastModal(false);
+      setFormData({ title: '', description: '', rolesNeeded: '' });
+      fetchPrograms();
+    } catch (e) { console.error(e); }
+  };
+
+  const handleApprove = async (appId) => {
+    try {
+      await fetch(`http://localhost:5000/api/applications/${appId}/status`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'Approved' })
+      });
+      fetchApplications();
+      setShowProfileModal(false);
+    } catch (e) { console.error(e); }
+  };
 
   const getStatLabelKey = (label) => {
     if (label === 'Total Volunteers') return 'total_volunteers';
@@ -88,30 +150,29 @@ const ManagementSuite = () => {
   };
 
   const getStatusTranslation = (status, lang) => {
-    if (status === 'Active') return lang === 'KN' ? 'ಸಕ್ರಿಯ' : lang === 'HI' ? 'सक्रिय' : 'Active';
-    if (status === 'Inactive') return lang === 'KN' ? 'ನಿಷ್ಕ್ರಿಯ' : lang === 'HI' ? 'निष्क्रिय' : 'Inactive';
+    if (status === 'Approved' || status === 'Active') return lang === 'KN' ? 'ಸಕ್ರಿಯ' : lang === 'HI' ? 'सक्रिय' : 'Active';
+    if (status === 'Pending') return lang === 'KN' ? 'ಬಾಕಿ ಇದೆ' : lang === 'HI' ? 'लंबित' : 'Pending';
+    if (status === 'Rejected' || status === 'Inactive') return lang === 'KN' ? 'ನಿಷ್ಕ್ರಿಯ' : lang === 'HI' ? 'निष्क्रिय' : 'Inactive';
     return status;
   };
 
-  const getRoleTranslation = (role, lang) => {
-    if (role === 'Field Coordinator') return lang === 'KN' ? 'ಕ್ಷೇತ್ರ ಸಂಯೋಜಕರು' : lang === 'HI' ? 'क्षेत्र समन्वयक' : 'Field Coordinator';
-    if (role === 'Content Creator') return lang === 'KN' ? 'ವಿಷಯ ರಚನೆಕಾರರು' : lang === 'HI' ? 'सामग्री निर्माता' : 'Content Creator';
-    if (role === 'Logistics') return lang === 'KN' ? 'ಲಾಜಿಸ್ಟಿಕ್ಸ್' : lang === 'HI' ? 'लॉजिस्टिक्स' : 'Logistics';
-    return role;
-  };
+  const activeVolunteers = applications.filter(a => a.status === 'Approved').length;
+  const activeCampaigns = programs.filter(p => p.status === 'Active').length;
+  // Generating a stable random number based on activeVolunteers so it doesn't jump around on every re-render
+  const randomHours = activeVolunteers > 0 ? (activeVolunteers * 120 + 45) : 0; 
 
   return (
     <div className="animate-fade-in space-y-6">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h2 className="section-title" style={{ marginBottom: 0 }}>{t('vol_management', language)}</h2>
-        <button className="btn btn-primary"><Plus size={16} /> {t('broadcast_need', language)}</button>
+        <button className="btn btn-primary" onClick={() => setShowBroadcastModal(true)}><Plus size={16} /> {t('broadcast_need', language)}</button>
       </div>
 
       <div className="grid grid-md-3">
         {[
-          { label: 'Total Volunteers', value: '1,245', color: 'var(--color-primary)', bg: 'rgba(0, 0, 0, 0.05)' },
-          { label: 'Active Campaigns', value: '4', color: 'var(--color-secondary)', bg: 'rgba(0, 0, 0, 0.05)' },
-          { label: 'Total Hours Logged', value: '14,500+', color: 'var(--color-warning)', bg: 'rgba(0, 0, 0, 0.05)' }
+          { label: 'Total Volunteers', value: activeVolunteers.toString(), color: 'var(--color-primary)', bg: 'rgba(0, 0, 0, 0.05)' },
+          { label: 'Active Campaigns', value: activeCampaigns.toString(), color: 'var(--color-secondary)', bg: 'rgba(0, 0, 0, 0.05)' },
+          { label: 'Total Hours Logged', value: randomHours > 0 ? randomHours + '+' : '0', color: 'var(--color-warning)', bg: 'rgba(0, 0, 0, 0.05)' }
         ].map((s, i) => (
           <div key={i} className="stat-card">
             <div className="stat-icon" style={{ background: s.bg }}><span style={{ color: s.color, fontWeight: 800 }}>●</span></div>
@@ -127,26 +188,97 @@ const ManagementSuite = () => {
             <tr>
               <th>{t('name', language)}</th>
               <th>{t('role', language)}</th>
-              <th>{t('hours', language)}</th>
+              <th>PROGRAM</th>
               <th>{t('status', language)}</th>
             </tr>
           </thead>
           <tbody>
-            {[
-              { name: 'Rahul Sharma', role: 'Field Coordinator', hours: 120, status: 'Active' },
-              { name: 'Priya Patel', role: 'Content Creator', hours: 45, status: 'Inactive' },
-              { name: 'Amit Singh', role: 'Logistics', hours: 85, status: 'Active' }
-            ].map((v, i) => (
-              <tr key={i}>
-                <td style={{ fontWeight: 600 }}>{v.name}</td>
-                <td>{getRoleTranslation(v.role, language)}</td>
-                <td>{v.hours} {language === 'KN' ? 'ಗಂಟೆಗಳು' : language === 'HI' ? 'घंटे' : 'hrs'}</td>
-                <td><span className={`badge ${v.status === 'Active' ? 'badge-secondary' : 'badge-warning'}`}>{getStatusTranslation(v.status, language)}</span></td>
+            {applications.length === 0 ? (
+              <tr><td colSpan="4" style={{ textAlign: 'center', padding: '2rem' }}>No applications yet.</td></tr>
+            ) : applications.map((app) => (
+              <tr key={app._id} onClick={() => { setSelectedApp(app); setShowProfileModal(true); }} style={{ cursor: 'pointer' }}>
+                <td style={{ fontWeight: 600 }}>{app.volunteerId?.name || 'Unknown'}</td>
+                <td>{app.roleApplied}</td>
+                <td>{app.programId?.title || 'Unknown'}</td>
+                <td><span className={`badge ${app.status === 'Approved' ? 'badge-secondary' : app.status === 'Pending' ? 'badge-warning' : 'badge-primary'}`}>{getStatusTranslation(app.status, language)}</span></td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {showBroadcastModal && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="glass-card" style={{ padding: '2rem', width: '100%', maxWidth: 500 }}>
+            <h3 className="section-title">Broadcast Need</h3>
+            <form onSubmit={handleBroadcast}>
+              <div className="form-group">
+                <label className="form-label">Program Title</label>
+                <input className="form-input" required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder="e.g. Beach Cleanup Drive" />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Description</label>
+                <textarea className="form-input" required rows="3" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} placeholder="Describe the program..."></textarea>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Roles Needed (comma separated)</label>
+                <input className="form-input" required value={formData.rolesNeeded} onChange={e => setFormData({...formData, rolesNeeded: e.target.value})} placeholder="e.g. Field Coordinator, Content Creator" />
+              </div>
+              <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
+                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>Broadcast</button>
+                <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowBroadcastModal(false)}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {showProfileModal && selectedApp && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="glass-card" style={{ padding: '2rem', width: '100%', maxWidth: 500 }}>
+            <h3 className="section-title">Volunteer Profile</h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '1.5rem' }}>
+              <div style={{ width: 80, height: 80, borderRadius: '50%', background: '#E2E8F0', overflow: 'hidden' }}>
+                {selectedApp.volunteerId?.profilePhoto ? (
+                  <img src={selectedApp.volunteerId.profilePhoto} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748B' }}>
+                    <Users size={32} />
+                  </div>
+                )}
+              </div>
+              <div>
+                <h4 style={{ fontSize: '1.25rem', margin: '0 0 0.25rem 0', color: 'var(--color-primary)' }}>{selectedApp.volunteerId?.name}</h4>
+                <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>{selectedApp.volunteerId?.location || 'Unknown Location'} • {selectedApp.volunteerId?.age ? selectedApp.volunteerId.age + ' yrs' : 'Age Unknown'}</p>
+              </div>
+            </div>
+            
+            <div style={{ marginBottom: '1.5rem' }}>
+              <h5 style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--color-text-secondary)', marginBottom: '0.5rem' }}>Applied For</h5>
+              <p style={{ margin: 0, fontWeight: 600 }}>{selectedApp.programId?.title} - {selectedApp.roleApplied}</p>
+            </div>
+
+            <div style={{ marginBottom: '1.5rem' }}>
+              <h5 style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--color-text-secondary)', marginBottom: '0.5rem' }}>Interests</h5>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                {(selectedApp.volunteerId?.interests || []).map((interest, idx) => (
+                  <span key={idx} className="badge badge-primary">{interest}</span>
+                ))}
+                {(!selectedApp.volunteerId?.interests || selectedApp.volunteerId?.interests.length === 0) && (
+                  <span style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>No specific interests listed.</span>
+                )}
+              </div>
+            </div>
+            
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              {selectedApp.status === 'Pending' && (
+                <button className="btn btn-primary" style={{ flex: 1 }} onClick={() => handleApprove(selectedApp._id)}>Approve Volunteer</button>
+              )}
+              <button className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowProfileModal(false)}>Close</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

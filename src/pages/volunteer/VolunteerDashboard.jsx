@@ -1,14 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Search, MapPin, Target, Calendar, Award, Clock } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { t } from '../../utils/translations';
 
-/* ─── NGO Directory ─── */
+/* ─── Program Feed ─── */
 const DirectorySearch = () => {
   const { user } = useAuth();
   const { language } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
+  const [programs, setPrograms] = useState([]);
+  const [showApplyModal, setShowApplyModal] = useState(false);
+  const [selectedProgram, setSelectedProgram] = useState(null);
+  const [selectedRole, setSelectedRole] = useState('');
+  const [applyMessage, setApplyMessage] = useState('');
+
   const getInitialDomain = () => {
     const interests = Array.isArray(user?.interests)
       ? user.interests
@@ -20,49 +26,17 @@ const DirectorySearch = () => {
   };
   const [domainFilter, setDomainFilter] = useState(getInitialDomain());
 
-  const ngos = [
-    // Environment
-    { id: 1, name: 'Global Green Initiative', domain: 'Environment', location: 'Bangalore', verified: true },
-    { id: 2, name: 'OceanSavers Network', domain: 'Environment', location: 'Chennai', verified: true },
-    { id: 3, name: 'GreenSpace Alliance', domain: 'Environment', location: 'Mysore', verified: true },
-    { id: 4, name: 'EarthRestore Foundation', domain: 'Environment', location: 'Kochi', verified: false },
-    { id: 5, name: 'CanopyProtection Trust', domain: 'Environment', location: 'Pune', verified: true },
-    
-    // Education
-    { id: 6, name: 'EduCare Foundation', domain: 'Education', location: 'Delhi', verified: true },
-    { id: 7, name: 'LiteracyForAll Trust', domain: 'Education', location: 'Hyderabad', verified: true },
-    { id: 8, name: 'SparkMind Academy', domain: 'Education', location: 'Mumbai', verified: false },
-    { id: 9, name: 'FutureLeaders NGO', domain: 'Education', location: 'Kolkata', verified: true },
-    { id: 10, name: 'Sharda Vidya Mandir', domain: 'Education', location: 'Bangalore', verified: true },
-    
-    // Health
-    { id: 11, name: 'HealthFirst NGO', domain: 'Health', location: 'Mumbai', verified: false },
-    { id: 12, name: 'MedLife Foundation', domain: 'Health', location: 'Bangalore', verified: true },
-    { id: 13, name: 'CarePlus Clinic NGO', domain: 'Health', location: 'Ahmedabad', verified: true },
-    { id: 14, name: 'HealIndia Society', domain: 'Health', location: 'Delhi', verified: true },
-    { id: 15, name: 'Aarogya Seva', domain: 'Health', location: 'Pune', verified: false },
+  useEffect(() => {
+    fetchPrograms();
+  }, []);
 
-    // Disaster Relief
-    { id: 16, name: 'RapidResponse India', domain: 'Disaster Relief', location: 'Delhi', verified: true },
-    { id: 17, name: 'SankatMochan Foundation', domain: 'Disaster Relief', location: 'Mumbai', verified: true },
-    { id: 18, name: 'RescueForce NGO', domain: 'Disaster Relief', location: 'Bangalore', verified: false },
-    { id: 19, name: 'AapdaMitra Society', domain: 'Disaster Relief', location: 'Kochi', verified: true },
-    { id: 20, name: 'RedCross Relief Alliance', domain: 'Disaster Relief', location: 'Chennai', verified: true },
-
-    // Animal Welfare
-    { id: 21, name: 'Paws & Claws Sanctuary', domain: 'Animal Welfare', location: 'Bangalore', verified: true },
-    { id: 22, name: 'Jeev Daya Trust', domain: 'Animal Welfare', location: 'Ahmedabad', verified: true },
-    { id: 23, name: 'FaunaShield Alliance', domain: 'Animal Welfare', location: 'Pune', verified: false },
-    { id: 24, name: 'WildlifeRescue India', domain: 'Animal Welfare', location: 'Delhi', verified: true },
-    { id: 25, name: 'StrayCare Foundation', domain: 'Animal Welfare', location: 'Mumbai', verified: true },
-
-    // Rural Development
-    { id: 26, name: 'Gram Vikas Samiti', domain: 'Rural Development', location: 'Pune', verified: true },
-    { id: 27, name: 'VillageProgress Trust', domain: 'Rural Development', location: 'Bangalore', verified: true },
-    { id: 28, name: 'KrishiSahay NGO', domain: 'Rural Development', location: 'Hyderabad', verified: false },
-    { id: 29, name: 'RuralElevate Foundation', domain: 'Rural Development', location: 'Kolkata', verified: true },
-    { id: 30, name: 'GraminSeva Mandir', domain: 'Rural Development', location: 'Delhi', verified: true }
-  ];
+  const fetchPrograms = async () => {
+    try {
+      const res = await fetch('http://localhost:5000/api/programs');
+      const data = await res.json();
+      setPrograms(data);
+    } catch (e) { console.error(e); }
+  };
 
   const getDomainTranslationKey = (domain) => {
     if (domain === 'Environment') return 'filter_env';
@@ -74,11 +48,13 @@ const DirectorySearch = () => {
     return domain;
   };
 
-  const filtered = ngos.filter(ngo => {
-    const matchesSearch = ngo.name.toLowerCase().includes(searchTerm.toLowerCase());
-    if (domainFilter === 'All') {
-      return matchesSearch;
-    }
+  const filtered = programs.filter(program => {
+    const ngo = program.ngoId;
+    if (!ngo) return false;
+    const matchesSearch = program.title.toLowerCase().includes(searchTerm.toLowerCase()) || ngo.name.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    if (domainFilter === 'All') return matchesSearch;
+    
     if (domainFilter === 'My Interests') {
       const interests = Array.isArray(user?.interests) 
         ? user.interests 
@@ -87,6 +63,35 @@ const DirectorySearch = () => {
     }
     return ngo.domain === domainFilter && matchesSearch;
   });
+
+  const handleApply = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch('http://localhost:5000/api/applications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          programId: selectedProgram._id,
+          ngoId: selectedProgram.ngoId._id,
+          volunteerId: user.gcId,
+          roleApplied: selectedRole
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setApplyMessage(data.message || 'Error applying');
+      } else {
+        setApplyMessage('Application submitted successfully!');
+        setTimeout(() => {
+          setShowApplyModal(false);
+          setApplyMessage('');
+          setSelectedRole('');
+        }, 1500);
+      }
+    } catch (e) {
+      setApplyMessage('Network error');
+    }
+  };
 
   return (
     <div className="animate-fade-in space-y-6">
@@ -124,27 +129,73 @@ const DirectorySearch = () => {
         </div>
       </div>
 
-      {/* NGO Cards */}
+      {/* Program Cards */}
       <div className="grid grid-md-3">
-        {filtered.map(ngo => (
-          <div key={ngo.id} className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
+        {filtered.length === 0 ? (
+          <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '3rem', color: 'var(--color-text-secondary)' }}>
+            No programs available at the moment.
+          </div>
+        ) : filtered.map(program => (
+          <div key={program._id} className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--color-primary)', lineHeight: 1.3, margin: 0 }}>{ngo.name}</h3>
-              {ngo.verified && <span className="badge badge-secondary" style={{ flexShrink: 0, marginLeft: '0.5rem' }}>{t('badge_verified', language)}</span>}
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--color-primary)', lineHeight: 1.3, margin: 0 }}>{program.title}</h3>
+            </div>
+            
+            <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', marginBottom: '1rem', flex: 1 }}>
+              {program.description}
+            </p>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', color: 'var(--color-text-primary)', marginBottom: '0.35rem', fontWeight: 600 }}>
+              <Award size={14} /> {program.ngoId?.name}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', color: 'var(--color-text-secondary)', marginBottom: '0.35rem' }}>
-              <Target size={14} /> {t(getDomainTranslationKey(ngo.domain), language)}
+              <Target size={14} /> {t(getDomainTranslationKey(program.ngoId?.domain), language)}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', color: 'var(--color-text-secondary)', marginBottom: '1.25rem' }}>
-              <MapPin size={14} /> {ngo.location === 'Bangalore' ? (language === 'KN' ? 'ಬೆಂಗಳೂರು' : language === 'HI' ? 'बेंगलुरु' : 'Bangalore') : ngo.location}
+              <MapPin size={14} /> {program.ngoId?.location === 'Bangalore' ? (language === 'KN' ? 'ಬೆಂಗಳೂರು' : language === 'HI' ? 'बेंगलुरु' : 'Bangalore') : program.ngoId?.location}
             </div>
             <div style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid var(--color-border)', display: 'flex', gap: '0.5rem' }}>
-              <button className="btn btn-secondary" style={{ flex: 1 }}>{t('btn_connect', language)}</button>
-              <button className="btn btn-outline">{t('btn_profile', language)}</button>
+              <button className="btn btn-secondary" style={{ flex: 1 }} onClick={() => { setSelectedProgram(program); setSelectedRole(''); setApplyMessage(''); setShowApplyModal(true); }}>
+                {t('btn_connect', language)}
+              </button>
             </div>
           </div>
         ))}
       </div>
+
+      {showApplyModal && selectedProgram && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="glass-card" style={{ padding: '2rem', width: '100%', maxWidth: 500 }}>
+            <h3 className="section-title">Apply for Program</h3>
+            <p style={{ marginBottom: '1.5rem', color: 'var(--color-text-secondary)', fontSize: '0.9rem' }}>
+              You are applying to <strong>{selectedProgram.title}</strong> hosted by <strong>{selectedProgram.ngoId?.name}</strong>.
+            </p>
+            
+            <form onSubmit={handleApply}>
+              <div className="form-group">
+                <label className="form-label">Select Role</label>
+                <select className="form-input" required value={selectedRole} onChange={e => setSelectedRole(e.target.value)}>
+                  <option value="" disabled>Select a role...</option>
+                  {selectedProgram.rolesNeeded.map((role, idx) => (
+                    <option key={idx} value={role}>{role}</option>
+                  ))}
+                </select>
+              </div>
+
+              {applyMessage && (
+                <div style={{ padding: '0.75rem', background: applyMessage.includes('error') || applyMessage.includes('already') ? '#FEE2E2' : '#DCFCE7', color: applyMessage.includes('error') || applyMessage.includes('already') ? '#991B1B' : '#166534', borderRadius: '8px', fontSize: '0.85rem', marginBottom: '1rem', fontWeight: 600 }}>
+                  {applyMessage}
+                </div>
+              )}
+              
+              <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
+                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>Submit Application</button>
+                <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowApplyModal(false)}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
