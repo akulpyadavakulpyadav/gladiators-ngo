@@ -182,13 +182,15 @@ const LoginPage = () => {
                 className="form-input"
                 style={{ 
                   paddingLeft: '2.5rem', 
+                  paddingRight: '2.5rem',
                   borderColor: '#CBD5E1', 
                   borderWidth: '2px', 
                   background: '#FFFFFF', 
                   color: '#1E293B',
                   fontWeight: 600,
                   textTransform: 'uppercase',
-                  letterSpacing: '0.05em'
+                  letterSpacing: '0.05em',
+                  textAlign: 'center'
                 }}
                 placeholder={`e.g. ${getPrefix()}123456`}
                 value={gcId}
@@ -210,12 +212,14 @@ const LoginPage = () => {
                 maxLength={6}
                 style={{ 
                   paddingLeft: '2.5rem', 
+                  paddingRight: '2.5rem',
                   borderColor: '#CBD5E1', 
                   borderWidth: '2px', 
                   background: '#FFFFFF', 
                   color: '#1E293B',
                   fontWeight: 700,
-                  letterSpacing: '0.2em'
+                  letterSpacing: '0.2em',
+                  textAlign: 'center'
                 }}
                 placeholder="••••••"
                 value={pin}

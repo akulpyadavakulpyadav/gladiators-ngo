@@ -543,6 +543,12 @@ a:hover { color: var(--color-primary-light); }
   width: 100%;
 }
 
+@media (min-width: 1024px) {
+  .grid-md-3-custom {
+    grid-template-columns: 320px 1fr;
+  }
+}
+
 .profile-sidebar {
   position: relative;
   width: 100%;
@@ -588,38 +594,6 @@ a:hover { color: var(--color-primary-light); }
   width: 100%;
 }
 
-@media (min-width: 1024px) {
-  .profile-summary-container {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    gap: 2rem;
-  }
-
-  .profile-summary-info {
-    flex-direction: row;
-    align-items: center;
-    text-align: left;
-    gap: 1.5rem;
-    width: auto;
-    flex: 2;
-  }
-
-  .profile-summary-info-text {
-    align-items: flex-start;
-  }
-
-  .profile-summary-stats {
-    width: auto;
-    flex: 2;
-    margin-bottom: 0 !important;
-  }
-
-  .profile-summary-actions {
-    width: auto;
-    flex: 1;
-    max-width: 220px;
-  }
-}
+/* Removed horizontal desktop layout for profile summary to keep it as a vertical sidebar */
 
 
