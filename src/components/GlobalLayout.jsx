@@ -267,8 +267,10 @@ const GlobalLayout = () => {
           display: 'flex',
           alignItems: 'center',
           gap: '1rem',
-          animation: 'fadeIn 0.3s ease-out'
-        }}>
+          animation: 'fadeIn 0.3s ease-out',
+          cursor: 'pointer'
+        }}
+        onClick={() => navigate(`/${user.role}/profile`)}>
           {/* Left Column: Avatar */}
           <div style={{ position: 'relative' }}>
             <button
