@@ -17,9 +17,13 @@ const ImpactProfile = () => {
           <div style={{
             width: 100, height: 100, borderRadius: '50%', background: 'var(--color-border)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-            border: '3px solid white', boxShadow: 'var(--shadow-sm)'
+            border: '3px solid white', boxShadow: 'var(--shadow-sm)', overflow: 'hidden'
           }}>
-            <Camera size={32} style={{ color: '#94A3B8' }} />
+            {user?.profilePhoto ? (
+              <img src={user.profilePhoto} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              <Camera size={32} style={{ color: '#94A3B8' }} />
+            )}
           </div>
           <div style={{ flex: 1, minWidth: 200 }}>
             <h2 style={{ fontSize: '1.4rem', marginBottom: '0.35rem', color: 'var(--color-primary)' }}>

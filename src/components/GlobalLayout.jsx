@@ -285,13 +285,18 @@ const GlobalLayout = () => {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                outline: 'none'
+                outline: 'none',
+                overflow: 'hidden'
               }}
               onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.08)'}
               onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
               title="View Profile Details"
             >
-              {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+              {user.profilePhoto ? (
+                <img src={user.profilePhoto} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              ) : (
+                user.name ? user.name.charAt(0).toUpperCase() : 'U'
+              )}
             </button>
             {/* Check mark badge overlay on bottom right */}
             <div style={{
