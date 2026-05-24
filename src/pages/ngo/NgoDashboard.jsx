@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Camera, Users, WifiOff, Wifi, IndianRupee, MessageSquare, Plus, Save, Building2 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
@@ -8,6 +9,7 @@ import { t } from '../../utils/translations';
 const ImpactProfile = () => {
   const { language } = useLanguage();
   const { user } = useAuth();
+  const navigate = useNavigate();
   return (
     <div className="animate-fade-in space-y-6">
       <div className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -40,7 +42,13 @@ const ImpactProfile = () => {
               </div>
             </div>
           </div>
-          <button className="btn btn-outline" style={{ alignSelf: 'flex-start' }}>{t('edit_profile', language)}</button>
+          <button 
+            className="btn btn-outline" 
+            style={{ alignSelf: 'flex-start' }}
+            onClick={() => navigate('/ngo/profile')}
+          >
+            {t('edit_profile', language)}
+          </button>
         </div>
       </div>
 
