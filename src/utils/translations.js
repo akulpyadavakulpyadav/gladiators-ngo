@@ -153,6 +153,14 @@ const translations = {
     "collab_hub_title": 'NGO Collab Hub',
     "collab_hub_desc": 'Connect with other verified NGOs to host joint events and pool resources for larger impact.',
     "explore_partnerships": 'Explore Partnerships',
+    // Collab Hub
+    "search_ngos": 'Search NGOs...',
+    "no_ngos_found": 'No NGOs found.',
+    "focus": 'Focus',
+    "no_messages_yet": 'No messages yet. Start the conversation!',
+    "type_message": 'Type a message...',
+    "gladiconnect_web": 'GladiConnect Web',
+    "select_ngo_sidebar": 'Select an NGO from the left sidebar to start collaborating and sharing resources.',
     // Company Onboarding & Dashboard
     "corp_registration": 'Corporate Funder Registration',
     "corp_reg_desc": 'Join GladiConnect to fund verified NGOs and track your CSR impact transparently.',
@@ -554,6 +562,14 @@ const translations = {
     "collab_hub_title": 'एनजीओ सहयोग हब',
     "collab_hub_desc": 'संयुक्त आयोजनों की मेजबानी करने और बड़े प्रभाव के लिए संसाधनों को इकट्ठा करने के लिए अन्य सत्यापित गैर सरकारी संगठनों से जुड़ें।',
     "explore_partnerships": 'साझेदारी का पता लगाएं',
+    // Collab Hub
+    "search_ngos": 'एनजीओ खोजें...',
+    "no_ngos_found": 'कोई एनजीओ नहीं मिला।',
+    "focus": 'फोकस',
+    "no_messages_yet": 'अभी तक कोई संदेश नहीं। बातचीत शुरू करें!',
+    "type_message": 'एक संदेश टाइप करें...',
+    "gladiconnect_web": 'GladiConnect वेब',
+    "select_ngo_sidebar": 'सहयोग और संसाधन साझा करना शुरू करने के लिए बाएं साइडबार से एक एनजीओ चुनें।',
     // Company Onboarding & Dashboard
     "corp_registration": 'कॉर्पोरेट फंडर्स पंजीकरण',
     "corp_reg_desc": 'सत्यापित गैर सरकारी संगठनों को निधि देने और अपने सीएसआर प्रभाव को पारदर्शी रूप से ट्रैक करने के लिए ग्लैडीकनेक्ट से जुड़ें।',
