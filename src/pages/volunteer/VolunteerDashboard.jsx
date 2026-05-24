@@ -72,8 +72,8 @@ const DirectorySearch = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           programId: selectedProgram._id,
-          ngoId: selectedProgram.ngoId._id,
-          volunteerId: user.gcId,
+          ngoId: selectedProgram.ngoId._id || selectedProgram.ngoId,
+          volunteerId: user?._id || user?.gcId,
           roleApplied: selectedRole
         })
       });

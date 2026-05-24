@@ -89,22 +89,23 @@ const ManagementSuite = () => {
   const [formData, setFormData] = useState({ title: '', description: '', rolesNeeded: '' });
   
   useEffect(() => {
-    if (!user?.gcId) return;
-    fetchPrograms();
-    fetchApplications();
-  }, [user?.gcId]);
+    const id = user?._id || user?.gcId;
+    if (!id) return;
+    fetchPrograms(id);
+    fetchApplications(id);
+  }, [user]);
 
-  const fetchPrograms = async () => {
+  const fetchPrograms = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/programs/ngo/${user.gcId}`);
+      const res = await fetch(`http://localhost:5000/api/programs/ngo/${id}`);
       const data = await res.json();
       setPrograms(data);
     } catch (e) { console.error(e); }
   };
 
-  const fetchApplications = async () => {
+  const fetchApplications = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/applications/ngo/${user.gcId}`);
+      const res = await fetch(`http://localhost:5000/api/applications/ngo/${id}`);
       const data = await res.json();
       setApplications(data);
     } catch (e) { console.error(e); }
@@ -114,11 +115,12 @@ const ManagementSuite = () => {
     e.preventDefault();
     try {
       const rolesArray = formData.rolesNeeded.split(',').map(r => r.trim()).filter(Boolean);
+      const id = user?._id || user?.gcId;
       await fetch('http://localhost:5000/api/programs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ngoId: user.gcId,
+          ngoId: id,
           title: formData.title,
           description: formData.description,
           rolesNeeded: rolesArray
@@ -126,7 +128,7 @@ const ManagementSuite = () => {
       });
       setShowBroadcastModal(false);
       setFormData({ title: '', description: '', rolesNeeded: '' });
-      fetchPrograms();
+      fetchPrograms(id);
     } catch (e) { console.error(e); }
   };
 
@@ -137,7 +139,8 @@ const ManagementSuite = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: 'Approved' })
       });
-      fetchApplications();
+      const id = user?._id || user?.gcId;
+      fetchApplications(id);
       setShowProfileModal(false);
     } catch (e) { console.error(e); }
   };
@@ -182,6 +185,36 @@ const ManagementSuite = () => {
         ))}
       </div>
 
+      <h3 className="section-title" style={{ marginTop: '2rem' }}>Broadcasted Programs</h3>
+      <div className="grid grid-md-2" style={{ marginBottom: '2rem' }}>
+        {programs.length === 0 ? (
+          <div className="glass-card" style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-text-secondary)', gridColumn: '1 / -1' }}>
+            No programs broadcasted yet. Click "Broadcast Need" to start!
+          </div>
+        ) : programs.map(program => {
+          const pApps = applications.filter(a => a.programId?._id === program._id || a.programId === program._id);
+          const approved = pApps.filter(a => a.status === 'Approved').length;
+          return (
+            <div key={program._id} className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
+                <h4 style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--color-primary)', margin: 0 }}>{program.title}</h4>
+                <span className={`badge ${program.status === 'Active' ? 'badge-secondary' : 'badge-warning'}`}>{program.status}</span>
+              </div>
+              <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', marginBottom: '1rem', flex: 1 }}>{program.description}</p>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
+                {program.rolesNeeded.map((role, idx) => (
+                  <span key={idx} className="badge badge-primary">{role}</span>
+                ))}
+              </div>
+              <div style={{ fontSize: '0.85rem', color: 'var(--color-text-primary)', fontWeight: 500, paddingTop: '1rem', borderTop: '1px solid var(--color-border)' }}>
+                {pApps.length} Applications ({approved} Approved)
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      <h3 className="section-title">Volunteer Applications</h3>
       <div className="glass-card" style={{ overflow: 'hidden', padding: 0 }}>
         <table className="data-table">
           <thead>
