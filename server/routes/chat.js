@@ -67,4 +67,51 @@ router.post('/messages', async (req, res) => {
   }
 });
 
+// @route   GET /api/chat/unread-counts
+// @desc    Get count of unread messages per sender
+// @query   receiverId
+router.get('/unread-counts', async (req, res) => {
+  try {
+    const { receiverId } = req.query;
+    if (!receiverId) return res.status(400).json({ message: 'receiverId is required.' });
+
+    const unreadMessages = await Message.aggregate([
+      { $match: { receiverId, read: false } },
+      { $group: { _id: '$senderId', count: { $sum: 1 } } }
+    ]);
+
+    // Convert array of { _id: senderId, count } to a nice object map
+    const countsMap = unreadMessages.reduce((acc, curr) => {
+      acc[curr._id] = curr.count;
+      return acc;
+    }, {});
+
+    res.status(200).json(countsMap);
+  } catch (error) {
+    console.error('Error fetching unread counts:', error);
+    res.status(500).json({ message: 'Server error fetching unread counts.' });
+  }
+});
+
+// @route   PUT /api/chat/mark-read
+// @desc    Mark all messages from a specific sender as read
+router.put('/mark-read', async (req, res) => {
+  try {
+    const { senderId, receiverId } = req.body;
+    if (!senderId || !receiverId) {
+      return res.status(400).json({ message: 'senderId and receiverId are required.' });
+    }
+
+    await Message.updateMany(
+      { senderId, receiverId, read: false },
+      { $set: { read: true } }
+    );
+
+    res.status(200).json({ message: 'Messages marked as read.' });
+  } catch (error) {
+    console.error('Error marking messages read:', error);
+    res.status(500).json({ message: 'Server error marking messages read.' });
+  }
+});
+
 module.exports = router;

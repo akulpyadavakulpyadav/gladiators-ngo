@@ -15,6 +15,7 @@ const CollabHub = () => {
   const [loadingContacts, setLoadingContacts] = useState(true);
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [unreadCounts, setUnreadCounts] = useState({});
   
   const messagesEndRef = useRef(null);
 
@@ -51,20 +52,36 @@ const CollabHub = () => {
     }
   };
 
-  // Polling for new messages
+  const fetchUnreadCounts = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/chat/unread-counts?receiverId=${user.gcId}`);
+      const data = await response.json();
+      setUnreadCounts(data);
+    } catch (error) {}
+  };
+
   useEffect(() => {
-    let interval;
     if (selectedContact) {
-      // Fetch immediately on select with loader
       fetchMessages(selectedContact._id, true);
-      // Poll every 3 seconds without loader
-      interval = setInterval(() => {
-        fetchMessages(selectedContact._id, false);
-      }, 3000);
+      // Mark messages as read
+      fetch('http://localhost:5000/api/chat/mark-read', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ senderId: selectedContact._id, receiverId: user.gcId })
+      }).then(() => fetchUnreadCounts());
     }
-    return () => {
-      if (interval) clearInterval(interval);
-    };
+  }, [selectedContact, user.gcId]);
+
+  // Polling for new messages & unread counts
+  useEffect(() => {
+    fetchUnreadCounts();
+    const interval = setInterval(() => {
+      fetchUnreadCounts();
+      if (selectedContact) {
+        fetchMessages(selectedContact._id, false);
+      }
+    }, 3000);
+    return () => clearInterval(interval);
   }, [selectedContact, user.gcId]);
 
   // Auto-scroll to bottom when messages change
@@ -174,7 +191,7 @@ const CollabHub = () => {
                     <Building2 size={20} style={{ color: '#64748B' }} />
                   )}
                 </div>
-                <div style={{ overflow: 'hidden' }}>
+                <div style={{ overflow: 'hidden', flex: 1 }}>
                   <h4 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 700, color: '#1E293B', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {contact.name}
                   </h4>
@@ -182,6 +199,15 @@ const CollabHub = () => {
                     {contact.domain} {t('focus', language)}
                   </p>
                 </div>
+                {unreadCounts[contact._id] > 0 && (
+                  <div style={{
+                    background: '#2E7D32', color: 'white', borderRadius: '50%',
+                    minWidth: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: '0.7rem', fontWeight: 'bold', padding: '0 6px'
+                  }}>
+                    {unreadCounts[contact._id]}
+                  </div>
+                )}
               </div>
             ))
           )}

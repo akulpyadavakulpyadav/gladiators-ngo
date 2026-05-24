@@ -278,13 +278,31 @@ const NgoDashboard = () => {
   const { user } = useAuth();
   const { language } = useLanguage();
   const [activeTab, setActiveTab] = useState('impact');
+  const [totalUnread, setTotalUnread] = useState(0);
+
+  useEffect(() => {
+    if (!user?.gcId) return;
+    
+    const fetchTotalUnread = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/chat/unread-counts?receiverId=${user.gcId}`);
+        const data = await response.json();
+        const total = Object.values(data).reduce((acc, count) => acc + (typeof count === 'number' ? count : 0), 0);
+        setTotalUnread(total);
+      } catch (error) {}
+    };
+
+    fetchTotalUnread();
+    const interval = setInterval(fetchTotalUnread, 3000);
+    return () => clearInterval(interval);
+  }, [user?.gcId]);
 
   const tabs = [
     { id: 'impact', label: t('tab_impact_profile', language), icon: <Camera size={16} /> },
     { id: 'management', label: t('tab_management', language), icon: <Users size={16} /> },
     { id: 'offline', label: t('tab_offline_logger', language), icon: <WifiOff size={16} /> },
     { id: 'finance', label: t('tab_finance', language), icon: <IndianRupee size={16} /> },
-    { id: 'collab', label: t('tab_collab', language), icon: <MessageSquare size={16} /> },
+    { id: 'collab', label: t('tab_collab', language), icon: <MessageSquare size={16} />, badge: totalUnread },
   ];
 
   return (
@@ -300,9 +318,19 @@ const NgoDashboard = () => {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`tab-btn ${activeTab === tab.id ? 'tab-btn-active' : 'tab-btn-inactive'}`}
+            style={{ position: 'relative' }}
           >
             {tab.icon}
             {tab.label}
+            {tab.badge > 0 && (
+              <span style={{
+                position: 'absolute', top: '-4px', right: '-4px',
+                background: '#EF4444', color: 'white', fontSize: '0.65rem',
+                fontWeight: 'bold', padding: '0.1rem 0.35rem', borderRadius: '10px'
+              }}>
+                {tab.badge}
+              </span>
+            )}
           </button>
         ))}
       </div>
