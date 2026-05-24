@@ -4,6 +4,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { t } from '../../utils/translations';
 import { useNavigate } from 'react-router-dom';
 import { User, Mail, Phone, MapPin, Calendar, Award, Heart, Edit3, ArrowLeft, Save, LogOut, Check, X } from 'lucide-react';
+import ProfilePhotoUploader from '../../components/ProfilePhotoUploader';
 
 const VolunteerProfile = () => {
   const { user, updateUserProfile, logout } = useAuth();
@@ -171,17 +172,11 @@ const VolunteerProfile = () => {
             {/* Group 1: Avatar + Name + ID */}
             <div className="profile-summary-info">
               {/* Avatar & Badges */}
-              <div style={{ position: 'relative', flexShrink: 0 }}>
-                <div style={{
-                  width: 100, height: 100, borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #4A6741, #2D4A22)',
-                  border: '4px solid #FFFFFF', color: '#FFFFFF',
-                  fontSize: '2.5rem', fontWeight: 800,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  boxShadow: 'var(--shadow-md)'
-                }}>
-                  {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
-                </div>
+              <div style={{ position: 'relative', flexShrink: 0, width: 120, height: 120 }}>
+                <ProfilePhotoUploader 
+                  currentPhoto={user.profilePhoto}
+                  onPhotoUpdate={(base64) => updateUserProfile({ profilePhoto: base64 })}
+                />
                 <div style={{
                   position: 'absolute', bottom: 2, right: 2,
                   background: '#10B981', border: '2.5px solid #FFFFFF',

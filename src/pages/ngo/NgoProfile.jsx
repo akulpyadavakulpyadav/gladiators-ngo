@@ -3,7 +3,8 @@ import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { t } from '../../utils/translations';
 import { useNavigate } from 'react-router-dom';
-import { Building2, Mail, Phone, MapPin, Globe, User, Shield, Hash, ArrowLeft, Save, Edit3, LogOut, Check, X } from 'lucide-react';
+import { Mail, Phone, MapPin, Edit3, ArrowLeft, Save, LogOut, Building2, Check, Globe, Briefcase } from 'lucide-react';
+import ProfilePhotoUploader from '../../components/ProfilePhotoUploader';
 
 const NgoProfile = () => {
   const { user, updateUserProfile, logout } = useAuth();
@@ -181,17 +182,11 @@ const NgoProfile = () => {
             {/* Group 1: Avatar + Name + ID */}
             <div className="profile-summary-info">
               {/* Avatar Icon */}
-              <div style={{ position: 'relative', flexShrink: 0 }}>
-                <div style={{
-                  width: 100, height: 100, borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #00695C, #004D40)',
-                  border: '4px solid #FFFFFF', color: '#FFFFFF',
-                  fontSize: '2.2rem', fontWeight: 800,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  boxShadow: 'var(--shadow-md)'
-                }}>
-                  {user.name ? user.name.substring(0, 2).toUpperCase() : 'NG'}
-                </div>
+              <div style={{ position: 'relative', flexShrink: 0, width: 120, height: 120 }}>
+                <ProfilePhotoUploader 
+                  currentPhoto={user.profilePhoto}
+                  onPhotoUpdate={(base64) => updateUserProfile({ profilePhoto: base64 })}
+                />
                 <div style={{
                   position: 'absolute', bottom: 2, right: 2,
                   background: '#009688', border: '2.5px solid #FFFFFF',

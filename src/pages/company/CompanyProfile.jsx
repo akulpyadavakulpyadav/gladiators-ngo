@@ -4,6 +4,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { t } from '../../utils/translations';
 import { useNavigate } from 'react-router-dom';
 import { Briefcase, Mail, Phone, MapPin, Globe, User, Shield, Hash, ArrowLeft, Save, Edit3, LogOut, Check, X, Award } from 'lucide-react';
+import ProfilePhotoUploader from '../../components/ProfilePhotoUploader';
 
 const CompanyProfile = () => {
   const { user, updateUserProfile, logout } = useAuth();
@@ -173,17 +174,11 @@ const CompanyProfile = () => {
             {/* Group 1: Avatar + Name + ID */}
             <div className="profile-summary-info">
               {/* Corporate Logo / Avatar */}
-              <div style={{ position: 'relative', flexShrink: 0 }}>
-                <div style={{
-                  width: 100, height: 100, borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #B8860B, #8B6508)',
-                  border: '4px solid #FFFFFF', color: '#FFFFFF',
-                  fontSize: '2.2rem', fontWeight: 800,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  boxShadow: 'var(--shadow-md)'
-                }}>
-                  {user.name ? user.name.substring(0, 2).toUpperCase() : 'CO'}
-                </div>
+              <div style={{ position: 'relative', flexShrink: 0, width: 120, height: 120 }}>
+                <ProfilePhotoUploader 
+                  currentPhoto={user.profilePhoto}
+                  onPhotoUpdate={(base64) => updateUserProfile({ profilePhoto: base64 })}
+                />
                 <div style={{
                   position: 'absolute', bottom: 2, right: 2,
                   background: '#FBC02D', border: '2.5px solid #FFFFFF',
