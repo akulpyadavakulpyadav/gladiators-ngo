@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Camera, Users, WifiOff, Wifi, IndianRupee, MessageSquare, Plus, Save } from 'lucide-react';
+import { Camera, Users, WifiOff, Wifi, IndianRupee, MessageSquare, Plus, Save, Building2 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { t } from '../../utils/translations';
 
 /* ─── Impact Profile ─── */
 const ImpactProfile = () => {
   const { language } = useLanguage();
+  const { user } = useAuth();
   return (
     <div className="animate-fade-in space-y-6">
       <div className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -20,18 +21,23 @@ const ImpactProfile = () => {
           </div>
           <div style={{ flex: 1, minWidth: 200 }}>
             <h2 style={{ fontSize: '1.4rem', marginBottom: '0.35rem', color: 'var(--color-primary)' }}>
-              {language === 'KN' ? 'ಗ್ಲೋಬಲ್ ಗ್ರೀನ್ ಇನಿಶಿಯೇಟಿವ್' : language === 'HI' ? 'ग्लोबल ग्रीन इनिशिएटिव' : 'Global Green Initiative'}
+              {user?.name || 'NGO Name'}
             </h2>
             <p style={{ fontSize: '0.9rem', marginBottom: '0.75rem', lineHeight: 1.6 }}>
-              {language === 'KN' 
-                ? 'ಸಮುದಾಯದ ನೇತೃತ್ವದ ಅರಣ್ಯೀಕರಣ ಮತ್ತು ಜಾಗೃತಿ ಕಾರ್ಯಕ್ರಮಗಳ ಮೂಲಕ ಎಸ್‌ಡಿಜಿ 13 (ಹವಾಮಾನ ಕ್ರಮ) ಮತ್ತು ಎಸ್‌ಡಿಜಿ 17 (ಪಾಲುದಾರಿಕೆಗಳು) ಗೆ ಸಮರ್ಪಿಸಲಾಗಿದೆ.' 
-                : language === 'HI' 
-                ? 'सामुदायिक नेतृत्व वाले वनीकरण और जागरूकता कार्यक्रमों के माध्यम से एसडीजी 13 (जलवायु कार्रवाई) और एसडीजी 17 (साझेदारी) के लिए समर्पित।' 
-                : 'Dedicated to SDG 13 (Climate Action) and SDG 17 (Partnerships) through community-driven afforestation and awareness programs.'}
+              {user?.about || 'No about information provided.'}
             </p>
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-              <span className="badge badge-primary">{t('filter_env', language)}</span>
-              <span className="badge badge-secondary">{t('badge_verified', language)}</span>
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+              <span className="badge badge-primary">{user?.domain || 'Environment'}</span>
+              <div style={{
+                display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                padding: '0.35rem 0.75rem', fontSize: '0.8rem', fontWeight: 700, borderRadius: '2rem',
+                background: 'linear-gradient(135deg, #E0F2F1, #B2DFDB)',
+                border: '1px solid #4DB6AC', color: '#00695C',
+                boxShadow: '0 2px 4px rgba(0, 105, 92, 0.05)'
+              }}>
+                <Building2 size={14} />
+                <span>{t('gc_ngo_verified', language)}</span>
+              </div>
             </div>
           </div>
           <button className="btn btn-outline" style={{ alignSelf: 'flex-start' }}>{t('edit_profile', language)}</button>
