@@ -27,6 +27,9 @@ const userSchema = new mongoose.Schema({
   phone: {
     type: String
   },
+  profilePhoto: {
+    type: String
+  },
   // Volunteer specific
   aadhaar: String,
   age: String,
