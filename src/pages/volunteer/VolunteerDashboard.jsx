@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Search, MapPin, Target, Calendar, Award, Clock, Users, Activity, X } from 'lucide-react';
+import { Search, MapPin, Target, Calendar, Award, Clock, Users, Activity, X, Building2, Camera, ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { t } from '../../utils/translations';
 
@@ -361,7 +361,7 @@ const ImpactDashboard = () => {
 };
 
 /* ─── NGO Directory View ─── */
-const NgoDirectoryView = () => {
+const NgoDirectoryView = ({ onSelectNgo }) => {
   const { user } = useAuth();
   const { language } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
@@ -445,7 +445,12 @@ const NgoDirectoryView = () => {
             No NGOs found for this domain.
           </div>
         ) : filtered.map(ngo => (
-          <div key={ngo._id} className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
+          <div 
+            key={ngo._id} 
+            className="glass-card card-hover" 
+            style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', cursor: 'pointer' }}
+            onClick={() => onSelectNgo(ngo)}
+          >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
               <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--color-primary)', lineHeight: 1.3, margin: 0 }}>{ngo.name}</h3>
             </div>
@@ -467,11 +472,144 @@ const NgoDirectoryView = () => {
   );
 };
 
+/* ─── Volunteer NGO Profile View ─── */
+const VolunteerNgoProfileView = ({ ngo, onBack }) => {
+  const { language } = useLanguage();
+  const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
+  const [selectedGalleryItem, setSelectedGalleryItem] = useState(null);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+
+  const mediaGallery = ngo?.mediaGallery || [];
+
+  return (
+    <div className="animate-fade-in space-y-6">
+      <button 
+        onClick={onBack}
+        className="btn btn-outline"
+        style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', border: 'none', background: 'var(--color-border)', color: 'var(--color-text-primary)' }}
+      >
+        <ArrowLeft size={16} /> Back to Directory
+      </button>
+
+      {/* NGO Header (Impact Profile Style) */}
+      <div className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div style={{
+            width: 100, height: 100, borderRadius: '50%', background: 'var(--color-border)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            border: '3px solid white', boxShadow: 'var(--shadow-sm)', overflow: 'hidden'
+          }}>
+            {ngo?.profilePhoto ? (
+              <img src={ngo.profilePhoto} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              <Camera size={32} style={{ color: '#94A3B8' }} />
+            )}
+          </div>
+          <div style={{ flex: 1, minWidth: 200 }}>
+            <h2 style={{ fontSize: '1.4rem', marginBottom: '0.35rem', color: 'var(--color-primary)' }}>
+              {ngo?.name || 'NGO Name'}
+            </h2>
+            <p style={{ fontSize: '0.9rem', marginBottom: '0.75rem', lineHeight: 1.6 }}>
+              {ngo?.about || 'No about information provided.'}
+            </p>
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+              <span className="badge badge-primary">{ngo?.domain || 'Environment'}</span>
+              <div style={{
+                display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                padding: '0.35rem 0.75rem', fontSize: '0.8rem', fontWeight: 700, borderRadius: '2rem',
+                background: 'linear-gradient(135deg, #E0F2F1, #B2DFDB)',
+                border: '1px solid #4DB6AC', color: '#00695C',
+                boxShadow: '0 2px 4px rgba(0, 105, 92, 0.05)'
+              }}>
+                <Building2 size={14} />
+                <span>{t('gc_ngo_verified', language)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Impact Gallery (Read-Only) */}
+      <h3 className="section-title" style={{ marginTop: '2rem' }}>Impact Gallery</h3>
+      <div className="grid grid-md-3">
+        {mediaGallery.length === 0 ? (
+          <div className="glass-card" style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-text-secondary)', gridColumn: '1 / -1' }}>
+            This NGO hasn't uploaded any impact gallery photos yet.
+          </div>
+        ) : mediaGallery.map((item, idx) => (
+          <div key={item._id || idx} className="glass-card card-hover" style={{ overflow: 'hidden', cursor: 'pointer' }} onClick={() => { setSelectedGalleryItem(item); setActiveImageIndex(0); setIsGalleryModalOpen(true); }}>
+            <div style={{ height: 160, background: 'var(--color-border)', position: 'relative' }}>
+              {item.images && item.images.length > 0 ? (
+                <img src={item.images[0]} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              ) : (
+                <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94A3B8' }}>
+                  <Camera size={32} />
+                </div>
+              )}
+              {item.images && item.images.length > 1 && (
+                <div style={{ position: 'absolute', bottom: 8, right: 8, background: 'rgba(0,0,0,0.6)', color: 'white', fontSize: '0.75rem', padding: '0.2rem 0.5rem', borderRadius: '1rem', fontWeight: 600 }}>
+                  +{item.images.length - 1} photos
+                </div>
+              )}
+            </div>
+            <div style={{ padding: '1rem' }}>
+              <h4 style={{ fontWeight: 700, color: 'var(--color-primary)', marginBottom: '0.25rem', fontSize: '1rem' }}>{item.title}</h4>
+              <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{item.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Gallery Slideshow Modal (Read-Only) */}
+      {isGalleryModalOpen && selectedGalleryItem && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.9)', zIndex: 1000, display: 'flex', flexDirection: 'column', padding: '2rem' }}>
+          <button onClick={() => setIsGalleryModalOpen(false)} style={{ position: 'absolute', top: 16, right: 16, background: '#FFFFFF', border: 'none', color: '#334155', cursor: 'pointer', zIndex: 10, width: 36, height: 36, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
+            <X size={20} />
+          </button>
+          
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+            {selectedGalleryItem.images && selectedGalleryItem.images.length > 0 ? (
+              <>
+                <img src={selectedGalleryItem.images[activeImageIndex]} alt="Gallery Item" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                
+                {selectedGalleryItem.images.length > 1 && (
+                  <>
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); setActiveImageIndex(prev => prev > 0 ? prev - 1 : selectedGalleryItem.images.length - 1); }}
+                      style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                    >
+                      <ChevronLeft size={24} />
+                    </button>
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); setActiveImageIndex(prev => prev < selectedGalleryItem.images.length - 1 ? prev + 1 : 0); }}
+                      style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                    >
+                      <ChevronRight size={24} />
+                    </button>
+                  </>
+                )}
+              </>
+            ) : (
+              <div style={{ color: 'white' }}>No images available</div>
+            )}
+          </div>
+
+          <div style={{ marginTop: '2rem', color: 'white', maxWidth: 800, margin: '2rem auto 0', width: '100%' }}>
+            <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.5rem' }}>{selectedGalleryItem.title}</h3>
+            <p style={{ fontSize: '1rem', lineHeight: 1.6, opacity: 0.9 }}>{selectedGalleryItem.description}</p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 /* ─── Volunteer Dashboard ─── */
 const VolunteerDashboard = () => {
   const { user } = useAuth();
   const { language } = useLanguage();
   const [activeTab, setActiveTab] = useState('ngos');
+  const [selectedNgoProfile, setSelectedNgoProfile] = useState(null);
 
   const tabs = [
     { id: 'ngos', label: 'NGO Directory' },
@@ -490,7 +628,7 @@ const VolunteerDashboard = () => {
         {tabs.map(tab => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
+            onClick={() => { setActiveTab(tab.id); setSelectedNgoProfile(null); }}
             className={`tab-btn ${activeTab === tab.id ? 'tab-btn-active' : 'tab-btn-inactive'}`}
           >
             {tab.label}
@@ -499,7 +637,13 @@ const VolunteerDashboard = () => {
       </div>
 
       <div style={{ minHeight: 400 }}>
-        {activeTab === 'ngos' && <NgoDirectoryView />}
+        {activeTab === 'ngos' && (
+          selectedNgoProfile ? (
+            <VolunteerNgoProfileView ngo={selectedNgoProfile} onBack={() => setSelectedNgoProfile(null)} />
+          ) : (
+            <NgoDirectoryView onSelectNgo={setSelectedNgoProfile} />
+          )
+        )}
         {activeTab === 'broadcasts' && <DirectorySearch />}
         {activeTab === 'impact' && <ImpactDashboard />}
       </div>
