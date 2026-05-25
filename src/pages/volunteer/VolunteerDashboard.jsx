@@ -133,14 +133,14 @@ const DirectorySearch = () => {
           >
             <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="All">{t('filter_all', language)}</option>
             {((Array.isArray(user?.interests) && user.interests.length > 0) || (typeof user?.interests === 'string' && user?.interests)) && (
-              <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="My Interests">{t('filter_my_interests', language)}</option>
+              <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="My Interests">My Interests</option>
             )}
             <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Environment">{t('filter_env', language)}</option>
             <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Education">{t('filter_edu', language)}</option>
             <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Health">{t('filter_health', language)}</option>
-            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Disaster Relief">{t('filter_relief', language)}</option>
-            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Animal Welfare">{t('filter_animal', language)}</option>
-            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Rural Development">{t('filter_rural', language)}</option>
+            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Disaster Relief">Disaster Relief</option>
+            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Animal Welfare">Animal Welfare</option>
+            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Rural Development">Rural Development</option>
           </select>
         </div>
       </div>

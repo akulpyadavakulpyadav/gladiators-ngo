@@ -193,7 +193,7 @@ const ImpactProfile = () => {
             </button>
 
             {editMode ? (
-              <div style={{ padding: '2.5rem', overflowY: 'auto' }}>
+              <div className="glass-card" style={{ padding: '2.5rem', overflowY: 'auto', border: 'none', boxShadow: 'none' }}>
                 <h3 className="section-title" style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Add Activity to Gallery</h3>
                 
                 <div className="form-group">
