@@ -168,7 +168,7 @@ const DirectorySearch = () => {
               <Target size={14} /> {t(getDomainTranslationKey(program.ngoId?.domain), language)}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', color: 'var(--color-text-secondary)', marginBottom: '1.25rem' }}>
-              <MapPin size={14} /> {program.ngoId?.location === 'Bangalore' ? (language === 'KN' ? 'ಬೆಂಗಳೂರು' : language === 'HI' ? 'बेंगलुरु' : 'Bangalore') : program.ngoId?.location}
+              <MapPin size={14} /> {program.location || (program.ngoId?.location === 'Bangalore' ? (language === 'KN' ? 'ಬೆಂಗಳೂರು' : language === 'HI' ? 'बेंगलुरु' : 'Bangalore') : (program.ngoId?.location || program.ngoId?.headquarters || 'Location TBD'))}
             </div>
             <div style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid var(--color-border)', display: 'flex', gap: '0.5rem' }}>
               {(() => {
@@ -192,16 +192,47 @@ const DirectorySearch = () => {
       </div>
 
       {showApplyModal && selectedProgram && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div className="glass-card" style={{ padding: '2rem', width: '100%', maxWidth: 500 }}>
-            <h3 className="section-title">Apply for Program</h3>
-            <p style={{ marginBottom: '1.5rem', color: 'var(--color-text-secondary)', fontSize: '0.9rem' }}>
-              You are applying to <strong>{selectedProgram.title}</strong> hosted by <strong>{selectedProgram.ngoId?.name}</strong>.
-            </p>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+          <div className="glass-card" style={{ padding: '2rem', width: '100%', maxWidth: 600, maxHeight: '90vh', overflowY: 'auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+               <h3 className="section-title" style={{ margin: 0, fontSize: '1.5rem', color: 'var(--color-primary)' }}>{selectedProgram.title}</h3>
+            </div>
+            
+            <div style={{ background: '#F8FAFC', padding: '1.25rem', borderRadius: '12px', marginBottom: '1.5rem', border: '1px solid #E2E8F0' }}>
+               <p style={{ fontSize: '0.95rem', color: '#334155', margin: '0 0 1rem 0', lineHeight: 1.5 }}>
+                 {selectedProgram.description}
+               </p>
+               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.85rem', color: '#64748B' }}>
+                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Award size={16} style={{ color: 'var(--color-secondary)' }} />
+                    <span style={{ fontWeight: 600, color: '#334155' }}>Hosted by:</span> {selectedProgram.ngoId?.name}
+                 </div>
+                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <MapPin size={16} style={{ color: 'var(--color-secondary)' }} />
+                    <span style={{ fontWeight: 600, color: '#334155' }}>Location:</span> {selectedProgram.location || selectedProgram.ngoId?.location || selectedProgram.ngoId?.headquarters || 'TBD'}
+                 </div>
+                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    <span style={{ fontWeight: 600, color: '#334155' }}>Roles Needed:</span> 
+                    {selectedProgram.rolesNeeded.map((role, i) => (
+                      <span key={i} className="badge badge-primary" style={{ padding: '0.15rem 0.4rem', fontSize: '0.75rem' }}>{role}</span>
+                    ))}
+                 </div>
+               </div>
+            </div>
+
+            <div style={{ marginBottom: '1.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid #E2E8F0' }}>
+               <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.75rem', color: '#334155' }}>About the NGO</h4>
+               <p style={{ fontSize: '0.85rem', color: '#64748B', margin: '0 0 0.5rem 0', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                 {selectedProgram.ngoId?.about || 'No description provided by the NGO.'}
+               </p>
+               <div style={{ display: 'flex', gap: '0.75rem', fontSize: '0.8rem', color: 'var(--color-primary)' }}>
+                 <span><Target size={12} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} />{selectedProgram.ngoId?.domain}</span>
+               </div>
+            </div>
             
             <form onSubmit={handleApply}>
               <div className="form-group">
-                <label className="form-label">Select Role</label>
+                <label className="form-label">Select Role to Apply</label>
                 <select className="form-input" required value={selectedRole} onChange={e => setSelectedRole(e.target.value)}>
                   <option value="" disabled>Select a role...</option>
                   {selectedProgram.rolesNeeded.map((role, idx) => (

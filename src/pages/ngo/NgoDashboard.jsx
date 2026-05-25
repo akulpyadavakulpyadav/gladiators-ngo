@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Camera, Users, WifiOff, Wifi, IndianRupee, MessageSquare, Plus, Save, Building2 } from 'lucide-react';
+import { Camera, Users, WifiOff, Wifi, IndianRupee, MessageSquare, Plus, Save, Building2, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import NgoProfile from './NgoProfile';
 import CollabHub from '../../components/chat/CollabHub';
@@ -10,8 +10,82 @@ import { t } from '../../utils/translations';
 /* ─── Impact Profile ─── */
 const ImpactProfile = () => {
   const { language } = useLanguage();
-  const { user } = useAuth();
+  const { user, updateUserProfile } = useAuth();
   const navigate = useNavigate();
+  
+  const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
+  const [selectedGalleryItem, setSelectedGalleryItem] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [galleryFormData, setGalleryFormData] = useState({ title: '', description: '', images: [], programId: '' });
+  const [programs, setPrograms] = useState([]);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+
+  useEffect(() => {
+    if (user?.gcId) {
+      fetch(`http://localhost:5000/api/programs/ngo/${user.gcId}`)
+        .then(res => res.json())
+        .then(data => setPrograms(data))
+        .catch(console.error);
+    }
+  }, [user]);
+
+  const handleImageUpload = (e) => {
+    const files = Array.from(e.target.files);
+    if (galleryFormData.images.length + files.length > 8) {
+      alert('You can only upload up to 8 images per activity.');
+      return;
+    }
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_SIZE = 800;
+          let width = img.width;
+          let height = img.height;
+          if (width > height && width > MAX_SIZE) {
+            height *= MAX_SIZE / width;
+            width = MAX_SIZE;
+          } else if (height > MAX_SIZE) {
+            width *= MAX_SIZE / height;
+            height = MAX_SIZE;
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          const base64 = canvas.toDataURL('image/jpeg', 0.7);
+          setGalleryFormData(prev => ({ ...prev, images: [...prev.images, base64] }));
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleSaveGalleryItem = async () => {
+    if (!galleryFormData.title || !galleryFormData.description) {
+      alert('Title and description are required.');
+      return;
+    }
+    const updatedGallery = [...(user.mediaGallery || []), galleryFormData];
+    try {
+      await fetch('http://localhost:5000/api/auth/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ gcId: user.gcId, updatedData: { mediaGallery: updatedGallery } })
+      });
+      updateUserProfile({ mediaGallery: updatedGallery });
+      setIsGalleryModalOpen(false);
+    } catch (e) {
+      console.error(e);
+      alert('Failed to save activity.');
+    }
+  };
+
+  const mediaGallery = user?.mediaGallery || [];
+
   return (
     <div className="animate-fade-in space-y-6">
       <div className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -61,17 +135,150 @@ const ImpactProfile = () => {
       <div>
         <h3 className="section-title">{t('media_gallery', language)}</h3>
         <div className="grid grid-md-4">
-          {[1, 2, 3, 4].map(i => (
-            <div key={i} style={{
-              aspectRatio: '1', background: 'var(--color-border)', borderRadius: 'var(--radius-md)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              cursor: 'pointer', transition: 'opacity 0.2s'
-            }}>
-              <Camera size={24} style={{ color: '#94A3B8' }} />
-            </div>
-          ))}
+          {[0, 1, 2, 3, 4, 5, 6, 7].map(i => {
+            const item = mediaGallery[i];
+            if (item) {
+              const imgCount = Math.min(item.images?.length || 0, 3);
+              return (
+                <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', cursor: 'pointer' }} onClick={() => { setSelectedGalleryItem(item); setActiveImageIndex(0); setEditMode(false); setIsGalleryModalOpen(true); }}>
+                  <div style={{ position: 'relative', aspectRatio: '1', width: '100%', padding: '12px' }}>
+                    {item.images && item.images.length > 0 ? (
+                      item.images.slice(0, 3).reverse().map((img, idx) => {
+                        const offset = (imgCount - 1 - idx) * 8;
+                        return (
+                          <div key={idx} style={{
+                            position: 'absolute', top: offset, left: offset,
+                            right: 24 - offset, bottom: 24 - offset,
+                            background: '#fff', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                            backgroundImage: `url(${img})`, backgroundSize: 'cover', backgroundPosition: 'center',
+                            zIndex: imgCount - idx,
+                            border: '3px solid white'
+                          }} />
+                        );
+                      })
+                    ) : (
+                      <div style={{ width: '100%', height: '100%', background: 'var(--color-border)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                         <Camera size={24} style={{ color: '#94A3B8' }} />
+                      </div>
+                    )}
+                  </div>
+                  <p style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--color-primary)', textAlign: 'center', margin: 0, padding: '0 0.5rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {item.title}
+                  </p>
+                </div>
+              );
+            } else {
+              return (
+                <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  <div onClick={() => { setGalleryFormData({ title: '', description: '', images: [], programId: '' }); setEditMode(true); setIsGalleryModalOpen(true); }} style={{
+                    aspectRatio: '1', background: 'var(--color-border)', borderRadius: '16px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    cursor: 'pointer', transition: 'all 0.2s', border: '3px dashed #CBD5E1',
+                    margin: '12px', width: 'calc(100% - 24px)', height: 'calc(100% - 24px)'
+                  }} onMouseEnter={(e) => e.currentTarget.style.background = '#F8FAFC'} onMouseLeave={(e) => e.currentTarget.style.background = 'var(--color-border)'}>
+                    <Plus size={32} style={{ color: '#94A3B8' }} />
+                  </div>
+                </div>
+              );
+            }
+          })}
         </div>
       </div>
+
+      {isGalleryModalOpen && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(0,0,0,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ position: 'relative', width: '90%', maxWidth: editMode ? 600 : 1000, height: editMode ? '85vh' : '90vh', display: 'flex', flexDirection: 'column', background: editMode ? '#fff' : 'transparent', borderRadius: editMode ? '16px' : '0' }}>
+            <button onClick={() => setIsGalleryModalOpen(false)} style={{ position: 'absolute', top: editMode ? 20 : -40, right: editMode ? 20 : 0, background: editMode ? '#F1F5F9' : 'rgba(255,255,255,0.2)', border: 'none', color: editMode ? '#334155' : '#fff', borderRadius: '50%', width: 40, height: 40, cursor: 'pointer', zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <X size={20} />
+            </button>
+
+            {editMode ? (
+              <div style={{ padding: '2.5rem', overflowY: 'auto' }}>
+                <h3 className="section-title" style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Add Activity to Gallery</h3>
+                
+                <div className="form-group">
+                  <label className="form-label">Import from Program</label>
+                  <select className="form-input" value={galleryFormData.programId} onChange={(e) => {
+                    const p = programs.find(x => x._id === e.target.value);
+                    if(p) setGalleryFormData(prev => ({...prev, title: p.title, description: p.description, programId: p._id}));
+                    else setGalleryFormData(prev => ({...prev, programId: e.target.value}));
+                  }}>
+                    <option value="">-- Start Fresh --</option>
+                    {programs.map(p => <option key={p._id} value={p._id}>{p.title} ({p.status})</option>)}
+                  </select>
+                </div>
+                
+                <div className="form-group">
+                  <label className="form-label">Title</label>
+                  <input type="text" className="form-input" placeholder="e.g., Beach Cleanup 2026" value={galleryFormData.title} onChange={e => setGalleryFormData({...galleryFormData, title: e.target.value})} required />
+                </div>
+                
+                <div className="form-group">
+                  <label className="form-label">Description</label>
+                  <textarea className="form-input" rows="4" placeholder="Share the impact and details..." value={galleryFormData.description} onChange={e => setGalleryFormData({...galleryFormData, description: e.target.value})} required />
+                </div>
+                
+                <div className="form-group">
+                  <label className="form-label">Upload Photos (Max 8)</label>
+                  <div style={{ border: '2px dashed #CBD5E1', padding: '1.5rem', borderRadius: '12px', textAlign: 'center', background: '#F8FAFC', marginBottom: '1rem', cursor: 'pointer' }} onClick={() => document.getElementById('gallery-upload').click()}>
+                    <Plus size={24} style={{ color: '#64748B', margin: '0 auto 0.5rem' }} />
+                    <p style={{ margin: 0, fontSize: '0.9rem', color: '#64748B', fontWeight: 600 }}>Click to browse images</p>
+                  </div>
+                  <input type="file" id="gallery-upload" multiple accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
+                  
+                  <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                    {galleryFormData.images.map((img, idx) => (
+                      <div key={idx} style={{ width: 80, height: 80, borderRadius: '8px', backgroundImage: `url(${img})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative', boxShadow: 'var(--shadow-sm)' }}>
+                        <button type="button" onClick={() => setGalleryFormData(prev => ({...prev, images: prev.images.filter((_, i) => i !== idx)}))} style={{ position: 'absolute', top: -6, right: -6, background: '#EF4444', color: 'white', border: 'none', borderRadius: '50%', width: 22, height: 22, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><X size={14}/></button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <button className="btn btn-primary" style={{ width: '100%', padding: '0.85rem' }} onClick={handleSaveGalleryItem}>Save Activity to Gallery</button>
+              </div>
+            ) : (
+              selectedGalleryItem && (
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden', borderRadius: '16px' }}>
+                  {selectedGalleryItem.images && selectedGalleryItem.images.length > 0 ? (
+                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#111' }}>
+                      <img src={selectedGalleryItem.images[activeImageIndex]} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} alt="Activity" />
+                    </div>
+                  ) : (
+                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#111', color: '#94A3B8' }}>
+                      No photos available for this activity
+                    </div>
+                  )}
+
+                  {selectedGalleryItem.images && selectedGalleryItem.images.length > 1 && (
+                    <>
+                      <button onClick={() => setActiveImageIndex(prev => prev > 0 ? prev - 1 : selectedGalleryItem.images.length - 1)} style={{ position: 'absolute', left: 24, top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', border: '2px solid rgba(255,255,255,0.2)', color: '#fff', borderRadius: '50%', width: 56, height: 56, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,0,0,0.8)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.5)'}>
+                        <ChevronLeft size={32} />
+                      </button>
+                      <button onClick={() => setActiveImageIndex(prev => prev < selectedGalleryItem.images.length - 1 ? prev + 1 : 0)} style={{ position: 'absolute', right: 24, top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', border: '2px solid rgba(255,255,255,0.2)', color: '#fff', borderRadius: '50%', width: 56, height: 56, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,0,0,0.8)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.5)'}>
+                        <ChevronRight size={32} />
+                      </button>
+                    </>
+                  )}
+
+                  <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '4rem 2.5rem 2.5rem', background: 'linear-gradient(transparent, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0.95))', color: '#fff' }}>
+                    <h3 style={{ fontSize: '1.75rem', fontWeight: 800, margin: '0 0 0.75rem' }}>{selectedGalleryItem.title}</h3>
+                    <p style={{ fontSize: '1.05rem', lineHeight: 1.6, opacity: 0.9, margin: 0, maxWidth: '800px' }}>{selectedGalleryItem.description}</p>
+                    
+                    {selectedGalleryItem.images && selectedGalleryItem.images.length > 1 && (
+                      <div style={{ display: 'flex', gap: '0.6rem', marginTop: '1.5rem' }}>
+                        {selectedGalleryItem.images.map((_, idx) => (
+                          <div key={idx} style={{ width: 10, height: 10, borderRadius: '50%', background: idx === activeImageIndex ? '#fff' : 'rgba(255,255,255,0.4)', cursor: 'pointer', transition: 'background 0.2s' }} onClick={() => setActiveImageIndex(idx)} />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -128,11 +335,12 @@ const ManagementSuite = () => {
           ngoId: id,
           title: formData.title,
           description: formData.description,
-          rolesNeeded: rolesArray
+          rolesNeeded: rolesArray,
+          location: formData.location
         })
       });
       setShowBroadcastModal(false);
-      setFormData({ title: '', description: '', rolesNeeded: '' });
+      setFormData({ title: '', description: '', rolesNeeded: '', location: '' });
       fetchPrograms(id);
     } catch (e) { console.error(e); }
   };
@@ -311,6 +519,10 @@ const ManagementSuite = () => {
               <div className="form-group">
                 <label className="form-label">Roles Needed (comma separated)</label>
                 <input className="form-input" required value={formData.rolesNeeded} onChange={e => setFormData({...formData, rolesNeeded: e.target.value})} placeholder="e.g. Field Coordinator, Content Creator" />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Location</label>
+                <input className="form-input" required value={formData.location || ''} onChange={e => setFormData({...formData, location: e.target.value})} placeholder="e.g. Cubbon Park, Bangalore" />
               </div>
               <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
                 <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>Broadcast</button>

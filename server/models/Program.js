@@ -17,6 +17,9 @@ const programSchema = new mongoose.Schema({
   rolesNeeded: [{
     type: String
   }],
+  location: {
+    type: String
+  },
   status: {
     type: String,
     enum: ['Active', 'Inactive', 'Completed'],

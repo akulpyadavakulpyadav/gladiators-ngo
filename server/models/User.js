@@ -42,6 +42,12 @@ const userSchema = new mongoose.Schema({
   website: String,
   domain: String,
   about: String,
+  mediaGallery: [{
+    programId: String,
+    title: String,
+    description: String,
+    images: [String]
+  }],
   
   // Company specific
   cin: String,

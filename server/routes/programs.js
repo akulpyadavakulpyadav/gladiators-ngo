@@ -7,7 +7,7 @@ const router = express.Router();
 // @desc    NGO broadcasts a new program/need
 router.post('/', async (req, res) => {
   try {
-    const { ngoId, title, description, rolesNeeded } = req.body;
+    const { ngoId, title, description, rolesNeeded, location } = req.body;
     
     if (!ngoId || !title || !description || !rolesNeeded) {
       return res.status(400).json({ message: 'Missing required fields' });
@@ -17,7 +17,8 @@ router.post('/', async (req, res) => {
       ngoId,
       title,
       description,
-      rolesNeeded
+      rolesNeeded,
+      location
     });
 
     await newProgram.save();
