@@ -360,14 +360,122 @@ const ImpactDashboard = () => {
   );
 };
 
+/* ─── NGO Directory View ─── */
+const NgoDirectoryView = () => {
+  const { user } = useAuth();
+  const { language } = useLanguage();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [ngos, setNgos] = useState([]);
+  
+  const getInitialDomain = () => {
+    const interests = Array.isArray(user?.interests)
+      ? user.interests
+      : (typeof user?.interests === 'string' && user.interests ? [user.interests] : []);
+    if (interests.length > 0) {
+      return interests[0];
+    }
+    return 'All';
+  };
+  const [domainFilter, setDomainFilter] = useState(getInitialDomain());
+
+  useEffect(() => {
+    fetchNgos();
+  }, []);
+
+  const fetchNgos = async () => {
+    try {
+      const res = await fetch('http://localhost:5000/api/auth/ngos');
+      const data = await res.json();
+      setNgos(data);
+    } catch (e) { console.error(e); }
+  };
+
+  const filtered = ngos.filter(ngo => {
+    const matchesSearch = ngo.name?.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    if (domainFilter === 'All') return matchesSearch;
+    
+    if (domainFilter === 'My Interests') {
+      const interests = Array.isArray(user?.interests) 
+        ? user.interests 
+        : (typeof user?.interests === 'string' && user.interests ? [user.interests] : []);
+      return interests.includes(ngo.domain) && matchesSearch;
+    }
+    return ngo.domain === domainFilter && matchesSearch;
+  });
+
+  return (
+    <div className="animate-fade-in space-y-6">
+      <div className="glass-card" style={{ padding: '1.25rem' }}>
+        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+          <div style={{ flex: 1, minWidth: 240, position: 'relative' }}>
+            <Search size={18} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-secondary)' }} />
+            <input
+              type="text"
+              className="form-input"
+              style={{ paddingLeft: '2.5rem' }}
+              placeholder={t('search_placeholder', language)}
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <select
+            className="form-input"
+            style={{ width: 'auto', minWidth: 160 }}
+            value={domainFilter}
+            onChange={e => setDomainFilter(e.target.value)}
+          >
+            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="All">{t('filter_all', language)}</option>
+            {((Array.isArray(user?.interests) && user.interests.length > 0) || (typeof user?.interests === 'string' && user?.interests)) && (
+              <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="My Interests">My Interests</option>
+            )}
+            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Environment">{t('filter_env', language)}</option>
+            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Education">{t('filter_edu', language)}</option>
+            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Health">{t('filter_health', language)}</option>
+            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Disaster Relief">Disaster Relief</option>
+            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Animal Welfare">Animal Welfare</option>
+            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Rural Development">Rural Development</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="grid grid-md-3">
+        {filtered.length === 0 ? (
+          <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '3rem', color: 'var(--color-text-secondary)' }}>
+            No NGOs found for this domain.
+          </div>
+        ) : filtered.map(ngo => (
+          <div key={ngo._id} className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--color-primary)', lineHeight: 1.3, margin: 0 }}>{ngo.name}</h3>
+            </div>
+            
+            <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', marginBottom: '1rem', flex: 1, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+              {ngo.about || "This NGO is focused on making a profound impact in their dedicated domain."}
+            </p>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', color: 'var(--color-text-primary)', marginBottom: '0.35rem', fontWeight: 600 }}>
+              <Target size={14} /> Domain: {ngo.domain || 'N/A'}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>
+              <MapPin size={14} /> {ngo.location || ngo.headquarters || 'Location not specified'}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 /* ─── Volunteer Dashboard ─── */
 const VolunteerDashboard = () => {
   const { user } = useAuth();
   const { language } = useLanguage();
-  const [activeTab, setActiveTab] = useState('directory');
+  const [activeTab, setActiveTab] = useState('ngos');
 
   const tabs = [
-    { id: 'directory', label: t('tab_directory', language) },
+    { id: 'ngos', label: 'NGO Directory' },
+    { id: 'broadcasts', label: 'Broadcasts' },
     { id: 'impact', label: t('tab_impact', language) }
   ];
 
@@ -391,7 +499,8 @@ const VolunteerDashboard = () => {
       </div>
 
       <div style={{ minHeight: 400 }}>
-        {activeTab === 'directory' && <DirectorySearch />}
+        {activeTab === 'ngos' && <NgoDirectoryView />}
+        {activeTab === 'broadcasts' && <DirectorySearch />}
         {activeTab === 'impact' && <ImpactDashboard />}
       </div>
     </div>

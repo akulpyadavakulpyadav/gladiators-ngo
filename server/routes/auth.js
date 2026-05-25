@@ -143,6 +143,18 @@ router.put('/profile', async (req, res) => {
   }
 });
 
+// @route   GET /api/auth/ngos
+// @desc    Get all NGOs
+router.get('/ngos', async (req, res) => {
+  try {
+    const ngos = await User.find({ role: 'ngo' }).select('-pin');
+    res.status(200).json(ngos);
+  } catch (error) {
+    console.error('Error fetching NGOs:', error);
+    res.status(500).json({ message: 'Server error fetching NGOs.' });
+  }
+});
+
 // @route   POST /api/auth/send-otp
 // @desc    Send OTP to email
 router.post('/send-otp', async (req, res) => {
