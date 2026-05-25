@@ -82,4 +82,20 @@ router.put('/:id/end', async (req, res) => {
   }
 });
 
+// @route   DELETE /api/programs/:id
+// @desc    Delete a program
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const program = await Program.findByIdAndDelete(id);
+    if (!program) {
+      return res.status(404).json({ message: 'Program not found' });
+    }
+    res.status(200).json({ message: 'Program deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting program:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 module.exports = router;

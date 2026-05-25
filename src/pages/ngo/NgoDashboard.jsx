@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Camera, Users, WifiOff, Wifi, IndianRupee, MessageSquare, Plus, Save, Building2, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { Camera, Users, WifiOff, Wifi, IndianRupee, MessageSquare, Plus, Save, Building2, ChevronLeft, ChevronRight, X, Trash2 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import NgoProfile from './NgoProfile';
 import CollabHub from '../../components/chat/CollabHub';
@@ -371,6 +371,17 @@ const ManagementSuite = () => {
     } catch (e) { console.error(e); }
   };
 
+  const handleDeleteProgram = async (programId) => {
+    if (!window.confirm('Are you sure you want to delete this program? This action cannot be undone.')) return;
+    try {
+      await fetch(`http://localhost:5000/api/programs/${programId}`, {
+        method: 'DELETE'
+      });
+      const id = user?._id || user?.gcId;
+      fetchPrograms(id);
+    } catch (e) { console.error(e); }
+  };
+
   const handleEndCampaign = async (e) => {
     e.preventDefault();
     if (!selectedCampaignForEnd) return;
@@ -456,6 +467,9 @@ const ManagementSuite = () => {
                       End Campaign
                     </button>
                   )}
+                  <button className="btn btn-outline" style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem', color: '#EF4444', borderColor: '#EF4444' }} onClick={() => handleDeleteProgram(program._id)}>
+                    <Trash2 size={12} style={{ display: 'inline', marginRight: '4px' }} /> Delete
+                  </button>
                 </div>
               </div>
               <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', marginBottom: '1rem', flex: 1 }}>{program.description}</p>
