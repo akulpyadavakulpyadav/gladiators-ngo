@@ -226,8 +226,12 @@ const DirectorySearch = () => {
                <p style={{ fontSize: '0.85rem', color: '#64748B', margin: '0 0 1rem 0', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                  {selectedProgram.ngoId?.about || 'No description provided by the NGO.'}
                </p>
-               <div style={{ display: 'flex', gap: '0.75rem', fontSize: '0.8rem', color: 'var(--color-primary)' }}>
-                 <span><Target size={12} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} />{selectedProgram.ngoId?.domain}</span>
+               <div style={{ display: 'flex', gap: '0.75rem', fontSize: '0.85rem', color: 'var(--color-primary)' }}>
+                 <span style={{ display: 'flex', alignItems: 'center' }}>
+                   <Target size={14} style={{ marginRight: '6px' }} />
+                   <span style={{ fontWeight: 600, color: '#334155', marginRight: '4px' }}>Domain:</span> 
+                   {selectedProgram.ngoId?.domain}
+                 </span>
                </div>
                <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', borderTop: '1px dashed #E2E8F0', paddingTop: '1rem' }}>
                   <div style={{ flex: 1, textAlign: 'center', background: '#F8FAFC', padding: '0.75rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
