@@ -442,7 +442,7 @@ const NgoDirectoryView = ({ onSelectNgo }) => {
       <div className="grid grid-md-3">
         {filtered.length === 0 ? (
           <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '3rem', color: 'var(--color-text-secondary)' }}>
-            No NGOs found for this domain.
+            {t('no_ngos_domain', language)}
           </div>
         ) : filtered.map(ngo => (
           <div 
@@ -456,14 +456,14 @@ const NgoDirectoryView = ({ onSelectNgo }) => {
             </div>
             
             <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', marginBottom: '1rem', flex: 1, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-              {ngo.about || "This NGO is focused on making a profound impact in their dedicated domain."}
+              {ngo.about || t('ngo_focused_impact', language)}
             </p>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', color: 'var(--color-text-primary)', marginBottom: '0.35rem', fontWeight: 600 }}>
-              <Target size={14} /> Domain: {ngo.domain || 'N/A'}
+              <Target size={14} /> {t('domain_label', language)} {ngo.domain || 'N/A'}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>
-              <MapPin size={14} /> {ngo.location || ngo.headquarters || 'Location not specified'}
+              <MapPin size={14} /> {ngo.location || ngo.headquarters || t('location_not_specified', language)}
             </div>
           </div>
         ))}
@@ -488,7 +488,7 @@ const VolunteerNgoProfileView = ({ ngo, onBack }) => {
         className="btn btn-outline"
         style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', border: 'none', background: 'var(--color-border)', color: 'var(--color-text-primary)' }}
       >
-        <ArrowLeft size={16} /> Back to Directory
+        <ArrowLeft size={16} /> {t('back_to_directory', language)}
       </button>
 
       {/* NGO Header (Impact Profile Style) */}
@@ -507,10 +507,10 @@ const VolunteerNgoProfileView = ({ ngo, onBack }) => {
           </div>
           <div style={{ flex: 1, minWidth: 200 }}>
             <h2 style={{ fontSize: '1.4rem', marginBottom: '0.35rem', color: 'var(--color-primary)' }}>
-              {ngo?.name || 'NGO Name'}
+              {ngo?.name || t('ngo_name', language)}
             </h2>
             <p style={{ fontSize: '0.9rem', marginBottom: '0.75rem', lineHeight: 1.6 }}>
-              {ngo?.about || 'No about information provided.'}
+              {ngo?.about || t('no_about_info', language)}
             </p>
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
               <span className="badge badge-primary">{ngo?.domain || 'Environment'}</span>
@@ -530,11 +530,11 @@ const VolunteerNgoProfileView = ({ ngo, onBack }) => {
       </div>
 
       {/* Impact Gallery (Read-Only) */}
-      <h3 className="section-title" style={{ marginTop: '2rem' }}>Impact Gallery</h3>
+      <h3 className="section-title" style={{ marginTop: '2rem' }}>{t('impact_gallery', language)}</h3>
       <div className="grid grid-md-3">
         {mediaGallery.length === 0 ? (
           <div className="glass-card" style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-text-secondary)', gridColumn: '1 / -1' }}>
-            This NGO hasn't uploaded any impact gallery photos yet.
+            {t('no_impact_photos', language)}
           </div>
         ) : mediaGallery.map((item, idx) => (
           <div key={item._id || idx} className="glass-card card-hover" style={{ overflow: 'hidden', cursor: 'pointer' }} onClick={() => { setSelectedGalleryItem(item); setActiveImageIndex(0); setIsGalleryModalOpen(true); }}>
@@ -590,7 +590,7 @@ const VolunteerNgoProfileView = ({ ngo, onBack }) => {
                 )}
               </>
             ) : (
-              <div style={{ color: 'white' }}>No images available</div>
+              <div style={{ color: 'white' }}>{t('no_images_available', language)}</div>
             )}
           </div>
 
@@ -612,8 +612,8 @@ const VolunteerDashboard = () => {
   const [selectedNgoProfile, setSelectedNgoProfile] = useState(null);
 
   const tabs = [
-    { id: 'ngos', label: 'NGO Directory' },
-    { id: 'broadcasts', label: 'Broadcasts' },
+    { id: 'ngos', label: t('tab_ngo_directory', language) },
+    { id: 'broadcasts', label: t('tab_broadcasts', language) },
     { id: 'impact', label: t('tab_impact', language) }
   ];
 
