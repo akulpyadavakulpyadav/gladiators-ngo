@@ -199,10 +199,11 @@ const DirectorySearch = () => {
             </div>
             
             <div style={{ background: '#F8FAFC', padding: '1.25rem', borderRadius: '12px', marginBottom: '1.5rem', border: '1px solid #E2E8F0' }}>
-               <p style={{ fontSize: '0.95rem', color: '#334155', margin: '0 0 1rem 0', lineHeight: 1.5 }}>
+               <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.5rem', color: '#334155' }}>Program Description</h4>
+               <p style={{ fontSize: '0.95rem', color: '#475569', margin: '0 0 1.25rem 0', lineHeight: 1.6 }}>
                  {selectedProgram.description}
                </p>
-               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.85rem', color: '#64748B' }}>
+               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.85rem', color: '#64748B', borderTop: '1px solid #E2E8F0', paddingTop: '1rem' }}>
                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <Award size={16} style={{ color: 'var(--color-secondary)' }} />
                     <span style={{ fontWeight: 600, color: '#334155' }}>Hosted by:</span> {selectedProgram.ngoId?.name}

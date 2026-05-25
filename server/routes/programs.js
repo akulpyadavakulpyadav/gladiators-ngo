@@ -9,7 +9,7 @@ router.post('/', async (req, res) => {
   try {
     const { ngoId, title, description, rolesNeeded, location } = req.body;
     
-    if (!ngoId || !title || !description || !rolesNeeded) {
+    if (!ngoId || !title || !description || !rolesNeeded || !location) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
@@ -34,7 +34,7 @@ router.post('/', async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const programs = await Program.find({ status: 'Active' })
-      .populate('ngoId', 'name domain location profilePhoto headquarters')
+      .populate('ngoId', 'name domain location profilePhoto headquarters about')
       .sort({ createdAt: -1 });
     res.status(200).json(programs);
   } catch (error) {
