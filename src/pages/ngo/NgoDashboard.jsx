@@ -88,6 +88,11 @@ const ManagementSuite = () => {
   const [selectedApp, setSelectedApp] = useState(null);
   const [formData, setFormData] = useState({ title: '', description: '', rolesNeeded: '' });
   
+  const [showEndCampaignModal, setShowEndCampaignModal] = useState(false);
+  const [selectedCampaignForEnd, setSelectedCampaignForEnd] = useState(null);
+  const [campaignHours, setCampaignHours] = useState('');
+  const [volunteerApps, setVolunteerApps] = useState([]);
+  
   useEffect(() => {
     const id = user?._id || user?.gcId;
     if (!id) return;
@@ -145,6 +150,44 @@ const ManagementSuite = () => {
     } catch (e) { console.error(e); }
   };
 
+  const handleReject = async (appId) => {
+    try {
+      await fetch(`http://localhost:5000/api/applications/${appId}/status`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'Rejected' })
+      });
+      const id = user?._id || user?.gcId;
+      fetchApplications(id);
+      setShowProfileModal(false);
+    } catch (e) { console.error(e); }
+  };
+
+  const handleEndCampaign = async (e) => {
+    e.preventDefault();
+    if (!selectedCampaignForEnd) return;
+    try {
+      await fetch(`http://localhost:5000/api/programs/${selectedCampaignForEnd._id}/end`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hours: Number(campaignHours) })
+      });
+      const id = user?._id || user?.gcId;
+      fetchPrograms(id);
+      setShowEndCampaignModal(false);
+      setCampaignHours('');
+      setSelectedCampaignForEnd(null);
+    } catch (e) { console.error(e); }
+  };
+
+  const fetchVolunteerApps = async (volId) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/applications/volunteer/${volId}`);
+      const data = await res.json();
+      setVolunteerApps(data);
+    } catch (e) { console.error(e); }
+  };
+
   const getStatLabelKey = (label) => {
     if (label === 'Total Volunteers') return 'total_volunteers';
     if (label === 'Active Campaigns') return 'active_campaigns';
@@ -198,7 +241,14 @@ const ManagementSuite = () => {
             <div key={program._id} className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
                 <h4 style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--color-primary)', margin: 0 }}>{program.title}</h4>
-                <span className={`badge ${program.status === 'Active' ? 'badge-secondary' : 'badge-warning'}`}>{program.status}</span>
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                  <span className={`badge ${program.status === 'Active' ? 'badge-secondary' : program.status === 'Completed' ? 'badge-primary' : 'badge-warning'}`}>{program.status}</span>
+                  {program.status === 'Active' && (
+                    <button className="btn btn-outline" style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem' }} onClick={() => { setSelectedCampaignForEnd(program); setShowEndCampaignModal(true); }}>
+                      End Campaign
+                    </button>
+                  )}
+                </div>
               </div>
               <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', marginBottom: '1rem', flex: 1 }}>{program.description}</p>
               <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
@@ -229,7 +279,12 @@ const ManagementSuite = () => {
             {applications.length === 0 ? (
               <tr><td colSpan="4" style={{ textAlign: 'center', padding: '2rem' }}>No applications yet.</td></tr>
             ) : applications.map((app) => (
-              <tr key={app._id} onClick={() => { setSelectedApp(app); setShowProfileModal(true); }} style={{ cursor: 'pointer' }}>
+              <tr key={app._id} onClick={() => { 
+                setSelectedApp(app); 
+                setVolunteerApps([]); 
+                fetchVolunteerApps(app.volunteerId?._id || app.volunteerId); 
+                setShowProfileModal(true); 
+              }} style={{ cursor: 'pointer' }}>
                 <td style={{ fontWeight: 600 }}>{app.volunteerId?.name || 'Unknown'}</td>
                 <td>{app.roleApplied}</td>
                 <td>{app.programId?.title || 'Unknown'}</td>
@@ -260,6 +315,25 @@ const ManagementSuite = () => {
               <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
                 <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>Broadcast</button>
                 <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowBroadcastModal(false)}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {showEndCampaignModal && selectedCampaignForEnd && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="glass-card" style={{ padding: '2rem', width: '100%', maxWidth: 400 }}>
+            <h3 className="section-title">End Campaign</h3>
+            <p style={{ fontSize: '0.9rem', marginBottom: '1rem' }}>Please enter the total number of hours volunteered for this campaign. This will be added to the volunteers' impact profiles.</p>
+            <form onSubmit={handleEndCampaign}>
+              <div className="form-group">
+                <label className="form-label">Total Hours</label>
+                <input type="number" className="form-input" required min="1" value={campaignHours} onChange={e => setCampaignHours(e.target.value)} placeholder="e.g. 4" />
+              </div>
+              <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
+                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>End Campaign</button>
+                <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowEndCampaignModal(false)}>Cancel</button>
               </div>
             </form>
           </div>
@@ -303,9 +377,24 @@ const ManagementSuite = () => {
               </div>
             </div>
             
+            <div style={{ marginBottom: '1.5rem' }}>
+              <h5 style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--color-text-secondary)', marginBottom: '0.5rem' }}>Volunteer Impact</h5>
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                <div style={{ background: 'var(--color-border)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-sm)' }}>
+                  <span style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--color-primary)' }}>{volunteerApps.filter(a => a.status === 'Approved' && a.programId?.status === 'Completed').reduce((acc, a) => acc + (a.programId?.hours || 0), 0)}</span> <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>Hours</span>
+                </div>
+                <div style={{ background: 'var(--color-border)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-sm)' }}>
+                  <span style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--color-primary)' }}>{volunteerApps.filter(a => a.status === 'Approved' && a.programId?.status === 'Completed').length}</span> <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>Events</span>
+                </div>
+              </div>
+            </div>
+            
             <div style={{ display: 'flex', gap: '1rem' }}>
               {selectedApp.status === 'Pending' && (
-                <button className="btn btn-primary" style={{ flex: 1 }} onClick={() => handleApprove(selectedApp._id)}>Approve Volunteer</button>
+                <>
+                  <button className="btn btn-primary" style={{ flex: 1 }} onClick={() => handleApprove(selectedApp._id)}>Approve</button>
+                  <button className="btn btn-outline" style={{ flex: 1, borderColor: '#EF4444', color: '#EF4444' }} onClick={() => handleReject(selectedApp._id)}>Reject</button>
+                </>
               )}
               <button className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowProfileModal(false)}>Close</button>
             </div>
