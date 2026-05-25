@@ -527,7 +527,7 @@ const ManagementSuite = () => {
       </div>
 
       {showBroadcastModal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="glass-card" style={{ padding: '2rem', width: '100%', maxWidth: 500 }}>
             <h3 className="section-title">Broadcast Need</h3>
             <form onSubmit={handleBroadcast}>
