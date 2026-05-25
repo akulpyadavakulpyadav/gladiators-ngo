@@ -19,8 +19,12 @@ const programSchema = new mongoose.Schema({
   }],
   status: {
     type: String,
-    enum: ['Active', 'Inactive'],
+    enum: ['Active', 'Inactive', 'Completed'],
     default: 'Active'
+  },
+  hours: {
+    type: Number,
+    default: 0
   }
 }, {
   timestamps: true

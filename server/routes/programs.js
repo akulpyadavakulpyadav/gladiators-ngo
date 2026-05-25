@@ -55,4 +55,30 @@ router.get('/ngo/:ngoId', async (req, res) => {
   }
 });
 
+// @route   PUT /api/programs/:id/end
+// @desc    NGO ends a program and logs hours
+router.put('/:id/end', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { hours } = req.body;
+    
+    if (hours === undefined || isNaN(hours) || hours <= 0) {
+      return res.status(400).json({ message: 'Valid hours are required to end a campaign' });
+    }
+
+    const program = await Program.findByIdAndUpdate(
+      id,
+      { status: 'Completed', hours: Number(hours) },
+      { new: true }
+    );
+
+    if (!program) return res.status(404).json({ message: 'Program not found' });
+    
+    res.status(200).json(program);
+  } catch (error) {
+    console.error('Error ending program:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 module.exports = router;

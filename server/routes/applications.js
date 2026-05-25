@@ -95,4 +95,21 @@ router.get('/volunteer/public/:gcId', async (req, res) => {
   }
 });
 
+// @route   GET /api/applications/volunteer/:volunteerId
+// @desc    Get all applications for a volunteer
+router.get('/volunteer/:volunteerId', async (req, res) => {
+  try {
+    const { volunteerId } = req.params;
+    const applications = await Application.find({ volunteerId })
+      .populate('programId', 'title status hours')
+      .populate('ngoId', 'name domain profilePhoto')
+      .sort({ createdAt: -1 });
+      
+    res.status(200).json(applications);
+  } catch (error) {
+    console.error('Error fetching volunteer applications:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 module.exports = router;
