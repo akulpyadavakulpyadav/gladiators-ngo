@@ -15,6 +15,8 @@ const DirectorySearch = () => {
   const [selectedRole, setSelectedRole] = useState('');
   const [applyMessage, setApplyMessage] = useState('');
 
+  const [userApplications, setUserApplications] = useState([]);
+
   const getInitialDomain = () => {
     const interests = Array.isArray(user?.interests)
       ? user.interests
@@ -28,13 +30,25 @@ const DirectorySearch = () => {
 
   useEffect(() => {
     fetchPrograms();
-  }, []);
+    if (user?._id || user?.gcId) {
+      fetchUserApplications();
+    }
+  }, [user]);
 
   const fetchPrograms = async () => {
     try {
       const res = await fetch('http://localhost:5000/api/programs');
       const data = await res.json();
       setPrograms(data);
+    } catch (e) { console.error(e); }
+  };
+
+  const fetchUserApplications = async () => {
+    try {
+      const id = user?._id || user?.gcId;
+      const res = await fetch(`http://localhost:5000/api/applications/volunteer/${id}`);
+      const data = await res.json();
+      setUserApplications(data);
     } catch (e) { console.error(e); }
   };
 
@@ -82,6 +96,8 @@ const DirectorySearch = () => {
         setApplyMessage(data.message || 'Error applying');
       } else {
         setApplyMessage('Application submitted successfully!');
+        const id = user?._id || user?.gcId;
+        fetchUserApplications(); // Refresh to show new status
         setTimeout(() => {
           setShowApplyModal(false);
           setApplyMessage('');
@@ -155,9 +171,21 @@ const DirectorySearch = () => {
               <MapPin size={14} /> {program.ngoId?.location === 'Bangalore' ? (language === 'KN' ? 'ಬೆಂಗಳೂರು' : language === 'HI' ? 'बेंगलुरु' : 'Bangalore') : program.ngoId?.location}
             </div>
             <div style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid var(--color-border)', display: 'flex', gap: '0.5rem' }}>
-              <button className="btn btn-secondary" style={{ flex: 1 }} onClick={() => { setSelectedProgram(program); setSelectedRole(''); setApplyMessage(''); setShowApplyModal(true); }}>
-                {t('btn_connect', language)}
-              </button>
+              {(() => {
+                const app = userApplications.find(a => (a.programId?._id === program._id || a.programId === program._id));
+                if (app) {
+                  return (
+                    <div style={{ flex: 1, textAlign: 'center', padding: '0.5rem', background: 'var(--color-border)', borderRadius: 'var(--radius-sm)', fontSize: '0.9rem', fontWeight: 600 }}>
+                      {app.status === 'Approved' ? 'Active' : app.status}
+                    </div>
+                  );
+                }
+                return (
+                  <button className="btn btn-secondary" style={{ flex: 1 }} onClick={() => { setSelectedProgram(program); setSelectedRole(''); setApplyMessage(''); setShowApplyModal(true); }}>
+                    {t('btn_connect', language)}
+                  </button>
+                );
+              })()}
             </div>
           </div>
         ))}
@@ -203,6 +231,26 @@ const DirectorySearch = () => {
 /* ─── Impact Dashboard ─── */
 const ImpactDashboard = () => {
   const { language } = useLanguage();
+  const { user } = useAuth();
+  const [applications, setApplications] = useState([]);
+
+  useEffect(() => {
+    const id = user?._id || user?.gcId;
+    if (!id) return;
+    const fetchApps = async () => {
+      try {
+        const res = await fetch(`http://localhost:5000/api/applications/volunteer/${id}`);
+        const data = await res.json();
+        setApplications(data);
+      } catch (e) { console.error(e); }
+    };
+    fetchApps();
+  }, [user]);
+
+  const completedApps = applications.filter(a => a.status === 'Approved' && a.programId?.status === 'Completed');
+  const eventsAttended = completedApps.length;
+  const hoursVolunteered = completedApps.reduce((acc, a) => acc + (a.programId?.hours || 0), 0);
+  const badgesEarned = Math.floor(hoursVolunteered / 10) || 0;
 
   const getStatLabelTranslationKey = (label) => {
     if (label === 'Hours Volunteered') return 'stat_hours';
@@ -222,9 +270,9 @@ const ImpactDashboard = () => {
     <div className="animate-fade-in space-y-6">
       <div className="grid grid-md-3">
         {[
-          { icon: Clock, label: 'Hours Volunteered', value: '120', color: 'var(--color-primary)', bg: 'rgba(0, 0, 0, 0.05)' },
-          { icon: Award, label: 'Badges Earned', value: '3', color: 'var(--color-secondary)', bg: 'rgba(0, 0, 0, 0.05)' },
-          { icon: Calendar, label: 'Events Attended', value: '8', color: 'var(--color-warning)', bg: 'rgba(0, 0, 0, 0.05)' }
+          { icon: Clock, label: 'Hours Volunteered', value: hoursVolunteered.toString(), color: 'var(--color-primary)', bg: 'rgba(0, 0, 0, 0.05)' },
+          { icon: Award, label: 'Badges Earned', value: badgesEarned.toString(), color: 'var(--color-secondary)', bg: 'rgba(0, 0, 0, 0.05)' },
+          { icon: Calendar, label: 'Events Attended', value: eventsAttended.toString(), color: 'var(--color-warning)', bg: 'rgba(0, 0, 0, 0.05)' }
         ].map((s, i) => (
           <div key={i} className="stat-card">
             <div className="stat-icon" style={{ background: s.bg }}>
@@ -239,17 +287,15 @@ const ImpactDashboard = () => {
       <div className="glass-card" style={{ padding: '1.5rem' }}>
         <h3 className="section-title">{t('recent_activity', language)}</h3>
         <div className="space-y-4">
-          {[
-            { event: 'Beach Cleanup Drive', ngo: 'OceanSavers Network', hours: 4, date: 'Oct 12, 2024' },
-            { event: 'Tree Plantation Session', ngo: 'Global Green Initiative', hours: 6, date: 'Sep 28, 2024' },
-            { event: 'Weekend Mentorship', ngo: 'EduCare Foundation', hours: 2, date: 'Sep 15, 2024' }
-          ].map((act, i) => (
+          {completedApps.length === 0 ? (
+            <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.9rem' }}>No completed activities yet.</p>
+          ) : completedApps.map((act, i) => (
             <div key={i} className="list-item">
               <div>
-                <p style={{ fontWeight: 600, color: 'var(--color-text-primary)', fontSize: '0.9rem', margin: 0 }}>{t(getEventTranslationKey(act.event), language)}</p>
-                <p style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', margin: 0 }}>{act.ngo} · {act.date}</p>
+                <p style={{ fontWeight: 600, color: 'var(--color-text-primary)', fontSize: '0.9rem', margin: 0 }}>{act.programId?.title}</p>
+                <p style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', margin: 0 }}>{act.ngoId?.name} · {new Date(act.updatedAt).toLocaleDateString()}</p>
               </div>
-              <span className="badge badge-primary">+{act.hours} {language === 'KN' ? 'ಗಂಟೆಗಳು' : language === 'HI' ? 'घंटे' : 'hrs'}</span>
+              <span className="badge badge-primary">+{act.programId?.hours} {language === 'KN' ? 'ಗಂಟೆಗಳು' : language === 'HI' ? 'घंटे' : 'hrs'}</span>
             </div>
           ))}
         </div>
