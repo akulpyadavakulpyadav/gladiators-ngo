@@ -299,6 +299,8 @@ const ManagementSuite = () => {
   const [selectedCampaignForEnd, setSelectedCampaignForEnd] = useState(null);
   const [campaignHours, setCampaignHours] = useState('');
   const [volunteerApps, setVolunteerApps] = useState([]);
+  const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
+  const [programToDelete, setProgramToDelete] = useState(null);
   
   useEffect(() => {
     const id = user?._id || user?.gcId;
@@ -371,14 +373,21 @@ const ManagementSuite = () => {
     } catch (e) { console.error(e); }
   };
 
-  const handleDeleteProgram = async (programId) => {
-    if (!window.confirm('Are you sure you want to delete this program? This action cannot be undone.')) return;
+  const handleDeleteProgram = (program) => {
+    setProgramToDelete(program);
+    setShowDeleteConfirmModal(true);
+  };
+
+  const confirmDeleteProgram = async () => {
+    if (!programToDelete) return;
     try {
-      await fetch(`http://localhost:5000/api/programs/${programId}`, {
+      await fetch(`http://localhost:5000/api/programs/${programToDelete._id}`, {
         method: 'DELETE'
       });
       const id = user?._id || user?.gcId;
       fetchPrograms(id);
+      setShowDeleteConfirmModal(false);
+      setProgramToDelete(null);
     } catch (e) { console.error(e); }
   };
 
@@ -467,7 +476,7 @@ const ManagementSuite = () => {
                       End Campaign
                     </button>
                   )}
-                  <button className="btn btn-outline" style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem', color: '#EF4444', borderColor: '#EF4444' }} onClick={() => handleDeleteProgram(program._id)}>
+                  <button className="btn btn-outline" style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem', color: '#EF4444', borderColor: '#EF4444' }} onClick={() => handleDeleteProgram(program)}>
                     <Trash2 size={12} style={{ display: 'inline', marginRight: '4px' }} /> Delete
                   </button>
                 </div>
@@ -562,6 +571,21 @@ const ManagementSuite = () => {
                 <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowEndCampaignModal(false)}>Cancel</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {showDeleteConfirmModal && programToDelete && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="glass-card" style={{ padding: '2rem', width: '100%', maxWidth: 400 }}>
+            <h3 className="section-title" style={{ color: '#EF4444' }}>Delete Program</h3>
+            <p style={{ fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+              Are you sure you want to delete <strong>{programToDelete.title}</strong>? This action cannot be undone.
+            </p>
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <button className="btn btn-outline" style={{ flex: 1, color: '#fff', background: '#EF4444', borderColor: '#EF4444' }} onClick={confirmDeleteProgram}>Delete</button>
+              <button className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowDeleteConfirmModal(false)}>Cancel</button>
+            </div>
           </div>
         </div>
       )}
