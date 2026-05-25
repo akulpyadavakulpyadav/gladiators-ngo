@@ -12,8 +12,8 @@ export const AuthProvider = ({ children }) => {
   // The database will now serve as the single source of truth.
 
   useEffect(() => {
-    // Attempt to load session from localStorage if desired
-    const storedUser = localStorage.getItem('gladiconnect_user');
+    // Attempt to load session from sessionStorage if desired
+    const storedUser = sessionStorage.getItem('gladiconnect_user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
       }
       
       setUser(data.user);
-      localStorage.setItem('gladiconnect_user', JSON.stringify(data.user));
+      sessionStorage.setItem('gladiconnect_user', JSON.stringify(data.user));
       return { success: true, user: data.user };
     } catch (error) {
       console.error('AuthContext Login Error:', error);
@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('gladiconnect_user');
+    sessionStorage.removeItem('gladiconnect_user');
   };
 
   const registerUser = async (newUserData) => {
@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }) => {
       
       // Auto-login after registration
       setUser(data.user);
-      localStorage.setItem('gladiconnect_user', JSON.stringify(data.user));
+      sessionStorage.setItem('gladiconnect_user', JSON.stringify(data.user));
       return { success: true, user: data.user };
     } catch (error) {
       console.error('AuthContext Registration Error:', error);
@@ -90,7 +90,7 @@ export const AuthProvider = ({ children }) => {
       }
       
       setUser(data.user);
-      localStorage.setItem('gladiconnect_user', JSON.stringify(data.user));
+      sessionStorage.setItem('gladiconnect_user', JSON.stringify(data.user));
       return { success: true, user: data.user };
     } catch (error) {
       console.error('AuthContext Update Error:', error);
