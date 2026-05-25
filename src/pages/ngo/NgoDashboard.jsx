@@ -84,6 +84,53 @@ const ImpactProfile = () => {
     }
   };
 
+  const handleDeleteGalleryItem = async (itemToDelete) => {
+    if (!window.confirm('Delete this entire gallery activity?')) return;
+    const updatedGallery = user.mediaGallery.filter(i => i !== itemToDelete && i._id !== itemToDelete._id);
+    try {
+      await fetch('http://localhost:5000/api/auth/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ gcId: user.gcId, updatedData: { mediaGallery: updatedGallery } })
+      });
+      updateUserProfile({ mediaGallery: updatedGallery });
+      if (selectedGalleryItem && (selectedGalleryItem === itemToDelete || selectedGalleryItem._id === itemToDelete._id)) {
+        setIsGalleryModalOpen(false);
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Failed to delete gallery item.');
+    }
+  };
+
+  const handleDeletePhoto = async () => {
+    if (!window.confirm('Delete this photo?')) return;
+    const updatedImages = selectedGalleryItem.images.filter((_, idx) => idx !== activeImageIndex);
+    const updatedItem = { ...selectedGalleryItem, images: updatedImages };
+    
+    const itemIndex = user.mediaGallery.findIndex(i => i === selectedGalleryItem || i._id === selectedGalleryItem._id || i.title === selectedGalleryItem.title);
+    if (itemIndex === -1) return;
+    
+    const updatedGallery = [...user.mediaGallery];
+    updatedGallery[itemIndex] = updatedItem;
+    
+    try {
+      await fetch('http://localhost:5000/api/auth/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ gcId: user.gcId, updatedData: { mediaGallery: updatedGallery } })
+      });
+      updateUserProfile({ mediaGallery: updatedGallery });
+      setSelectedGalleryItem(updatedItem);
+      if (activeImageIndex >= updatedImages.length && activeImageIndex > 0) {
+        setActiveImageIndex(activeImageIndex - 1);
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Failed to delete photo.');
+    }
+  };
+
   const mediaGallery = user?.mediaGallery || [];
 
   return (
@@ -140,7 +187,10 @@ const ImpactProfile = () => {
             if (item) {
               const imgCount = Math.min(item.images?.length || 0, 3);
               return (
-                <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', cursor: 'pointer' }} onClick={() => { setSelectedGalleryItem(item); setActiveImageIndex(0); setEditMode(false); setIsGalleryModalOpen(true); }}>
+                <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', cursor: 'pointer', position: 'relative' }} onClick={() => { setSelectedGalleryItem(item); setActiveImageIndex(0); setEditMode(false); setIsGalleryModalOpen(true); }}>
+                  <button onClick={(e) => { e.stopPropagation(); handleDeleteGalleryItem(item); }} style={{ position: 'absolute', top: 4, right: 4, background: '#FFFFFF', color: '#EF4444', border: 'none', borderRadius: '50%', width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 20, boxShadow: '0 2px 4px rgba(0,0,0,0.2)', cursor: 'pointer' }}>
+                    <Trash2 size={14} />
+                  </button>
                   <div style={{ position: 'relative', aspectRatio: '1', width: '100%', padding: '12px' }}>
                     {item.images && item.images.length > 0 ? (
                       item.images.slice(0, 3).reverse().map((img, idx) => {
@@ -240,6 +290,11 @@ const ImpactProfile = () => {
             ) : (
               selectedGalleryItem && (
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden', borderRadius: '16px' }}>
+                  {selectedGalleryItem.images && selectedGalleryItem.images.length > 0 && (
+                    <button onClick={handleDeletePhoto} style={{ position: 'absolute', top: 16, right: 64, background: '#FFFFFF', border: 'none', color: '#EF4444', borderRadius: '50%', width: 40, height: 40, cursor: 'pointer', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
+                      <Trash2 size={18} />
+                    </button>
+                  )}
                   {selectedGalleryItem.images && selectedGalleryItem.images.length > 0 ? (
                     <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#111' }}>
                       <img src={selectedGalleryItem.images[activeImageIndex]} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} alt="Activity" />
