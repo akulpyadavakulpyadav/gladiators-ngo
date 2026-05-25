@@ -54,22 +54,55 @@ const NgoOnboarding = () => {
   const [bufferStatus, setBufferStatus] = useState(''); // 'verifying', 'verified_success', 'registering'
   const [generatedUser, setGeneratedUser] = useState(null);
 
-  // Handle OTP Simulation
-  const handleSendOtp = () => {
+  const handleSendOtp = async () => {
     if (!formData.pocEmail || !formData.pocEmail.includes('@')) {
       showAlert('Please enter a valid POC email address', 'error');
       return;
     }
-    setOtpSent(true);
-    showAlert('OTP simulation: Use "123456" to verify the NGO point of contact email address.', 'info');
+    
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.pocEmail })
+      });
+      const data = await response.json();
+      
+      if (response.ok) {
+        setOtpSent(true);
+        showAlert('OTP has been sent to your POC email address.', 'success');
+      } else {
+        showAlert(data.message || 'Failed to send OTP.', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      showAlert('Server error while sending OTP.', 'error');
+    }
   };
 
-  const handleVerifyOtp = () => {
-    if (formData.otp === '123456') {
-      setOtpVerified(true);
-      showAlert('POC email verified successfully!', 'success');
-    } else {
-      showAlert('Invalid OTP. Please enter 123456', 'error');
+  const handleVerifyOtp = async () => {
+    if (formData.otp.length !== 6) {
+      showAlert('Please enter a valid 6-digit OTP', 'error');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.pocEmail, otp: formData.otp })
+      });
+      const data = await response.json();
+      
+      if (response.ok) {
+        setOtpVerified(true);
+        showAlert('POC email verified successfully!', 'success');
+      } else {
+        showAlert(data.message || 'Invalid OTP.', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      showAlert('Server error while verifying OTP.', 'error');
     }
   };
 
@@ -543,7 +576,7 @@ const NgoOnboarding = () => {
                 </div>
 
                 {/* POC Email Verification Block */}
-                <div style={{ background: '#F8FAFC', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid #E2E8F0', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <div style={{ background: '#F8FAFC', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid #E2E8F0', display: 'flex', flexDirection: 'column', gap: '0.75rem', minHeight: '220px' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                     <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('poc_professional_ema_1', language)}</label>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
