@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Search, MapPin, Target, Calendar, Award, Clock, Users, Activity } from 'lucide-react';
+import { Search, MapPin, Target, Calendar, Award, Clock, Users, Activity, X } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { t } from '../../utils/translations';
 
@@ -192,10 +192,13 @@ const DirectorySearch = () => {
       </div>
 
       {showApplyModal && selectedProgram && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div className="glass-card" style={{ padding: '2rem', width: '100%', maxWidth: 600, maxHeight: '90vh', overflowY: 'auto' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-               <h3 className="section-title" style={{ margin: 0, fontSize: '1.5rem', color: 'var(--color-primary)' }}>{selectedProgram.title}</h3>
+        <div style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+          <div className="glass-card" style={{ padding: '2rem', width: '100%', maxWidth: 600, maxHeight: '90vh', overflowY: 'auto', position: 'relative' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+               <h3 className="section-title" style={{ margin: 0, fontSize: '1.5rem', color: 'var(--color-primary)', paddingRight: '2rem' }}>{selectedProgram.title}</h3>
+               <button type="button" onClick={() => setShowApplyModal(false)} style={{ background: '#F1F5F9', border: 'none', color: '#334155', borderRadius: '50%', width: 32, height: 32, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'absolute', top: '1.5rem', right: '1.5rem' }}>
+                 <X size={16} />
+               </button>
             </div>
             
             <div style={{ background: '#F8FAFC', padding: '1.25rem', borderRadius: '12px', marginBottom: '1.5rem', border: '1px solid #E2E8F0' }}>
