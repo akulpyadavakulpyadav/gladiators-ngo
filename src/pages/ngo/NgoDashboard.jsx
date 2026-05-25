@@ -188,7 +188,7 @@ const ImpactProfile = () => {
       {isGalleryModalOpen && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(0,0,0,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ position: 'relative', width: '90%', maxWidth: editMode ? 600 : 1000, height: editMode ? '85vh' : '90vh', display: 'flex', flexDirection: 'column', background: editMode ? '#fff' : 'transparent', borderRadius: editMode ? '16px' : '0' }}>
-            <button onClick={() => setIsGalleryModalOpen(false)} style={{ position: 'absolute', top: editMode ? 20 : -40, right: editMode ? 20 : 0, background: editMode ? '#F1F5F9' : 'rgba(255,255,255,0.2)', border: 'none', color: editMode ? '#334155' : '#fff', borderRadius: '50%', width: 40, height: 40, cursor: 'pointer', zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <button onClick={() => setIsGalleryModalOpen(false)} style={{ position: 'absolute', top: 16, right: 16, background: editMode ? '#F1F5F9' : '#FFFFFF', border: 'none', color: '#334155', borderRadius: '50%', width: 40, height: 40, cursor: 'pointer', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: editMode ? 'none' : '0 4px 12px rgba(0,0,0,0.5)' }}>
               <X size={20} />
             </button>
 
