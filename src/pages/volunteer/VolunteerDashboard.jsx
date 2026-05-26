@@ -791,7 +791,6 @@ const VolunteerDashboard = () => {
 
   // Volunteer Badges and Stats states
   const [badgeData, setBadgeData] = useState({ badges: [], totalHours: 0, eventsCount: 0 });
-  const [newBadges, setNewBadges] = useState([]);
 
   const fetchBadgesAndStats = async () => {
     const id = user?._id || user?.gcId;
@@ -801,12 +800,6 @@ const VolunteerDashboard = () => {
       if (res.ok) {
         const data = await res.json();
         setBadgeData(data);
-
-        // Find newly earned badges that haven't been shown in a notification yet
-        const unread = data.badges.filter(b => b.notified === false);
-        if (unread.length > 0) {
-          setNewBadges(unread);
-        }
       }
     } catch (e) {
       console.error("Error fetching badges:", e);
@@ -817,24 +810,6 @@ const VolunteerDashboard = () => {
     fetchBadgesAndStats();
   }, [user]);
 
-  const handleCloseCelebration = async () => {
-    const id = user?._id || user?.gcId;
-    if (!id) return;
-    try {
-      const res = await fetch(`http://localhost:5000/api/auth/volunteer/${id}/badges/mark-notified`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' }
-      });
-      if (res.ok) {
-        setNewBadges([]);
-        fetchBadgesAndStats(); // Refresh badges list
-      }
-    } catch (e) {
-      console.error("Error marking badges notified:", e);
-      setNewBadges([]);
-    }
-  };
-
   const tabs = [
     { id: 'ngos', label: t('tab_ngo_directory', language) },
     { id: 'broadcasts', label: t('tab_broadcasts', language) },
@@ -843,38 +818,34 @@ const VolunteerDashboard = () => {
 
   return (
     <div>
-      {/* CSS Injected styles for premium animations */}
-      <style>{`
-        @keyframes modalEntrance {
-          0% { transform: scale(0.9) translateY(20px); opacity: 0; }
-          100% { transform: scale(1) translateY(0); opacity: 1; }
-        }
-        @keyframes shinePulse {
-          0% { box-shadow: 0 0 15px rgba(245, 127, 23, 0.2), inset 0 0 15px rgba(255,255,255,0.6); }
-          50% { box-shadow: 0 0 35px rgba(245, 127, 23, 0.6), inset 0 0 25px rgba(255,255,255,0.9); }
-          100% { box-shadow: 0 0 15px rgba(245, 127, 23, 0.2), inset 0 0 15px rgba(255,255,255,0.6); }
-        }
-        @keyframes floatEffect {
-          0% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-10px) rotate(3deg); }
-          100% { transform: translateY(0px) rotate(0deg); }
-        }
-        @keyframes sparkleFade {
-          0% { transform: scale(0); opacity: 0; }
-          50% { transform: scale(1.2); opacity: 1; }
-          100% { transform: scale(0); opacity: 0; }
-        }
-        .celebration-modal {
-          animation: modalEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        .pulsing-badge {
-          animation: floatEffect 4s ease-in-out infinite, shinePulse 2.5s infinite;
-        }
-      `}</style>
-
       <div className="page-header">
         <h1 className="text-gradient">{t('vol_dash_title', language)}</h1>
-        <p>{t('make_impact', language)} <span style={{ fontWeight: 600, color: 'var(--color-text-primary)' }}>{user?.name}</span></p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.25rem' }}>
+          <p style={{ margin: 0 }}>
+            {t('make_impact', language)} <span style={{ fontWeight: 600, color: 'var(--color-text-primary)' }}>{user?.name}</span>
+          </p>
+          {badgeData.badges && badgeData.badges.length > 0 && (
+            <div style={{ display: 'flex', gap: '0.25rem', alignItems: 'center', marginLeft: '0.5rem' }}>
+              {badgeData.badges.map((badge, idx) => {
+                const imgMap = {
+                  'Bronze': '/badges/bronze.png',
+                  'Silver': '/badges/silver.png',
+                  'Gold': '/badges/gold.png',
+                  'Platinum': '/badges/platinum.png'
+                };
+                return (
+                  <img 
+                    key={idx} 
+                    src={imgMap[badge.level]} 
+                    alt={badge.name} 
+                    title={`${badge.name} (${badge.level} Tier)`} 
+                    style={{ width: 22, height: 22, objectFit: 'contain', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))' }} 
+                  />
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
 
       <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem' }}>
@@ -902,157 +873,6 @@ const VolunteerDashboard = () => {
           <ImpactDashboard badgeData={badgeData} fetchBadgesAndStats={fetchBadgesAndStats} />
         )}
       </div>
-
-      {/* Creative Congratulations Modal Celebration */}
-      {newBadges.length > 0 && (
-        <div style={{
-          position: 'fixed', inset: 0, zIndex: 10000,
-          background: 'rgba(15, 23, 42, 0.75)',
-          backdropFilter: 'blur(12px)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          padding: '1rem'
-        }}>
-          {(() => {
-            // Display first unnotified badge (usually earned one at a time, or loops)
-            const badge = newBadges[0];
-            const imgMap = {
-              'Bronze': '/badges/bronze.png',
-              'Silver': '/badges/silver.png',
-              'Gold': '/badges/gold.png',
-              'Platinum': '/badges/platinum.png'
-            };
-            const colorMap = {
-              'Bronze': 'linear-gradient(135deg, #A0522D, #8B4513)',
-              'Silver': 'linear-gradient(135deg, #94A3B8, #475569)',
-              'Gold': 'linear-gradient(135deg, #FCD34D, #F59E0B)',
-              'Platinum': 'linear-gradient(135deg, #C084FC, #7C3AED)'
-            };
-            const tierColor = {
-              'Bronze': '#8B4513',
-              'Silver': '#475569',
-              'Gold': '#F57F17',
-              'Platinum': '#7C3AED'
-            };
-
-            return (
-              <div 
-                className="celebration-modal glass-card" 
-                style={{
-                  width: '100%', maxWidth: 460,
-                  padding: '2.5rem 2rem 2rem', textAlign: 'center',
-                  background: 'rgba(255, 255, 255, 0.95)',
-                  borderRadius: '24px', border: `2.5px solid ${tierColor[badge.level]}`,
-                  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.35)',
-                  position: 'relative', overflow: 'hidden'
-                }}
-              >
-                {/* Top Xmark button */}
-                <button 
-                  onClick={handleCloseCelebration} 
-                  style={{
-                    position: 'absolute', top: 16, right: 16,
-                    background: 'rgba(15, 23, 42, 0.05)', border: 'none',
-                    color: '#475569', width: 32, height: 32,
-                    borderRadius: '50%', cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    transition: 'all 0.2s'
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(15, 23, 42, 0.1)'}
-                  onMouseLeave={e => e.currentTarget.style.background = 'rgba(15, 23, 42, 0.05)'}
-                >
-                  <X size={16} strokeWidth={2.5} />
-                </button>
-
-                {/* Animated Stars Background */}
-                <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.15 }}>
-                  <Award size={200} style={{ position: 'absolute', top: '-20px', left: '-40px', color: tierColor[badge.level], transform: 'rotate(-15deg)' }} />
-                  <Clock size={160} style={{ position: 'absolute', bottom: '-20px', right: '-40px', color: tierColor[badge.level], transform: 'rotate(15deg)' }} />
-                </div>
-
-                {/* Badge Image Display */}
-                <div 
-                  className="pulsing-badge" 
-                  style={{
-                    width: 140, height: 140,
-                    borderRadius: '50%',
-                    background: colorMap[badge.level],
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    margin: '0 auto 1.5rem',
-                    border: '5px solid #FFFFFF',
-                    boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
-                    padding: '16px'
-                  }}
-                >
-                  <img 
-                    src={imgMap[badge.level] || '/badges/bronze.png'} 
-                    alt={badge.name} 
-                    style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.2))' }} 
-                  />
-                </div>
-
-                {/* Celebration Messages */}
-                <span style={{
-                  fontSize: '0.75rem', fontWeight: 800,
-                  textTransform: 'uppercase', color: tierColor[badge.level],
-                  letterSpacing: '0.15em', display: 'block', marginBottom: '0.5rem'
-                }}>
-                  New Achievement Unlocked!
-                </span>
-                
-                <h2 style={{
-                  fontSize: '1.75rem', fontWeight: 900,
-                  color: 'var(--color-primary)', margin: '0 0 0.5rem',
-                  fontFamily: 'var(--font-title)'
-                }}>
-                  Congratulations!
-                </h2>
-
-                <p style={{
-                  fontSize: '0.95rem', color: '#334155',
-                  lineHeight: 1.5, margin: '0 0 1.5rem',
-                  padding: '0 0.5rem'
-                }}>
-                  You have earned the <strong style={{ color: tierColor[badge.level] }}>{badge.name}</strong> ({badge.level} Tier) for your tireless social impact and volunteer efforts! Thank you for being a Gladiator.
-                </p>
-
-                {/* Creative quote to make volunteer happy */}
-                <div style={{
-                  background: '#FFFBEB', border: '1.5px dashed #F59E0B',
-                  borderRadius: '12px', padding: '0.85rem 1rem',
-                  marginBottom: '1.75rem', color: '#B45309',
-                  fontSize: '0.85rem', fontStyle: 'italic', fontWeight: 600,
-                  lineHeight: 1.45
-                }}>
-                  "The smallest act of kindness is worth more than the grandest intention. Your contribution echoes in the hearts of the community!"
-                </div>
-
-                {/* Actions */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                  <button 
-                    onClick={() => generateCertificate(badge, user?.name || 'Volunteer')}
-                    className="btn btn-primary"
-                    style={{ 
-                      width: '100%', padding: '0.8rem',
-                      background: `linear-gradient(135deg, var(--color-primary), ${tierColor[badge.level]})`,
-                      border: 'none', fontSize: '0.95rem', fontWeight: 800,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem'
-                    }}
-                  >
-                    <Award size={18} /> Download Certificate (PDF)
-                  </button>
-                  <button 
-                    onClick={handleCloseCelebration}
-                    className="btn btn-outline"
-                    style={{ width: '100%', padding: '0.75rem', fontSize: '0.9rem', fontWeight: 700 }}
-                  >
-                    Awesome, thanks!
-                  </button>
-                </div>
-              </div>
-            );
-          })()}
-        </div>
-      )}
     </div>
   );
 };
