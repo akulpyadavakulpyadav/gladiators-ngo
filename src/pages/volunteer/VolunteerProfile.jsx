@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { t } from '../../utils/translations';
@@ -10,6 +10,25 @@ const VolunteerProfile = () => {
   const { user, updateUserProfile, logout } = useAuth();
   const { language } = useLanguage();
   const navigate = useNavigate();
+
+  const [badgeData, setBadgeData] = useState({ badges: [], totalHours: 0, eventsCount: 0 });
+
+  useEffect(() => {
+    const id = user?._id || user?.gcId;
+    if (!id) return;
+    const fetchBadgesAndStats = async () => {
+      try {
+        const res = await fetch(`http://localhost:5000/api/auth/volunteer/${id}/badges`);
+        if (res.ok) {
+          const data = await res.json();
+          setBadgeData(data);
+        }
+      } catch (e) {
+        console.error("Error fetching badges in profile:", e);
+      }
+    };
+    fetchBadgesAndStats();
+  }, [user]);
 
   // Local state for editing form
   const [isEditing, setIsEditing] = useState(false);
@@ -212,15 +231,15 @@ const VolunteerProfile = () => {
             {/* Group 2: Stats Block */}
             <div className="profile-summary-stats">
               <div style={{ flex: 1, minWidth: '70px', padding: '0.75rem 0.5rem', background: '#E8F5E9', borderRadius: 'var(--radius-sm)', border: '1px solid #C8E6C9', textAlign: 'center' }}>
-                <span style={{ display: 'block', fontSize: '1.25rem', fontWeight: 800, color: '#2E7D32' }}>120</span>
+                <span style={{ display: 'block', fontSize: '1.25rem', fontWeight: 800, color: '#2E7D32' }}>{badgeData.totalHours}</span>
                 <span style={{ fontSize: '0.7rem', color: '#2E7D32', fontWeight: 600 }}>{t('hours', language)}</span>
               </div>
               <div style={{ flex: 1, minWidth: '70px', padding: '0.75rem 0.5rem', background: '#FFF9C4', borderRadius: 'var(--radius-sm)', border: '1px solid #FFF59D', textAlign: 'center' }}>
-                <span style={{ display: 'block', fontSize: '1.25rem', fontWeight: 800, color: '#F57F17' }}>3</span>
+                <span style={{ display: 'block', fontSize: '1.25rem', fontWeight: 800, color: '#F57F17' }}>{badgeData.badges.length}</span>
                 <span style={{ fontSize: '0.7rem', color: '#F57F17', fontWeight: 600 }}>{t('badges', language)}</span>
               </div>
               <div style={{ flex: 1, minWidth: '70px', padding: '0.75rem 0.5rem', background: '#E3F2FD', borderRadius: 'var(--radius-sm)', border: '1px solid #BBDEFB', textAlign: 'center' }}>
-                <span style={{ display: 'block', fontSize: '1.25rem', fontWeight: 800, color: '#1565C0' }}>8</span>
+                <span style={{ display: 'block', fontSize: '1.25rem', fontWeight: 800, color: '#1565C0' }}>{badgeData.eventsCount}</span>
                 <span style={{ fontSize: '0.7rem', color: '#1565C0', fontWeight: 600 }}>{t('events', language)}</span>
               </div>
             </div>
@@ -493,6 +512,43 @@ const VolunteerProfile = () => {
                       ) : (
                         <span style={{ fontStyle: 'italic', color: '#64748B', fontSize: '0.85rem' }}>{t('no_social_interests_', language)}</span>
                       )}
+                    </div>
+
+                    {/* Earned Badges Box */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', borderTop: '1.5px solid #E2E8F0', paddingTop: '1.25rem', marginTop: '0.75rem' }}>
+                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Earned Badges & Achievements</label>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', padding: '0.5rem 0' }}>
+                        {badgeData.badges && badgeData.badges.length > 0 ? (
+                          badgeData.badges.map((badge, idx) => {
+                            const imgMap = {
+                              'Bronze': '/badges/bronze.png',
+                              'Silver': '/badges/silver.png',
+                              'Gold': '/badges/gold.png',
+                              'Platinum': '/badges/platinum.png'
+                            };
+                            const colorMap = {
+                              'Bronze': '#8B4513',
+                              'Silver': '#475569',
+                              'Gold': '#F57F17',
+                              'Platinum': '#7C3AED'
+                            };
+                            return (
+                              <span key={idx} style={{
+                                display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                                background: '#F8FAFC',
+                                border: `1.5px solid ${colorMap[badge.level]}44`, color: colorMap[badge.level],
+                                padding: '0.35rem 0.75rem', borderRadius: 'var(--radius-sm)',
+                                fontSize: '0.8rem', fontWeight: 700, boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+                              }}>
+                                <img src={imgMap[badge.level] || '/badges/bronze.png'} alt={badge.name} style={{ width: 16, height: 16, objectFit: 'contain' }} />
+                                {badge.name} ({badge.level})
+                              </span>
+                            );
+                          })
+                        ) : (
+                          <span style={{ fontStyle: 'italic', color: '#64748B', fontSize: '0.85rem' }}>No badges earned yet. Keep volunteering to earn awards!</span>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>
