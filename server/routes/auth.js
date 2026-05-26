@@ -1,5 +1,6 @@
 const express = require('express');
 const User = require('../models/User');
+const Application = require('../models/Application');
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 
@@ -210,6 +211,108 @@ router.post('/verify-otp', async (req, res) => {
   } catch (error) {
     console.error('Error verifying OTP:', error);
     res.status(500).json({ success: false, message: 'Server error during OTP verification' });
+  }
+});
+
+// Helper: Check and award badges dynamically
+const checkAndAwardBadges = async (user) => {
+  if (user.role !== 'volunteer') return user;
+
+  // Find all approved applications for this volunteer
+  const apps = await Application.find({ volunteerId: user._id, status: 'Approved' })
+    .populate('programId');
+
+  // Filter those where the program status is Completed
+  const completedApps = apps.filter(app => app.programId && app.programId.status === 'Completed');
+  
+  // Sum the hours
+  const totalHours = completedApps.reduce((acc, app) => acc + (app.programId.hours || 0), 0);
+
+  // Define our badge tiers
+  const badgeTiers = [
+    { limit: 5, name: 'Green Horn', level: 'Bronze', description: 'Active contributor supporting community events.' },
+    { limit: 15, name: 'Earth Champion', level: 'Silver', description: 'Dedicated champion driving impactful initiatives.' },
+    { limit: 30, name: 'Gladiator Hero', level: 'Gold', description: 'Outstanding leader making a significant difference.' },
+    { limit: 50, name: 'Eco Vanguard', level: 'Platinum', description: 'Elite volunteer pioneer and community legend.' }
+  ];
+
+  let hasNewBadge = false;
+  const currentBadges = user.badges || [];
+
+  for (const tier of badgeTiers) {
+    if (totalHours >= tier.limit) {
+      // Check if user already has this level badge
+      const exists = currentBadges.some(b => b.level === tier.level);
+      if (!exists) {
+        currentBadges.push({
+          name: tier.name,
+          level: tier.level,
+          description: tier.description,
+          earnedAt: new Date(),
+          notified: false
+        });
+        hasNewBadge = true;
+      }
+    }
+  }
+
+  if (hasNewBadge) {
+    user.badges = currentBadges;
+    await user.save();
+  }
+
+  return user;
+};
+
+// @route   GET /api/auth/volunteer/:gcId/badges
+// @desc    Run badge checking logic and return current badges and stats
+router.get('/volunteer/:gcId/badges', async (req, res) => {
+  try {
+    const { gcId } = req.params;
+    let user = await User.findById(gcId.toUpperCase());
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    // Run badge check
+    user = await checkAndAwardBadges(user);
+
+    // Calculate stats for return
+    const apps = await Application.find({ volunteerId: user._id, status: 'Approved' })
+      .populate('programId');
+    const completedApps = apps.filter(app => app.programId && app.programId.status === 'Completed');
+    const totalHours = completedApps.reduce((acc, app) => acc + (app.programId.hours || 0), 0);
+    const eventsCount = completedApps.length;
+
+    res.status(200).json({
+      badges: user.badges || [],
+      totalHours,
+      eventsCount
+    });
+  } catch (error) {
+    console.error('Error fetching volunteer badges:', error);
+    res.status(500).json({ message: 'Server error fetching badges.' });
+  }
+});
+
+// @route   PUT /api/auth/volunteer/:gcId/badges/mark-notified
+// @desc    Mark all new badges as notified
+router.put('/volunteer/:gcId/badges/mark-notified', async (req, res) => {
+  try {
+    const { gcId } = req.params;
+    const user = await User.findById(gcId.toUpperCase());
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    if (user.badges && user.badges.length > 0) {
+      user.badges.forEach(b => {
+        b.notified = true;
+      });
+      user.markModified('badges');
+      await user.save();
+    }
+
+    res.status(200).json({ success: true, badges: user.badges });
+  } catch (error) {
+    console.error('Error marking badges notified:', error);
+    res.status(500).json({ message: 'Server error marking badges as notified.' });
   }
 });
 
