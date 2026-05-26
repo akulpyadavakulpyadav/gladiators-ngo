@@ -848,6 +848,149 @@ const VolunteerDashboard = () => {
         </div>
       </div>
 
+      {/* Sleek Gamified Badges Progress Banner */}
+      <div className="glass-card animate-fade-in" style={{ 
+        padding: '1.25rem 1.5rem', 
+        marginBottom: '1.5rem', 
+        borderRadius: '16px', 
+        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.45))',
+        border: '1.5px solid rgba(255, 255, 255, 0.6)',
+        backdropFilter: 'blur(10px)',
+        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.04)',
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: '1.5rem'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 1 300px' }}>
+          <div style={{ 
+            background: 'linear-gradient(135deg, var(--color-primary), #1B5E20)',
+            borderRadius: '12px',
+            width: '48px',
+            height: '48px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#FFFFFF',
+            boxShadow: '0 4px 12px rgba(46, 125, 50, 0.25)'
+          }}>
+            <Award size={24} />
+          </div>
+          <div>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 800, margin: 0, color: 'var(--color-text-primary)' }}>
+              {badgeData.badges && badgeData.badges.length > 0 
+                ? `${badgeData.badges[badgeData.badges.length - 1].name} (${badgeData.badges[badgeData.badges.length - 1].level} Tier)`
+                : 'GladiConnect Volunteer'}
+            </h3>
+            <p style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', margin: '0.1rem 0 0 0' }}>
+              Total Volunteer Hours: <span style={{ fontWeight: 700, color: 'var(--color-primary)' }}>{badgeData.totalHours || 0} hrs</span>
+            </p>
+          </div>
+        </div>
+
+        {/* Badges Display Row */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+          {['Bronze', 'Silver', 'Gold', 'Platinum'].map(level => {
+            const hasBadge = badgeData.badges && badgeData.badges.some(b => b.level === level);
+            const imgMap = {
+              'Bronze': '/badges/bronze.png',
+              'Silver': '/badges/silver.png',
+              'Gold': '/badges/gold.png',
+              'Platinum': '/badges/platinum.png'
+            };
+            const labelMap = {
+              'Bronze': 'Green Horn (5h)',
+              'Silver': 'Earth Champion (15h)',
+              'Gold': 'Gladiator Hero (30h)',
+              'Platinum': 'Eco Vanguard (50h)'
+            };
+            return (
+              <div 
+                key={level} 
+                title={labelMap[level]}
+                style={{ 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  alignItems: 'center', 
+                  opacity: hasBadge ? 1 : 0.25,
+                  transform: hasBadge ? 'scale(1)' : 'scale(0.9)',
+                  transition: 'all 0.3s ease',
+                  cursor: 'pointer'
+                }}
+              >
+                <img 
+                  src={imgMap[level]} 
+                  alt={level} 
+                  style={{ 
+                    width: '38px', 
+                    height: '38px', 
+                    objectFit: 'contain', 
+                    filter: hasBadge ? 'drop-shadow(0 4px 8px rgba(0,0,0,0.15))' : 'grayscale(100%)' 
+                  }} 
+                />
+                <span style={{ fontSize: '0.65rem', fontWeight: 700, marginTop: '0.25rem', color: 'var(--color-text-secondary)' }}>
+                  {level}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Dynamic Next Badge Target Progress */}
+        {(() => {
+          const totalHours = badgeData.totalHours || 0;
+          let nextLevel = 'Bronze';
+          let nextLimit = 5;
+          let prevLimit = 0;
+
+          if (totalHours >= 50) {
+            return (
+              <div style={{ flex: '1 1 200px', textAlign: 'right' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-primary)', display: 'block' }}>
+                  🎉 Max Tier Reached!
+                </span>
+                <span style={{ fontSize: '0.7rem', color: 'var(--color-text-secondary)' }}>
+                  You are a certified Eco Vanguard!
+                </span>
+              </div>
+            );
+          } else if (totalHours >= 30) {
+            nextLevel = 'Platinum';
+            nextLimit = 50;
+            prevLimit = 30;
+          } else if (totalHours >= 15) {
+            nextLevel = 'Gold';
+            nextLimit = 30;
+            prevLimit = 15;
+          } else if (totalHours >= 5) {
+            nextLevel = 'Silver';
+            nextLimit = 15;
+            prevLimit = 5;
+          }
+
+          const progressPercent = Math.min(100, Math.max(0, ((totalHours - prevLimit) / (nextLimit - prevLimit)) * 100));
+
+          return (
+            <div style={{ flex: '1 1 200px', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', fontWeight: 600 }}>
+                <span style={{ color: 'var(--color-text-secondary)' }}>Next: {nextLevel} Badge</span>
+                <span style={{ color: 'var(--color-primary)' }}>{totalHours} / {nextLimit} hrs</span>
+              </div>
+              <div style={{ width: '100%', height: '6px', background: 'rgba(0,0,0,0.06)', borderRadius: '3px', overflow: 'hidden' }}>
+                <div style={{ 
+                  width: `${progressPercent}%`, 
+                  height: '100%', 
+                  background: 'linear-gradient(90deg, var(--color-primary), #4CAF50)', 
+                  borderRadius: '3px',
+                  transition: 'width 0.5s ease-out'
+                }} />
+              </div>
+            </div>
+          );
+        })()}
+      </div>
+
       <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem' }}>
         {tabs.map(tab => (
           <button
