@@ -41,7 +41,7 @@ router.get('/ngo/:ngoId', async (req, res) => {
     const { ngoId } = req.params;
     
     const applications = await Application.find({ ngoId })
-      .populate('volunteerId', 'name profilePhoto location interests age')
+      .populate('volunteerId', 'name profilePhoto location interests age badges')
       .populate('programId', 'title')
       .sort({ createdAt: -1 });
       
