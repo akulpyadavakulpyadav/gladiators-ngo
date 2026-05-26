@@ -571,7 +571,32 @@ const ManagementSuite = () => {
                 fetchVolunteerApps(app.volunteerId?._id || app.volunteerId); 
                 setShowProfileModal(true); 
               }} style={{ cursor: 'pointer' }}>
-                <td style={{ fontWeight: 600 }}>{app.volunteerId?.name || 'Unknown'}</td>
+                <td style={{ fontWeight: 600 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <span>{app.volunteerId?.name || 'Unknown'}</span>
+                    {app.volunteerId?.badges && app.volunteerId.badges.length > 0 && (
+                      <div style={{ display: 'flex', gap: '0.15rem', alignItems: 'center' }}>
+                        {app.volunteerId.badges.map((badge, idx) => {
+                          const imgMap = {
+                            'Bronze': '/badges/bronze.png',
+                            'Silver': '/badges/silver.png',
+                            'Gold': '/badges/gold.png',
+                            'Platinum': '/badges/platinum.png'
+                          };
+                          return (
+                            <img 
+                              key={idx} 
+                              src={imgMap[badge.level]} 
+                              alt={badge.name} 
+                              title={`${badge.name} (${badge.level} Tier)`} 
+                              style={{ width: 14, height: 14, objectFit: 'contain' }} 
+                            />
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </td>
                 <td>{app.roleApplied}</td>
                 <td>{app.programId?.title || 'Unknown'}</td>
                 <td><span className={`badge ${app.status === 'Approved' ? 'badge-secondary' : app.status === 'Pending' ? 'badge-warning' : 'badge-primary'}`}>{getStatusTranslation(app.status, language)}</span></td>
