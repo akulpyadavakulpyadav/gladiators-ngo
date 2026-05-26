@@ -59,7 +59,16 @@ const userSchema = new mongoose.Schema({
   pocPhone: String,
   pocDesignation: String,
   pocEmail: String,
-  pocAadhaar: String
+  pocAadhaar: String,
+  
+  // Volunteer Badges System
+  badges: [{
+    name: { type: String, required: true },
+    level: { type: String, required: true }, // 'Bronze', 'Silver', 'Gold', 'Platinum'
+    description: { type: String },
+    earnedAt: { type: Date, default: Date.now },
+    notified: { type: Boolean, default: false }
+  }]
 }, {
   timestamps: true,
   toJSON: { virtuals: true },
