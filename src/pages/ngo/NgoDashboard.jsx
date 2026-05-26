@@ -682,6 +682,42 @@ const ManagementSuite = () => {
               </div>
             </div>
             
+            {/* Earned Badges Section */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <h5 style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--color-text-secondary)', marginBottom: '0.5rem' }}>Earned Badges</h5>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                {selectedApp.volunteerId?.badges && selectedApp.volunteerId.badges.length > 0 ? (
+                  selectedApp.volunteerId.badges.map((badge, idx) => {
+                    const imgMap = {
+                      'Bronze': '/badges/bronze.png',
+                      'Silver': '/badges/silver.png',
+                      'Gold': '/badges/gold.png',
+                      'Platinum': '/badges/platinum.png'
+                    };
+                    const colorMap = {
+                      'Bronze': '#8B4513',
+                      'Silver': '#475569',
+                      'Gold': '#F57F17',
+                      'Platinum': '#7C3AED'
+                    };
+                    return (
+                      <span key={idx} style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
+                        background: '#F8FAFC', border: `1px solid ${colorMap[badge.level]}44`,
+                        color: colorMap[badge.level], padding: '0.25rem 0.5rem',
+                        borderRadius: 'var(--radius-sm)', fontSize: '0.75rem', fontWeight: 700
+                      }}>
+                        <img src={imgMap[badge.level] || '/badges/bronze.png'} alt={badge.name} style={{ width: 14, height: 14, objectFit: 'contain' }} />
+                        {badge.name} ({badge.level})
+                      </span>
+                    );
+                  })
+                ) : (
+                  <span style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', fontStyle: 'italic' }}>No badges earned yet.</span>
+                )}
+              </div>
+            </div>
+            
             <div style={{ marginBottom: '1.5rem' }}>
               <h5 style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--color-text-secondary)', marginBottom: '0.5rem' }}>Volunteer Impact</h5>
               <div style={{ display: 'flex', gap: '1rem' }}>
