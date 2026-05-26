@@ -22,3 +22,14 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Extraneous files and scripts
+.env
+server/.env
+17630174113065358213.jpeg
+fix_commas.py
+fix_keys.py
+translate_script.py
+update_translations.py
+test_features.cjs
+new_translations.json
