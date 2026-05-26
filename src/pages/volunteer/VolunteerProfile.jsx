@@ -495,61 +495,63 @@ const VolunteerProfile = () => {
                       </div>
                     </div>
                   ) : (
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', padding: '0.5rem 0' }}>
-                      {user.interests && user.interests.length > 0 ? (
-                        user.interests.map((interest, idx) => (
-                          <span key={idx} style={{
-                            display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
-                            background: 'linear-gradient(135deg, #E8F5E9, #C8E6C9)',
-                            border: '1px solid #81C784', color: '#2E7D32',
-                            padding: '0.35rem 0.75rem', borderRadius: 'var(--radius-sm)',
-                            fontSize: '0.8rem', fontWeight: 700, boxShadow: '0 2px 4px rgba(46, 125, 50, 0.05)'
-                          }}>
-                            <Heart size={12} fill="#2E7D32" />
-                            {interest}
-                          </span>
-                        ))
-                      ) : (
-                        <span style={{ fontStyle: 'italic', color: '#64748B', fontSize: '0.85rem' }}>{t('no_social_interests_', language)}</span>
-                      )}
-                    </div>
-
-                    {/* Earned Badges Box */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', borderTop: '1.5px solid #E2E8F0', paddingTop: '1.25rem', marginTop: '0.75rem' }}>
-                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Earned Badges & Achievements</label>
+                    <>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', padding: '0.5rem 0' }}>
-                        {badgeData.badges && badgeData.badges.length > 0 ? (
-                          badgeData.badges.map((badge, idx) => {
-                            const imgMap = {
-                              'Bronze': '/badges/bronze.png',
-                              'Silver': '/badges/silver.png',
-                              'Gold': '/badges/gold.png',
-                              'Platinum': '/badges/platinum.png'
-                            };
-                            const colorMap = {
-                              'Bronze': '#8B4513',
-                              'Silver': '#475569',
-                              'Gold': '#F57F17',
-                              'Platinum': '#7C3AED'
-                            };
-                            return (
-                              <span key={idx} style={{
-                                display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-                                background: '#F8FAFC',
-                                border: `1.5px solid ${colorMap[badge.level]}44`, color: colorMap[badge.level],
-                                padding: '0.35rem 0.75rem', borderRadius: 'var(--radius-sm)',
-                                fontSize: '0.8rem', fontWeight: 700, boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
-                              }}>
-                                <img src={imgMap[badge.level] || '/badges/bronze.png'} alt={badge.name} style={{ width: 16, height: 16, objectFit: 'contain' }} />
-                                {badge.name} ({badge.level})
-                              </span>
-                            );
-                          })
+                        {user.interests && user.interests.length > 0 ? (
+                          user.interests.map((interest, idx) => (
+                            <span key={idx} style={{
+                              display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
+                              background: 'linear-gradient(135deg, #E8F5E9, #C8E6C9)',
+                              border: '1px solid #81C784', color: '#2E7D32',
+                              padding: '0.35rem 0.75rem', borderRadius: 'var(--radius-sm)',
+                              fontSize: '0.8rem', fontWeight: 700, boxShadow: '0 2px 4px rgba(46, 125, 50, 0.05)'
+                            }}>
+                              <Heart size={12} fill="#2E7D32" />
+                              {interest}
+                            </span>
+                          ))
                         ) : (
-                          <span style={{ fontStyle: 'italic', color: '#64748B', fontSize: '0.85rem' }}>No badges earned yet. Keep volunteering to earn awards!</span>
+                          <span style={{ fontStyle: 'italic', color: '#64748B', fontSize: '0.85rem' }}>{t('no_social_interests_', language)}</span>
                         )}
                       </div>
-                    </div>
+
+                      {/* Earned Badges Box */}
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', borderTop: '1.5px solid #E2E8F0', paddingTop: '1.25rem', marginTop: '0.75rem' }}>
+                        <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Earned Badges & Achievements</label>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', padding: '0.5rem 0' }}>
+                          {badgeData.badges && badgeData.badges.length > 0 ? (
+                            badgeData.badges.map((badge, idx) => {
+                              const imgMap = {
+                                'Bronze': '/badges/bronze.png',
+                                'Silver': '/badges/silver.png',
+                                'Gold': '/badges/gold.png',
+                                'Platinum': '/badges/platinum.png'
+                              };
+                              const colorMap = {
+                                'Bronze': '#8B4513',
+                                'Silver': '#475569',
+                                'Gold': '#F57F17',
+                                'Platinum': '#7C3AED'
+                              };
+                              return (
+                                <span key={idx} style={{
+                                  display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                                  background: '#F8FAFC',
+                                  border: `1.5px solid ${colorMap[badge.level]}44`, color: colorMap[badge.level],
+                                  padding: '0.35rem 0.75rem', borderRadius: 'var(--radius-sm)',
+                                  fontSize: '0.8rem', fontWeight: 700, boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+                                }}>
+                                  <img src={imgMap[badge.level] || '/badges/bronze.png'} alt={badge.name} style={{ width: 16, height: 16, objectFit: 'contain' }} />
+                                  {badge.name} ({badge.level})
+                                </span>
+                              );
+                            })
+                          ) : (
+                            <span style={{ fontStyle: 'italic', color: '#64748B', fontSize: '0.85rem' }}>No badges earned yet. Keep volunteering to earn awards!</span>
+                          )}
+                        </div>
+                      </div>
+                    </>
                   )}
                 </div>
 
