@@ -5,6 +5,151 @@ import { t } from '../../utils/translations';
 import { useNavigate } from 'react-router-dom';
 import { User, Mail, Phone, MapPin, Calendar, Award, Heart, Edit3, ArrowLeft, Save, LogOut, Check, X } from 'lucide-react';
 import ProfilePhotoUploader from '../../components/ProfilePhotoUploader';
+import { jsPDF } from 'jspdf';
+
+/* ─── Premium PDF Certificate Generator ─── */
+const generateCertificate = (badge, userName) => {
+  const doc = new jsPDF({
+    orientation: 'landscape',
+    unit: 'mm',
+    format: 'a4'
+  });
+
+  const width = doc.internal.pageSize.getWidth();
+  const height = doc.internal.pageSize.getHeight();
+
+  let primaryColor = [46, 125, 50]; // emerald green for Gladiators NGO
+  let accentColor = [245, 127, 23]; // golden amber
+  let badgeLevel = badge.level;
+
+  if (badgeLevel === 'Bronze') {
+    primaryColor = [139, 69, 19];
+    accentColor = [160, 82, 45];
+  } else if (badgeLevel === 'Silver') {
+    primaryColor = [112, 128, 144];
+    accentColor = [192, 192, 192];
+  } else if (badgeLevel === 'Gold') {
+    primaryColor = [197, 160, 89];
+    accentColor = [212, 175, 55];
+  } else if (badgeLevel === 'Platinum') {
+    primaryColor = [74, 20, 140];
+    accentColor = [103, 58, 183];
+  }
+
+  // Borders
+  doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+  doc.setLineWidth(1.5);
+  doc.rect(8, 8, width - 16, height - 16);
+
+  doc.setDrawColor(accentColor[0], accentColor[1], accentColor[2]);
+  doc.setLineWidth(3);
+  doc.rect(10, 10, width - 20, height - 20);
+
+  doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+  doc.setLineWidth(0.5);
+  doc.rect(14, 14, width - 28, height - 28);
+
+  // Background tint
+  doc.setFillColor(253, 253, 250);
+  doc.rect(14.5, 14.5, width - 29, height - 29, 'F');
+
+  // Decorative Corner Designs
+  const drawCorner = (x, y, isRight, isBottom) => {
+    doc.setDrawColor(accentColor[0], accentColor[1], accentColor[2]);
+    doc.setLineWidth(1);
+    doc.line(x, y, x + (isRight ? -15 : 15), y);
+    doc.line(x, y, x, y + (isBottom ? -15 : 15));
+  };
+  drawCorner(15, 15, false, false);
+  drawCorner(width - 15, 15, true, false);
+  drawCorner(15, height - 15, false, true);
+  drawCorner(width - 15, height - 15, true, true);
+
+  // Header Title
+  doc.setTextColor(46, 125, 50);
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(26);
+  doc.text('GLADIATORS CONNECT', width / 2, 35, { align: 'center' });
+
+  doc.setTextColor(100, 116, 139);
+  doc.setFont('Helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.text('VERIFIED VOLUNTEER IMPACT PLATFORM', width / 2, 41, { align: 'center' });
+
+  // Divider
+  doc.setDrawColor(226, 232, 240);
+  doc.setLineWidth(1);
+  doc.line(40, 48, width - 40, 48);
+
+  // Certificate text
+  doc.setTextColor(30, 41, 59);
+  doc.setFont('Times-Roman', 'italic');
+  doc.setFontSize(16);
+  doc.text('This is proudly awarded to', width / 2, 62, { align: 'center' });
+
+  // User Name
+  doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(28);
+  doc.text(userName.toUpperCase(), width / 2, 77, { align: 'center' });
+
+  // Subtext
+  doc.setTextColor(71, 85, 105);
+  doc.setFont('Times-Roman', 'italic');
+  doc.setFontSize(14);
+  doc.text('in recognition of outstanding service and dedication as a verified volunteer,', width / 2, 90, { align: 'center' });
+  doc.text('having reached the distinguished milestone and earned the credential of', width / 2, 97, { align: 'center' });
+
+  // Badge Name
+  doc.setTextColor(accentColor[0], accentColor[1], accentColor[2]);
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(22);
+  doc.text(`${badge.name} (${badge.level} Tier)`, width / 2, 112, { align: 'center' });
+
+  // Badge Description
+  doc.setTextColor(100, 116, 139);
+  doc.setFont('Helvetica', 'normal');
+  doc.setFontSize(11);
+  doc.text(badge.description || '', width / 2, 120, { align: 'center' });
+
+  // Date
+  const dateStr = new Date(badge.earnedAt).toLocaleDateString('en-US', {
+    year: 'numeric', month: 'long', day: 'numeric'
+  });
+  doc.setTextColor(71, 85, 105);
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.text(`Date Earned: ${dateStr}`, width / 2, 135, { align: 'center' });
+
+  // Bottom Elements
+  doc.setDrawColor(148, 163, 184);
+  doc.setLineWidth(0.5);
+  doc.line(40, 170, 95, 170);
+  doc.setTextColor(100, 116, 139);
+  doc.setFont('Helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.text('Aniruddha M. Jois', 67.5, 175, { align: 'center' });
+  doc.setFont('Helvetica', 'bold');
+  doc.text('GLADIATORS FOUNDER', 67.5, 179, { align: 'center' });
+
+  doc.line(width - 95, 170, width - 40, 170);
+  doc.setTextColor(100, 116, 139);
+  doc.setFont('Helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.text('Verified via Platform Cryptography', width - 67.5, 175, { align: 'center' });
+  doc.setFont('Helvetica', 'bold');
+  doc.text('SYSTEM AUTHENTICATION', width - 67.5, 179, { align: 'center' });
+
+  // Seal
+  doc.setFillColor(accentColor[0], accentColor[1], accentColor[2]);
+  doc.circle(width / 2, 168, 8, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(12);
+  doc.text('G', width / 2, 172, { align: 'center' });
+
+  window.open(doc.output('bloburl'), '_blank');
+};
 
 const VolunteerProfile = () => {
   const { user, updateUserProfile, logout } = useAuth();
@@ -43,6 +188,7 @@ const VolunteerProfile = () => {
 
   const [notification, setNotification] = useState(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [selectedBadgeModal, setSelectedBadgeModal] = useState(null);
   const [interestInput, setInterestInput] = useState('');
 
   const availableInterests = [
@@ -534,13 +680,18 @@ const VolunteerProfile = () => {
                                 'Platinum': '#7C3AED'
                               };
                               return (
-                                <span key={idx} style={{
-                                  display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-                                  background: '#F8FAFC',
-                                  border: `1.5px solid ${colorMap[badge.level]}44`, color: colorMap[badge.level],
-                                  padding: '0.35rem 0.75rem', borderRadius: 'var(--radius-sm)',
-                                  fontSize: '0.8rem', fontWeight: 700, boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
-                                }}>
+                                <span 
+                                  key={idx} 
+                                  onClick={() => setSelectedBadgeModal(badge)}
+                                  style={{
+                                    display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                                    background: '#F8FAFC',
+                                    border: `1.5px solid ${colorMap[badge.level]}44`, color: colorMap[badge.level],
+                                    padding: '0.35rem 0.75rem', borderRadius: 'var(--radius-sm)',
+                                    fontSize: '0.8rem', fontWeight: 700, boxShadow: '0 2px 4px rgba(0,0,0,0.02)',
+                                    cursor: 'pointer'
+                                  }}
+                                >
                                   <img src={imgMap[badge.level] || '/badges/bronze.png'} alt={badge.name} style={{ width: 16, height: 16, objectFit: 'contain' }} />
                                   {badge.name} ({badge.level})
                                 </span>
@@ -645,6 +796,151 @@ const VolunteerProfile = () => {
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Badge Details & Certificate Modal */}
+      {selectedBadgeModal && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 10000,
+          background: 'rgba(15, 23, 42, 0.75)',
+          backdropFilter: 'blur(12px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: '1rem'
+        }}>
+          {(() => {
+            const badge = selectedBadgeModal;
+            const imgMap = {
+              'Bronze': '/badges/bronze.png',
+              'Silver': '/badges/silver.png',
+              'Gold': '/badges/gold.png',
+              'Platinum': '/badges/platinum.png'
+            };
+            const colorMap = {
+              'Bronze': 'linear-gradient(135deg, #A0522D, #8B4513)',
+              'Silver': 'linear-gradient(135deg, #94A3B8, #475569)',
+              'Gold': 'linear-gradient(135deg, #FCD34D, #F59E0B)',
+              'Platinum': 'linear-gradient(135deg, #C084FC, #7C3AED)'
+            };
+            const tierColor = {
+              'Bronze': '#8B4513',
+              'Silver': '#475569',
+              'Gold': '#F57F17',
+              'Platinum': '#7C3AED'
+            };
+
+            return (
+              <div 
+                className="celebration-modal glass-card animate-fade-in" 
+                style={{
+                  width: '100%', maxWidth: 460,
+                  padding: '2.5rem 2rem 2rem', textAlign: 'center',
+                  background: '#FFFFFF',
+                  borderRadius: '24px', border: `2.5px solid ${tierColor[badge.level]}`,
+                  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.35)',
+                  position: 'relative', overflow: 'hidden',
+                  color: '#1E293B'
+                }}
+              >
+                {/* Top Xmark button */}
+                <button 
+                  onClick={() => setSelectedBadgeModal(null)} 
+                  style={{
+                    position: 'absolute', top: 16, right: 16,
+                    background: 'rgba(15, 23, 42, 0.05)', border: 'none',
+                    color: '#475569', width: 32, height: 32,
+                    borderRadius: '50%', cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(15, 23, 42, 0.1)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'rgba(15, 23, 42, 0.05)'}
+                >
+                  <X size={16} strokeWidth={2.5} />
+                </button>
+
+                {/* Badge Image Display */}
+                <div 
+                  className="pulsing-badge" 
+                  style={{
+                    width: 140, height: 140,
+                    borderRadius: '50%',
+                    background: colorMap[badge.level],
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    margin: '0 auto 1.5rem',
+                    border: '5px solid #FFFFFF',
+                    boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
+                    padding: '16px'
+                  }}
+                >
+                  <img 
+                    src={imgMap[badge.level] || '/badges/bronze.png'} 
+                    alt={badge.name} 
+                    style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.2))' }} 
+                  />
+                </div>
+
+                {/* Celebration Messages */}
+                <span style={{
+                  fontSize: '0.75rem', fontWeight: 800,
+                  textTransform: 'uppercase', color: tierColor[badge.level],
+                  letterSpacing: '0.15em', display: 'block', marginBottom: '0.5rem'
+                }}>
+                  Achievement Unlocked!
+                </span>
+                
+                <h2 style={{
+                  fontSize: '1.75rem', fontWeight: 900,
+                  color: 'var(--color-primary)', margin: '0 0 0.5rem'
+                }}>
+                  Congratulations!
+                </h2>
+
+                <p style={{
+                  fontSize: '0.95rem', color: '#334155',
+                  lineHeight: 1.5, margin: '0 0 1.5rem',
+                  padding: '0 0.5rem'
+                }}>
+                  You have earned the <strong style={{ color: tierColor[badge.level] }}>{badge.name}</strong> ({badge.level} Tier) for your tireless social impact and volunteer efforts! Thank you for being a Gladiator.
+                </p>
+
+                {/* Creative quote */}
+                <div style={{
+                  background: '#FFFBEB', border: '1.5px dashed #F59E0B',
+                  borderRadius: '12px', padding: '0.85rem 1rem',
+                  marginBottom: '1.75rem', color: '#B45309',
+                  fontSize: '0.85rem', fontStyle: 'italic', fontWeight: 600,
+                  lineHeight: 1.45
+                }}>
+                  "The smallest act of kindness is worth more than the grandest intention. Your contribution echoes in the hearts of the community!"
+                </div>
+
+                {/* Actions */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  <button 
+                    onClick={() => generateCertificate(badge, user?.name || 'Volunteer')}
+                    className="btn btn-primary"
+                    style={{ 
+                      width: '100%', padding: '0.8rem',
+                      background: `linear-gradient(135deg, var(--color-primary), ${tierColor[badge.level]})`,
+                      border: 'none', fontSize: '0.95rem', fontWeight: 800,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                      color: 'white'
+                    }}
+                  >
+                    <Award size={18} /> Download Certificate (PDF)
+                  </button>
+                  <button 
+                    onClick={() => setSelectedBadgeModal(null)}
+                    className="btn btn-outline"
+                    style={{ width: '100%', padding: '0.75rem', fontSize: '0.9rem', fontWeight: 700 }}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            );
+          })()}
         </div>
       )}
 
