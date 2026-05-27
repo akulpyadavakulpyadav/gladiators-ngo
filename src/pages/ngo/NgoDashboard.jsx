@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Camera, Users, WifiOff, Wifi, IndianRupee, MessageSquare, Plus, Save, Building2, ChevronLeft, ChevronRight, X, Trash2 } from 'lucide-react';
+import { Camera, Users, WifiOff, Wifi, IndianRupee, MessageSquare, Plus, Save, Building2, ChevronLeft, ChevronRight, X, Trash2, Edit3 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import NgoProfile from './NgoProfile';
 import CollabHub from '../../components/chat/CollabHub';
@@ -774,43 +774,155 @@ const ManagementSuite = () => {
 /* ─── Offline Event Logger ─── */
 const OfflineEventLogger = () => {
   const { language } = useLanguage();
+  const { user } = useAuth();
   const [events, setEvents] = useState([]);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
-  const [formData, setFormData] = useState({ title: '', attendees: '', location: '' });
+  const [formData, setFormData] = useState({ _id: null, title: '', notes: '' });
+  const [pendingActions, setPendingActions] = useState([]);
+
+  const fetchLogs = async () => {
+    if (!user?.gcId) return;
+    try {
+      const res = await fetch(`http://localhost:5000/api/logs/ngo/${user.gcId}`);
+      if (!res.ok) throw new Error('Network response was not ok');
+      const data = await res.json();
+      setEvents(data);
+      localStorage.setItem('gladiconnect_cached_logs', JSON.stringify(data));
+    } catch (e) {
+      const stored = localStorage.getItem('gladiconnect_cached_logs');
+      if (stored) setEvents(JSON.parse(stored));
+    }
+  };
 
   useEffect(() => {
+    fetchLogs();
+    const storedPending = localStorage.getItem('gladiconnect_pending_actions');
+    if (storedPending) setPendingActions(JSON.parse(storedPending));
+
     const on = () => setIsOnline(true);
     const off = () => setIsOnline(false);
     window.addEventListener('online', on);
     window.addEventListener('offline', off);
-    const stored = localStorage.getItem('gladiconnect_offline_events');
-    if (stored) setEvents(JSON.parse(stored));
     return () => { window.removeEventListener('online', on); window.removeEventListener('offline', off); };
-  }, []);
+  }, [user]);
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    const newEvent = { ...formData, id: Date.now(), synced: isOnline };
-    const updated = [...events, newEvent];
-    setEvents(updated);
-    localStorage.setItem('gladiconnect_offline_events', JSON.stringify(updated));
-    setFormData({ title: '', attendees: '', location: '' });
+    if (!user?.gcId) return;
+
+    const logData = { ngoId: user.gcId, title: formData.title, notes: formData.notes, date: new Date().toISOString() };
+    
+    if (formData._id && !formData._id.toString().startsWith('temp-')) {
+      if (isOnline) {
+        try {
+          await fetch(`http://localhost:5000/api/logs/${formData._id}`, {
+            method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(logData)
+          });
+          fetchLogs();
+        } catch (err) {
+          queueAction({ type: 'UPDATE', id: formData._id, data: logData });
+        }
+      } else {
+        queueAction({ type: 'UPDATE', id: formData._id, data: logData });
+      }
+    } else {
+      if (isOnline) {
+        try {
+          await fetch('http://localhost:5000/api/logs', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(logData)
+          });
+          fetchLogs();
+        } catch (err) {
+          queueAction({ type: 'CREATE', id: `temp-${Date.now()}`, data: logData });
+        }
+      } else {
+        queueAction({ type: 'CREATE', id: `temp-${Date.now()}`, data: logData });
+      }
+    }
+    setFormData({ _id: null, title: '', notes: '' });
   };
 
-  const handleSync = () => {
-    const updated = events.map(ev => ({ ...ev, synced: true }));
-    setEvents(updated);
-    localStorage.setItem('gladiconnect_offline_events', JSON.stringify(updated));
+  const queueAction = (action) => {
+    const updatedActions = [...pendingActions, action];
+    setPendingActions(updatedActions);
+    localStorage.setItem('gladiconnect_pending_actions', JSON.stringify(updatedActions));
+    
+    let updatedEvents = [...events];
+    if (action.type === 'CREATE') {
+      updatedEvents.unshift({ _id: action.id, ...action.data });
+    } else if (action.type === 'UPDATE') {
+      updatedEvents = updatedEvents.map(e => e._id === action.id ? { ...e, ...action.data } : e);
+    } else if (action.type === 'DELETE') {
+      updatedEvents = updatedEvents.filter(e => e._id !== action.id);
+    }
+    setEvents(updatedEvents);
+    localStorage.setItem('gladiconnect_cached_logs', JSON.stringify(updatedEvents));
   };
 
-  const unsyncedCount = events.filter(e => !e.synced).length;
+  const handleDelete = async (id) => {
+    if (!window.confirm('Delete this log?')) return;
+    if (id.toString().startsWith('temp-')) {
+      const updatedActions = pendingActions.filter(a => a.id !== id);
+      setPendingActions(updatedActions);
+      localStorage.setItem('gladiconnect_pending_actions', JSON.stringify(updatedActions));
+      setEvents(events.filter(e => e._id !== id));
+      localStorage.setItem('gladiconnect_cached_logs', JSON.stringify(events.filter(e => e._id !== id)));
+      return;
+    }
+
+    if (isOnline) {
+      try {
+        await fetch(`http://localhost:5000/api/logs/${id}`, { method: 'DELETE' });
+        fetchLogs();
+      } catch (err) {
+        queueAction({ type: 'DELETE', id });
+      }
+    } else {
+      queueAction({ type: 'DELETE', id });
+    }
+  };
+
+  const handleEdit = (log) => {
+    setFormData({ _id: log._id, title: log.title, notes: log.notes });
+  };
+
+  const handleSync = async () => {
+    if (!isOnline) return;
+    let successCount = 0;
+    
+    for (const action of pendingActions) {
+      try {
+        if (action.type === 'CREATE') {
+          await fetch('http://localhost:5000/api/logs', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(action.data)
+          });
+        } else if (action.type === 'UPDATE') {
+          await fetch(`http://localhost:5000/api/logs/${action.id}`, {
+            method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(action.data)
+          });
+        } else if (action.type === 'DELETE') {
+          await fetch(`http://localhost:5000/api/logs/${action.id}`, { method: 'DELETE' });
+        }
+        successCount++;
+      } catch (e) {
+        console.error('Failed to sync action', action, e);
+      }
+    }
+    
+    setPendingActions([]);
+    localStorage.removeItem('gladiconnect_pending_actions');
+    fetchLogs();
+    if (successCount > 0) alert(`Successfully synced ${successCount} items.`);
+  };
+
+  const unsyncedCount = pendingActions.length;
 
   return (
     <div className="animate-fade-in grid grid-md-2">
       {/* Form */}
-      <div className="glass-card" style={{ padding: '1.5rem' }}>
+      <div className="glass-card" style={{ padding: '1.5rem', alignSelf: 'start' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-          <h3 className="section-title" style={{ marginBottom: 0 }}>{t('log_new_event', language)}</h3>
+          <h3 className="section-title" style={{ marginBottom: 0 }}>{formData._id ? 'Edit Event Log' : t('log_new_event', language)}</h3>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
             {isOnline ? <Wifi size={14} style={{ color: 'var(--color-secondary)' }} /> : <WifiOff size={14} style={{ color: 'var(--color-warning)' }} />}
             <span style={{ fontSize: '0.8rem', fontWeight: 600, color: isOnline ? 'var(--color-secondary)' : 'var(--color-warning)' }}>
@@ -821,22 +933,23 @@ const OfflineEventLogger = () => {
         <form onSubmit={handleSave}>
           <div className="form-group">
             <label className="form-label">{t('event_title', language)}</label>
-            <input type="text" className="form-input" placeholder={t('event_cleanup', language)} required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} />
+            <input type="text" className="form-input" placeholder="Program Title" required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} />
           </div>
           <div className="form-group">
-            <label className="form-label">{t('location', language)}</label>
-            <input type="text" className="form-input" placeholder={t('placeholder_location', language)} required value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} />
+            <label className="form-label">Notes / Description</label>
+            <textarea className="form-input" rows="4" placeholder="Enter notes here..." required value={formData.notes} onChange={e => setFormData({...formData, notes: e.target.value})} />
           </div>
-          <div className="form-group">
-            <label className="form-label">{t('attendees', language)}</label>
-            <input type="number" className="form-input" placeholder="0" required value={formData.attendees} onChange={e => setFormData({...formData, attendees: e.target.value})} />
+          <div style={{ display: 'flex', gap: '1rem' }}>
+            <button type="submit" className="btn btn-primary" style={{ flex: 1 }}><Save size={16} /> {formData._id ? 'Update Log' : t('save_event', language)}</button>
+            {formData._id && (
+              <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setFormData({ _id: null, title: '', notes: '' })}>Cancel</button>
+            )}
           </div>
-          <button type="submit" className="btn btn-primary" style={{ width: '100%' }}><Save size={16} /> {t('save_event', language)}</button>
         </form>
       </div>
 
       {/* Event List */}
-      <div className="glass-card" style={{ padding: '1.5rem' }}>
+      <div className="glass-card" style={{ padding: '1.5rem', alignSelf: 'start' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
           <h3 className="section-title" style={{ marginBottom: 0 }}>{t('event_logs', language)}</h3>
           {isOnline && unsyncedCount > 0 && (
@@ -848,22 +961,36 @@ const OfflineEventLogger = () => {
         {events.length === 0 ? (
           <p style={{ textAlign: 'center', padding: '3rem 0', fontSize: '0.9rem' }}>{t('no_events_yet', language)}</p>
         ) : (
-          <div className="space-y-4" style={{ maxHeight: 380, overflowY: 'auto' }}>
-            {events.map(ev => (
-              <div key={ev.id} className="list-item">
-                <div>
-                  <p style={{ fontWeight: 600, color: 'var(--color-text-primary)', fontSize: '0.9rem' }}>{ev.title}</p>
-                  <p style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>
-                    {ev.location === 'Bangalore' || ev.location === 'ಬೆಂಗಳೂರು' ? (language === 'KN' ? 'ಬೆಂಗಳೂರು' : language === 'HI' ? 'बेंगलुरु' : 'Bangalore') : ev.location} · {ev.attendees} {language === 'KN' ? 'ಭಾಗವಹಿಸುವವರು' : language === 'HI' ? 'प्रतिभागी' : 'attendees'}
-                  </p>
+          <div className="space-y-4" style={{ maxHeight: 500, overflowY: 'auto', paddingRight: '0.5rem' }}>
+            {events.map(ev => {
+              const isPending = pendingActions.some(a => a.id === ev._id);
+              return (
+                <div key={ev._id} className="list-item" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', alignItems: 'flex-start', padding: '1rem' }}>
+                  <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div>
+                      <p style={{ fontWeight: 700, color: 'var(--color-text-primary)', fontSize: '1.05rem', margin: 0 }}>{ev.title}</p>
+                      <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', marginTop: '0.2rem', marginBottom: 0 }}>
+                        {new Date(ev.date).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                      <span className={`badge ${isPending ? 'badge-warning' : 'badge-secondary'}`}>
+                        {isPending 
+                          ? (language === 'KN' ? 'ಬಾಕಿ ಇದೆ' : language === 'HI' ? 'लंबित' : 'Pending Sync') 
+                          : (language === 'KN' ? 'ಸಿಂಕ್ ಮಾಡಲಾಗಿದೆ' : language === 'HI' ? 'सिंक किया गया' : 'Synced')}
+                      </span>
+                      <button onClick={() => handleEdit(ev)} style={{ background: 'none', border: 'none', color: '#64748B', cursor: 'pointer', padding: '4px' }} title="Edit"><Edit3 size={16} /></button>
+                      <button onClick={() => handleDelete(ev._id)} style={{ background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', padding: '4px' }} title="Delete"><Trash2 size={16} /></button>
+                    </div>
+                  </div>
+                  {ev.notes && (
+                    <div style={{ fontSize: '0.9rem', color: '#334155', width: '100%', whiteSpace: 'pre-wrap', background: 'rgba(0,0,0,0.02)', padding: '0.75rem', borderRadius: '8px', borderLeft: '3px solid var(--color-primary)' }}>
+                      {ev.notes}
+                    </div>
+                  )}
                 </div>
-                <span className={`badge ${ev.synced ? 'badge-secondary' : 'badge-warning'}`}>
-                  {ev.synced 
-                    ? (language === 'KN' ? 'ಸಿಂಕ್ ಮಾಡಲಾಗಿದೆ' : language === 'HI' ? 'सिंक किया गया' : 'Synced') 
-                    : (language === 'KN' ? 'ಬಾಕಿ ಇದೆ' : language === 'HI' ? 'लंबित' : 'Pending')}
-                </span>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
