@@ -15,6 +15,19 @@ const DirectorySearch = () => {
   const [selectedProgram, setSelectedProgram] = useState(null);
   const [selectedRole, setSelectedRole] = useState('');
   const [applyMessage, setApplyMessage] = useState('');
+  const [ngoStats, setNgoStats] = useState({ volunteers: 0, hours: 0, campaigns: 0 });
+
+  useEffect(() => {
+    if (selectedProgram) {
+      const ngoId = selectedProgram.ngoId?._id || selectedProgram.ngoId;
+      if (ngoId) {
+        fetch(`http://localhost:5000/api/users/ngos/${ngoId}/stats`)
+          .then(res => res.json())
+          .then(data => setNgoStats(data))
+          .catch(console.error);
+      }
+    }
+  }, [selectedProgram]);
 
   const [userApplications, setUserApplications] = useState([]);
 
@@ -243,17 +256,17 @@ const DirectorySearch = () => {
                <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', borderTop: '1px dashed #E2E8F0', paddingTop: '1rem' }}>
                   <div style={{ flex: 1, textAlign: 'center', background: '#F8FAFC', padding: '0.75rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
                     <Users size={16} style={{ color: 'var(--color-secondary)', margin: '0 auto 0.25rem auto' }} />
-                    <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#334155' }}>{(selectedProgram.ngoId?.name?.length || 10) * 12 + 45}+</div>
+                    <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#334155' }}>{ngoStats.volunteers}</div>
                     <div style={{ fontSize: '0.7rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase' }}>Volunteers</div>
                   </div>
                   <div style={{ flex: 1, textAlign: 'center', background: '#F8FAFC', padding: '0.75rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
                     <Clock size={16} style={{ color: 'var(--color-secondary)', margin: '0 auto 0.25rem auto' }} />
-                    <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#334155' }}>{((selectedProgram.ngoId?.name?.length || 10) * 12 + 45) * 24}+</div>
+                    <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#334155' }}>{ngoStats.hours}</div>
                     <div style={{ fontSize: '0.7rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase' }}>Hours Logged</div>
                   </div>
                   <div style={{ flex: 1, textAlign: 'center', background: '#F8FAFC', padding: '0.75rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
                     <Activity size={16} style={{ color: 'var(--color-secondary)', margin: '0 auto 0.25rem auto' }} />
-                    <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#334155' }}>{(selectedProgram.ngoId?.name?.length || 10) * 2}+</div>
+                    <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#334155' }}>{ngoStats.campaigns}</div>
                     <div style={{ fontSize: '0.7rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase' }}>Campaigns</div>
                   </div>
                </div>

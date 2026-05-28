@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Camera, Users, WifiOff, Wifi, IndianRupee, MessageSquare, Plus, Save, Building2, ChevronLeft, ChevronRight, X, Trash2, Edit3 } from 'lucide-react';
+import { Camera, Users, WifiOff, Wifi, IndianRupee, MessageSquare, Plus, Save, Building2, ChevronLeft, ChevronRight, X, Trash2, Edit3, Clock, Activity } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import NgoProfile from './NgoProfile';
 import CollabHub from '../../components/chat/CollabHub';
@@ -19,12 +19,18 @@ const ImpactProfile = () => {
   const [galleryFormData, setGalleryFormData] = useState({ title: '', description: '', images: [], programId: '' });
   const [programs, setPrograms] = useState([]);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [ngoStats, setNgoStats] = useState({ volunteers: 0, hours: 0, campaigns: 0 });
 
   useEffect(() => {
     if (user?.gcId) {
       fetch(`http://localhost:5000/api/programs/ngo/${user.gcId}`)
         .then(res => res.json())
         .then(data => setPrograms(data))
+        .catch(console.error);
+        
+      fetch(`http://localhost:5000/api/users/ngos/${user.gcId}/stats`)
+        .then(res => res.json())
+        .then(data => setNgoStats(data))
         .catch(console.error);
     }
   }, [user]);
@@ -176,6 +182,25 @@ const ImpactProfile = () => {
           >
             {t('edit_profile', language)}
           </button>
+        </div>
+        
+        {/* Impact Stats */}
+        <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem', borderTop: '1px dashed #E2E8F0', paddingTop: '1.5rem' }}>
+          <div style={{ flex: 1, textAlign: 'center', background: '#F8FAFC', padding: '1rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
+            <Users size={20} style={{ color: 'var(--color-secondary)', margin: '0 auto 0.5rem auto' }} />
+            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#334155' }}>{ngoStats.volunteers}</div>
+            <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase' }}>{t('volunteers', language) || 'Volunteers'}</div>
+          </div>
+          <div style={{ flex: 1, textAlign: 'center', background: '#F8FAFC', padding: '1rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
+            <Clock size={20} style={{ color: 'var(--color-secondary)', margin: '0 auto 0.5rem auto' }} />
+            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#334155' }}>{ngoStats.hours}</div>
+            <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase' }}>{t('hours_logged', language) || 'Hours Logged'}</div>
+          </div>
+          <div style={{ flex: 1, textAlign: 'center', background: '#F8FAFC', padding: '1rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
+            <Activity size={20} style={{ color: 'var(--color-secondary)', margin: '0 auto 0.5rem auto' }} />
+            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#334155' }}>{ngoStats.campaigns}</div>
+            <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase' }}>{t('campaigns', language) || 'Campaigns'}</div>
+          </div>
         </div>
       </div>
 
