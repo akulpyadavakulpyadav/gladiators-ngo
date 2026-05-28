@@ -238,9 +238,11 @@ const ImpactProfile = () => {
       {isGalleryModalOpen && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(0,0,0,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ position: 'relative', width: '90%', maxWidth: editMode ? 600 : 1000, height: editMode ? '85vh' : '90vh', display: 'flex', flexDirection: 'column', background: editMode ? '#fff' : 'transparent', borderRadius: editMode ? '16px' : '0' }}>
-            <button onClick={() => setIsGalleryModalOpen(false)} style={{ position: 'absolute', top: 16, right: 16, background: editMode ? '#F1F5F9' : '#FFFFFF', border: 'none', color: '#334155', borderRadius: '50%', width: 40, height: 40, cursor: 'pointer', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: editMode ? 'none' : '0 4px 12px rgba(0,0,0,0.5)' }}>
-              <X size={20} />
-            </button>
+            {editMode && (
+              <button onClick={() => setIsGalleryModalOpen(false)} style={{ position: 'absolute', top: 16, right: 16, background: '#F1F5F9', border: 'none', color: '#334155', borderRadius: '50%', width: 40, height: 40, cursor: 'pointer', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <X size={20} />
+              </button>
+            )}
 
             {editMode ? (
               <div className="glass-card" style={{ padding: '2.5rem', overflowY: 'auto', border: 'none', boxShadow: 'none' }}>
@@ -290,14 +292,21 @@ const ImpactProfile = () => {
             ) : (
               selectedGalleryItem && (
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden', borderRadius: '16px' }}>
-                  {selectedGalleryItem.images && selectedGalleryItem.images.length > 0 && (
-                    <button onClick={handleDeletePhoto} style={{ position: 'absolute', top: 16, right: 64, background: '#FFFFFF', border: 'none', color: '#EF4444', borderRadius: '50%', width: 40, height: 40, cursor: 'pointer', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
-                      <Trash2 size={18} />
-                    </button>
-                  )}
                   {selectedGalleryItem.images && selectedGalleryItem.images.length > 0 ? (
-                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#111' }}>
-                      <img src={selectedGalleryItem.images[activeImageIndex]} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} alt="Activity" />
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'transparent' }}>
+                      <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', maxWidth: '100%', maxHeight: '100%' }}>
+                        <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', zIndex: 10 }}>
+                          <button onClick={handleDeletePhoto} style={{ background: '#FFFFFF', border: 'none', color: '#EF4444', borderRadius: '50%', width: 40, height: 40, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.5)', flexShrink: 0 }}>
+                            <Trash2 size={18} />
+                          </button>
+                          <button onClick={() => setIsGalleryModalOpen(false)} style={{ background: '#FFFFFF', border: 'none', color: '#334155', cursor: 'pointer', width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', flexShrink: 0 }}>
+                            <X size={20} />
+                          </button>
+                        </div>
+                        <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden' }}>
+                          <img src={selectedGalleryItem.images[activeImageIndex]} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} alt="Activity" />
+                        </div>
+                      </div>
                     </div>
                   ) : (
                     <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#111', color: '#94A3B8' }}>
