@@ -26,6 +26,44 @@ router.get('/campaigns/:ngoId', async (req, res) => {
   }
 });
 
+// Complete a campaign
+router.put('/campaigns/:id/complete', async (req, res) => {
+  try {
+    const campaign = await Campaign.findByIdAndUpdate(req.params.id, { status: 'Completed' }, { new: true });
+    res.json(campaign);
+  } catch (error) {
+    res.status(500).json({ error: 'Error completing campaign' });
+  }
+});
+
+// Generate/submit a finance report for a campaign
+router.post('/campaigns/:id/report', async (req, res) => {
+  try {
+    const { reportUrl } = req.body;
+    const campaign = await Campaign.findByIdAndUpdate(req.params.id, { 
+      hasFinanceReport: true, 
+      financeReportUrl: reportUrl || 'generated_report.pdf' 
+    }, { new: true });
+    res.json(campaign);
+  } catch (error) {
+    res.status(500).json({ error: 'Error generating finance report' });
+  }
+});
+
+// Get campaigns pending finance report
+router.get('/campaigns/:ngoId/pending-reports', async (req, res) => {
+  try {
+    const campaigns = await Campaign.find({ 
+      ngoId: req.params.ngoId, 
+      status: 'Completed', 
+      hasFinanceReport: false 
+    });
+    res.json(campaigns);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching pending reports' });
+  }
+});
+
 // 2. Donations
 router.post('/donations', async (req, res) => {
   try {

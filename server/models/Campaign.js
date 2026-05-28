@@ -33,6 +33,13 @@ const campaignSchema = new mongoose.Schema({
     type: String,
     enum: ['Active', 'Completed', 'Cancelled'],
     default: 'Active'
+  },
+  hasFinanceReport: {
+    type: Boolean,
+    default: false
+  },
+  financeReportUrl: {
+    type: String
   }
 }, {
   timestamps: true
