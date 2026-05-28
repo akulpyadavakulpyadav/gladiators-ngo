@@ -8,6 +8,7 @@ const CompanyNgoProfile = () => {
   const [ngo, setNgo] = useState(null);
   const [campaigns, setCampaigns] = useState([]);
   const [expenses, setExpenses] = useState([]);
+  const [programs, setPrograms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
   const [selectedGalleryItem, setSelectedGalleryItem] = useState(null);
@@ -24,14 +25,16 @@ const CompanyNgoProfile = () => {
         
         if (foundNgo) setNgo(foundNgo);
 
-        // Fetch Finance Data
-        const [campRes, expRes] = await Promise.all([
+        // Fetch Finance & Program Data
+        const [campRes, expRes, progRes] = await Promise.all([
           fetch(`http://localhost:5000/api/finance/campaigns/${ngoId}`),
-          fetch(`http://localhost:5000/api/finance/expenses/${ngoId}`)
+          fetch(`http://localhost:5000/api/finance/expenses/${ngoId}`),
+          fetch(`http://localhost:5000/api/programs/ngo/${ngoId}`)
         ]);
         
         setCampaigns(await campRes.json());
         setExpenses(await expRes.json());
+        setPrograms(await progRes.json());
         
         setLoading(false);
       } catch (err) {
@@ -198,8 +201,32 @@ const CompanyNgoProfile = () => {
             ))}
             {expenses.length === 0 && <p style={{ color: '#94A3B8' }}>No expenses logged yet.</p>}
           </div>
+          </div>
         </div>
         
+        {/* Volunteer Programs */}
+        <div className="glass-card" style={{ padding: '2rem', gridColumn: '1 / -1' }}>
+          <h3 style={{ marginBottom: '1.5rem', color: '#1E293B', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Users size={20} /> Volunteer Programs
+          </h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.25rem' }}>
+            {programs.map(p => (
+              <div key={p._id} style={{ padding: '1.25rem', background: '#F8FAFC', borderRadius: '8px', borderLeft: `4px solid ${p.status === 'Completed' ? '#10B981' : 'var(--color-secondary)'}` }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
+                  <h4 style={{ margin: 0, fontSize: '1.1rem' }}>{p.title}</h4>
+                  <span className={`badge ${p.status === 'Completed' ? 'badge-secondary' : 'badge-primary'}`}>{p.status}</span>
+                </div>
+                <p style={{ fontSize: '0.9rem', color: '#64748B', marginBottom: '1rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{p.description}</p>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  {p.rolesNeeded?.map((role, i) => (
+                    <span key={i} className="badge badge-primary" style={{ padding: '0.15rem 0.4rem', fontSize: '0.75rem' }}>{role}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+            {programs.length === 0 && <p style={{ color: '#94A3B8', gridColumn: '1 / -1' }}>No volunteer programs available.</p>}
+          </div>
+        </div>
       </div>
 
       {/* Gallery Slideshow Modal */}
