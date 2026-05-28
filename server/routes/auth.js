@@ -165,9 +165,11 @@ router.post('/send-otp', async (req, res) => {
       return res.status(400).json({ message: 'Email is required' });
     }
 
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    // const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otp = '123456'; // HARDCODED FOR TESTING
     otpStore.set(email, { otp, expiresAt: Date.now() + 10 * 60 * 1000 }); // 10 minutes expiry
 
+    /* COMMENTED OUT FOR LOCAL TESTING
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
@@ -176,10 +178,13 @@ router.post('/send-otp', async (req, res) => {
     };
 
     await transporter.sendMail(mailOptions);
-    res.status(200).json({ success: true, message: 'OTP sent successfully' });
+    */
+    
+    console.log(`[TEST MODE] OTP for ${email} is ${otp}`);
+    res.status(200).json({ success: true, message: 'OTP sent successfully (Test Mode)' });
   } catch (error) {
     console.error('Error sending OTP:', error);
-    res.status(500).json({ success: false, message: 'Failed to send OTP. Please check email configuration.' });
+    res.status(500).json({ success: false, message: 'Failed to send OTP.' });
   }
 });
 
