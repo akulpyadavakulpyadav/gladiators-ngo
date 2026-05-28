@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Camera, Users, WifiOff, Wifi, IndianRupee, MessageSquare, Plus, Save, Building2, ChevronLeft, ChevronRight, X, Trash2, Edit3, Clock, Activity } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
+import { useToast } from '../../context/ToastContext';
+import { useConfirm } from '../../context/ConfirmContext';
 import NgoProfile from './NgoProfile';
 import CollabHub from '../../components/chat/CollabHub';
 import { t } from '../../utils/translations';
@@ -11,6 +13,8 @@ import { t } from '../../utils/translations';
 const ImpactProfile = () => {
   const { language } = useLanguage();
   const { user, updateUserProfile } = useAuth();
+  const { showToast } = useToast();
+  const { askConfirm } = useConfirm();
   const navigate = useNavigate();
   
   const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
@@ -38,7 +42,7 @@ const ImpactProfile = () => {
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     if (galleryFormData.images.length + files.length > 8) {
-      alert('You can only upload up to 8 images per activity.');
+      showToast('You can only upload up to 8 images per activity.', 'error');
       return;
     }
     files.forEach(file => {
@@ -72,7 +76,7 @@ const ImpactProfile = () => {
 
   const handleSaveGalleryItem = async () => {
     if (!galleryFormData.title || !galleryFormData.description) {
-      alert('Title and description are required.');
+      showToast('Title and description are required.', 'error');
       return;
     }
     const updatedGallery = [...(user.mediaGallery || []), galleryFormData];
@@ -84,14 +88,15 @@ const ImpactProfile = () => {
       });
       updateUserProfile({ mediaGallery: updatedGallery });
       setIsGalleryModalOpen(false);
+      showToast('Activity saved successfully!', 'success');
     } catch (e) {
       console.error(e);
-      alert('Failed to save activity.');
+      showToast('Failed to save activity.', 'error');
     }
   };
 
   const handleDeleteGalleryItem = async (itemToDelete) => {
-    if (!window.confirm('Delete this entire gallery activity?')) return;
+    if (!(await askConfirm('Delete this entire gallery activity?'))) return;
     const updatedGallery = user.mediaGallery.filter(i => i !== itemToDelete && i._id !== itemToDelete._id);
     try {
       await fetch('http://localhost:5000/api/auth/profile', {
@@ -103,14 +108,15 @@ const ImpactProfile = () => {
       if (selectedGalleryItem && (selectedGalleryItem === itemToDelete || selectedGalleryItem._id === itemToDelete._id)) {
         setIsGalleryModalOpen(false);
       }
+      showToast('Activity deleted.', 'info');
     } catch (e) {
       console.error(e);
-      alert('Failed to delete gallery item.');
+      showToast('Failed to delete gallery item.', 'error');
     }
   };
 
   const handleDeletePhoto = async () => {
-    if (!window.confirm('Delete this photo?')) return;
+    if (!(await askConfirm('Delete this photo?'))) return;
     const updatedImages = selectedGalleryItem.images.filter((_, idx) => idx !== activeImageIndex);
     const updatedItem = { ...selectedGalleryItem, images: updatedImages };
     
@@ -131,9 +137,10 @@ const ImpactProfile = () => {
       if (activeImageIndex >= updatedImages.length && activeImageIndex > 0) {
         setActiveImageIndex(activeImageIndex - 1);
       }
+      showToast('Photo deleted.', 'info');
     } catch (e) {
       console.error(e);
-      alert('Failed to delete photo.');
+      showToast('Failed to delete photo.', 'error');
     }
   };
 
@@ -381,6 +388,8 @@ const ImpactProfile = () => {
 const ManagementSuite = () => {
   const { user } = useAuth();
   const { language } = useLanguage();
+  const { showToast } = useToast();
+  const { askConfirm } = useConfirm();
   
   const [programs, setPrograms] = useState([]);
   const [applications, setApplications] = useState([]);
@@ -438,7 +447,8 @@ const ManagementSuite = () => {
       setShowBroadcastModal(false);
       setFormData({ title: '', description: '', rolesNeeded: '', location: '' });
       fetchPrograms(id);
-    } catch (e) { console.error(e); }
+      showToast('Program broadcasted!', 'success');
+    } catch (e) { console.error(e); showToast('Failed to broadcast.', 'error'); }
   };
 
   const handleApprove = async (appId) => {
@@ -451,6 +461,7 @@ const ManagementSuite = () => {
       const id = user?._id || user?.gcId;
       fetchApplications(id);
       setShowProfileModal(false);
+      showToast('Application approved.', 'success');
     } catch (e) { console.error(e); }
   };
 
@@ -464,6 +475,7 @@ const ManagementSuite = () => {
       const id = user?._id || user?.gcId;
       fetchApplications(id);
       setShowProfileModal(false);
+      showToast('Application rejected.', 'info');
     } catch (e) { console.error(e); }
   };
 
@@ -482,6 +494,7 @@ const ManagementSuite = () => {
       fetchPrograms(id);
       setShowDeleteConfirmModal(false);
       setProgramToDelete(null);
+      showToast('Program deleted.', 'info');
     } catch (e) { console.error(e); }
   };
 
@@ -499,6 +512,7 @@ const ManagementSuite = () => {
       setShowEndCampaignModal(false);
       setCampaignHours('');
       setSelectedCampaignForEnd(null);
+      showToast('Campaign ended successfully.', 'success');
     } catch (e) { console.error(e); }
   };
 
@@ -745,7 +759,6 @@ const ManagementSuite = () => {
               </div>
             </div>
             
-            {/* Earned Badges Section */}
             <div style={{ marginBottom: '1.5rem' }}>
               <h5 style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--color-text-secondary)', marginBottom: '0.5rem' }}>Earned Badges</h5>
               <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
@@ -813,6 +826,8 @@ const ManagementSuite = () => {
 const OfflineEventLogger = () => {
   const { language } = useLanguage();
   const { user } = useAuth();
+  const { showToast } = useToast();
+  const { askConfirm } = useConfirm();
   const [events, setEvents] = useState([]);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [formData, setFormData] = useState({ _id: null, title: '', notes: '' });
@@ -898,7 +913,7 @@ const OfflineEventLogger = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Delete this log?')) return;
+    if (!(await askConfirm('Delete this log?'))) return;
     if (id.toString().startsWith('temp-')) {
       const updatedActions = pendingActions.filter(a => a.id !== id);
       setPendingActions(updatedActions);
@@ -950,7 +965,7 @@ const OfflineEventLogger = () => {
     setPendingActions([]);
     localStorage.removeItem('gladiconnect_pending_actions');
     fetchLogs();
-    if (successCount > 0) alert(`Successfully synced ${successCount} items.`);
+    if (successCount > 0) showToast(`Successfully synced ${successCount} items.`, 'success');
   };
 
   const unsyncedCount = pendingActions.length;
@@ -1122,7 +1137,7 @@ const FinanceSuite = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ reportUrl: 'finance_report_' + Date.now() + '.pdf' })
         });
-        alert('Finance Report Generated Successfully!');
+        showToast('Finance Report Generated Successfully!', 'success');
       }
       setShowEndCampaignModal(false);
       setEndingCampaignId(null);
@@ -1310,12 +1325,12 @@ const FinanceSuite = () => {
   );
 };
 
-/* ─── Collab Hub Placeholder removed, using imported component ─── */
-
 /* ─── NGO Dashboard ─── */
 const NgoDashboard = () => {
   const { user } = useAuth();
   const { language } = useLanguage();
+  const { showToast } = useToast();
+  const { askConfirm } = useConfirm();
   const [activeTab, setActiveTab] = useState('impact');
   const [totalUnread, setTotalUnread] = useState(0);
   const [pendingReports, setPendingReports] = useState([]);
@@ -1351,13 +1366,15 @@ const NgoDashboard = () => {
 
   const handleGeneratePendingReport = async (campaignId) => {
     try {
-      await fetch(`http://localhost:5000/api/finance/campaigns/${campaignId}/report`, {
+      const res = await fetch(`http://localhost:5000/api/finance/campaigns/${campaignId}/report`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ reportUrl: 'finance_report_' + Date.now() + '.pdf' })
       });
-      alert('Finance Report Generated Successfully!');
-      setPendingReports(prev => prev.filter(c => c._id !== campaignId));
+      if (res.ok) {
+        showToast('Finance Report Generated Successfully!', 'success');
+        setPendingReports(prev => prev.filter(c => c._id !== campaignId));
+      }
     } catch (err) {}
   };
 

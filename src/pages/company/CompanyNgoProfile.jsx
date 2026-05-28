@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { MapPin, Target, IndianRupee, FileText, Download, ChevronLeft, MessageSquare, Users, Clock, Activity, Camera, X, ChevronRight } from 'lucide-react';
+import { MapPin, Target, IndianRupee, FileText, Download, ChevronLeft, MessageSquare, Users, Clock, Activity, Camera, X, ChevronRight, Heart, Mail } from 'lucide-react';
+import { useToast } from '../../context/ToastContext';
 
 const CompanyNgoProfile = () => {
   const { ngoId } = useParams();
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [ngo, setNgo] = useState(null);
   const [campaigns, setCampaigns] = useState([]);
   const [expenses, setExpenses] = useState([]);
@@ -75,8 +77,8 @@ const CompanyNgoProfile = () => {
             <p style={{ lineHeight: 1.7, color: '#334155', fontSize: '1.1rem' }}>{ngo.about || 'No details provided.'}</p>
             
             <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
-              <button className="btn btn-primary" onClick={() => alert('Pledge flow would start here.')}>
-                Pledge Support
+              <button className="btn btn-primary" onClick={() => showToast('Pledge flow would start here.', 'info')}>
+                <Heart size={16} /> Pledge Support
               </button>
               <button className="btn btn-secondary" onClick={() => navigate('/messages', { state: { contactId: ngo._id, contactName: ngo.name } })} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <MessageSquare size={16} /> Direct Connect
@@ -172,7 +174,7 @@ const CompanyNgoProfile = () => {
                 </div>
 
                 {c.status === 'Completed' && c.hasFinanceReport && (
-                  <button className="btn btn-outline" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }} onClick={() => alert(`Downloading ${c.financeReportUrl}`)}>
+                  <button className="btn btn-outline" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }} onClick={() => showToast(`Downloading ${c.financeReportUrl}`, 'info')}>
                     <Download size={16} /> Download Finance Report
                   </button>
                 )}
