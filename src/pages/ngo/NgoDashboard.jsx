@@ -526,8 +526,7 @@ const ManagementSuite = () => {
 
   const activeVolunteers = applications.filter(a => a.status === 'Approved').length;
   const activeCampaigns = programs.filter(p => p.status === 'Active').length;
-  // Generating a stable random number based on activeVolunteers so it doesn't jump around on every re-render
-  const randomHours = activeVolunteers > 0 ? (activeVolunteers * 120 + 45) : 0; 
+  const realHours = programs.filter(p => p.status === 'Completed').reduce((acc, p) => acc + (p.hours || 0), 0);
 
   return (
     <div className="animate-fade-in space-y-6">
@@ -540,7 +539,7 @@ const ManagementSuite = () => {
         {[
           { label: 'Total Volunteers', value: activeVolunteers.toString(), color: 'var(--color-primary)', bg: 'rgba(0, 0, 0, 0.05)' },
           { label: 'Active Campaigns', value: activeCampaigns.toString(), color: 'var(--color-secondary)', bg: 'rgba(0, 0, 0, 0.05)' },
-          { label: 'Total Hours Logged', value: randomHours > 0 ? randomHours + '+' : '0', color: 'var(--color-warning)', bg: 'rgba(0, 0, 0, 0.05)' }
+          { label: 'Total Hours Logged', value: realHours.toString(), color: 'var(--color-warning)', bg: 'rgba(0, 0, 0, 0.05)' }
         ].map((s, i) => (
           <div key={i} className="stat-card">
             <div className="stat-icon" style={{ background: s.bg }}><span style={{ color: s.color, fontWeight: 800 }}>●</span></div>

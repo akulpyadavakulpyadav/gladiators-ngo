@@ -40,8 +40,8 @@ router.get('/ngos/:ngoId/stats', async (req, res) => {
     const { ngoId } = req.params;
     
     const volunteers = await Application.countDocuments({ ngoId, status: 'Approved' });
-    const activeCampaigns = await Campaign.countDocuments({ ngoId, status: 'Active' });
-    const endedCampaigns = await Campaign.countDocuments({ ngoId, status: { $in: ['Completed', 'Cancelled'] } });
+    const activeCampaigns = await Program.countDocuments({ ngoId, status: 'Active' });
+    const endedCampaigns = await Program.countDocuments({ ngoId, status: { $in: ['Completed', 'Cancelled'] } });
     const campaigns = activeCampaigns + endedCampaigns;
     
     const completedPrograms = await Program.find({ ngoId, status: 'Completed' });
