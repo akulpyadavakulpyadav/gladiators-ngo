@@ -18,6 +18,7 @@ import CompanyDashboard from './pages/company/CompanyDashboard';
 import CompanyProfile from './pages/company/CompanyProfile';
 import CharitySearch from './pages/company/CharitySearch';
 import CompanyNgoProfile from './pages/company/CompanyNgoProfile';
+import CollabHub from './components/chat/CollabHub';
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRole }) => {
@@ -100,6 +101,19 @@ const App = () => {
               <Route path="company/ngo/:ngoId" element={
                 <ProtectedRoute allowedRole="company">
                   <CompanyNgoProfile />
+                </ProtectedRoute>
+              } />
+
+              {/* Shared Chat Route */}
+              <Route path="messages" element={
+                <ProtectedRoute>
+                  <div className="page-container animate-fade-in" style={{ padding: '2rem' }}>
+                    <div className="page-header" style={{ marginBottom: '1.5rem' }}>
+                      <h1 className="text-gradient">Direct Connect</h1>
+                      <p>Communicate directly with NGOs and manage your collaborations.</p>
+                    </div>
+                    <CollabHub />
+                  </div>
                 </ProtectedRoute>
               } />
             </Route>
