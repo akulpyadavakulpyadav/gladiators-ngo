@@ -730,14 +730,14 @@ const VolunteerNgoProfileView = ({ ngo, onBack }) => {
 
       {/* Impact Gallery (Read-Only) */}
       <h3 className="section-title" style={{ marginTop: '2rem' }}>{t('impact_gallery', language)}</h3>
-      <div className="grid grid-md-3">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
         {mediaGallery.length === 0 ? (
           <div className="glass-card" style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-text-secondary)', gridColumn: '1 / -1' }}>
             {t('no_impact_photos', language)}
           </div>
         ) : mediaGallery.map((item, idx) => (
           <div key={item._id || idx} className="glass-card card-hover" style={{ overflow: 'hidden', cursor: 'pointer' }} onClick={() => { setSelectedGalleryItem(item); setActiveImageIndex(0); setIsGalleryModalOpen(true); }}>
-            <div style={{ height: 160, background: 'var(--color-border)', position: 'relative' }}>
+            <div style={{ aspectRatio: '1 / 1', background: 'var(--color-border)', position: 'relative' }}>
               {item.images && item.images.length > 0 ? (
                 <img src={item.images[0]} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               ) : (

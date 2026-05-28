@@ -115,11 +115,11 @@ const CompanyNgoProfile = () => {
       <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', fontSize: '1.75rem' }}>
         <Camera size={28} style={{ color: 'var(--color-primary)' }} /> Impact Gallery
       </h2>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
         {ngo.mediaGallery?.length > 0 ? (
           ngo.mediaGallery.map((item, idx) => (
             <div key={item._id || idx} className="glass-card card-hover" style={{ overflow: 'hidden', cursor: 'pointer' }} onClick={() => { setSelectedGalleryItem(item); setActiveImageIndex(0); setIsGalleryModalOpen(true); }}>
-              <div style={{ height: 160, background: 'var(--color-border)', position: 'relative' }}>
+              <div style={{ aspectRatio: '1 / 1', background: 'var(--color-border)', position: 'relative' }}>
                 {item.images && item.images.length > 0 ? (
                   <img src={item.images[0]} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 ) : (
