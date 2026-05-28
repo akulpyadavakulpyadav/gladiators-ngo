@@ -1001,19 +1001,219 @@ const OfflineEventLogger = () => {
 /* ─── Finance Suite ─── */
 const FinanceSuite = () => {
   const { language } = useLanguage();
+  const { user } = useAuth();
+  
+  const [activeSubTab, setActiveSubTab] = useState('campaigns'); // campaigns, expenses, donations
+  const [campaigns, setCampaigns] = useState([]);
+  const [expenses, setExpenses] = useState([]);
+  const [donations, setDonations] = useState([]);
+  
+  const [showCampaignModal, setShowCampaignModal] = useState(false);
+  const [campaignForm, setCampaignForm] = useState({ title: '', description: '', targetAmount: '', endDate: '' });
+
+  const [showExpenseModal, setShowExpenseModal] = useState(false);
+  const [expenseForm, setExpenseForm] = useState({ title: '', amountSpent: '', category: 'Logistics', description: '', proofUrl: '', campaignId: '' });
+
+  useEffect(() => {
+    if (user?.gcId) {
+      fetchFinanceData();
+    }
+  }, [user]);
+
+  const fetchFinanceData = async () => {
+    try {
+      const [campRes, expRes, donRes] = await Promise.all([
+        fetch(`http://localhost:5000/api/finance/campaigns/${user.gcId}`),
+        fetch(`http://localhost:5000/api/finance/expenses/${user.gcId}`),
+        fetch(`http://localhost:5000/api/finance/donations/${user.gcId}`)
+      ]);
+      setCampaigns(await campRes.json());
+      setExpenses(await expRes.json());
+      setDonations(await donRes.json());
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleCreateCampaign = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch('http://localhost:5000/api/finance/campaigns', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...campaignForm, ngoId: user.gcId })
+      });
+      if (res.ok) {
+        setShowCampaignModal(false);
+        setCampaignForm({ title: '', description: '', targetAmount: '', endDate: '' });
+        fetchFinanceData();
+      }
+    } catch (err) {}
+  };
+
+  const handleCreateExpense = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch('http://localhost:5000/api/finance/expenses', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...expenseForm, ngoId: user.gcId })
+      });
+      if (res.ok) {
+        setShowExpenseModal(false);
+        setExpenseForm({ title: '', amountSpent: '', category: 'Logistics', description: '', proofUrl: '', campaignId: '' });
+        fetchFinanceData();
+      }
+    } catch (err) {}
+  };
+
   return (
-    <div className="animate-fade-in glass-card" style={{ padding: '3rem 2rem', textAlign: 'center' }}>
-      <div style={{ 
-        width: 72, height: 72, borderRadius: '50%', background: 'rgba(0, 0, 0, 0.05)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem'
-      }}>
-        <IndianRupee size={32} style={{ color: 'var(--color-secondary)' }} />
+    <div className="animate-fade-in glass-card" style={{ padding: '2rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+        <h2 className="text-gradient-secondary" style={{ fontSize: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
+          <IndianRupee size={24} /> {language === 'KN' ? 'ಹಣಕಾಸು' : language === 'HI' ? 'वित्त' : 'Finance Suite'}
+        </h2>
+        <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
+          <button onClick={() => setActiveSubTab('campaigns')} className={`btn ${activeSubTab === 'campaigns' ? 'btn-primary' : 'btn-outline'}`}>Campaigns</button>
+          <button onClick={() => setActiveSubTab('expenses')} className={`btn ${activeSubTab === 'expenses' ? 'btn-primary' : 'btn-outline'}`}>Expenses</button>
+          <button onClick={() => setActiveSubTab('donations')} className={`btn ${activeSubTab === 'donations' ? 'btn-primary' : 'btn-outline'}`}>Donations</button>
+        </div>
       </div>
-      <h2 className="text-gradient-secondary" style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{t('finance_title', language)}</h2>
-      <p style={{ fontSize: '0.95rem', maxWidth: 480, margin: '0 auto 1.5rem' }}>
-        {t('finance_desc', language)}
-      </p>
-      <button className="btn btn-secondary">{t('gen_report', language)}</button>
+
+      {activeSubTab === 'campaigns' && (
+        <div>
+          <button onClick={() => setShowCampaignModal(true)} className="btn btn-secondary" style={{ marginBottom: '1rem' }}><Plus size={16}/> New Campaign</button>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1rem' }}>
+            {campaigns.map(c => (
+              <div key={c._id} className="glass-card" style={{ padding: '1rem', borderLeft: '4px solid var(--color-primary)' }}>
+                <h3 style={{ margin: '0 0 0.5rem 0' }}>{c.title}</h3>
+                <p style={{ fontSize: '0.9rem', color: '#64748B', margin: '0 0 1rem 0' }}>{c.description}</p>
+                <div style={{ background: '#F8FAFC', borderRadius: '8px', padding: '0.75rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: '0.5rem', fontWeight: 500 }}>
+                    <span style={{ color: 'var(--color-primary)' }}>Raised: ₹{c.raisedAmount}</span>
+                    <span>Goal: ₹{c.targetAmount}</span>
+                  </div>
+                  <div style={{ width: '100%', height: '8px', background: '#E2E8F0', borderRadius: '4px', overflow: 'hidden' }}>
+                    <div style={{ width: `${Math.min((c.raisedAmount/c.targetAmount)*100, 100)}%`, height: '100%', background: 'var(--color-primary)' }}></div>
+                  </div>
+                </div>
+              </div>
+            ))}
+            {campaigns.length === 0 && <p style={{ color: '#64748B' }}>No campaigns created yet.</p>}
+          </div>
+        </div>
+      )}
+
+      {activeSubTab === 'expenses' && (
+        <div>
+          <button onClick={() => setShowExpenseModal(true)} className="btn btn-secondary" style={{ marginBottom: '1rem' }}><Plus size={16}/> Log Expense</button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {expenses.map(e => (
+              <div key={e._id} className="glass-card" style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <h4 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>{e.title} <span className="badge badge-secondary">{e.category}</span></h4>
+                  <p style={{ fontSize: '0.85rem', color: '#64748B', margin: '0.25rem 0 0 0' }}>{e.description}</p>
+                  {e.campaignId && <p style={{ fontSize: '0.8rem', color: 'var(--color-primary)', margin: '0.25rem 0 0 0', fontWeight: 500 }}>Campaign: {e.campaignId.title}</p>}
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#EF4444' }}>- ₹{e.amountSpent}</div>
+                  <div style={{ fontSize: '0.8rem', color: '#64748B' }}>{new Date(e.date).toLocaleDateString()}</div>
+                </div>
+              </div>
+            ))}
+            {expenses.length === 0 && <p style={{ color: '#64748B' }}>No expenses logged yet.</p>}
+          </div>
+        </div>
+      )}
+
+      {activeSubTab === 'donations' && (
+        <div>
+          <h3 style={{ marginBottom: '1rem', fontSize: '1.2rem' }}>Recent Donations Received</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {donations.map(d => (
+              <div key={d._id} className="glass-card" style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <h4 style={{ margin: 0 }}>{d.donorName || 'Anonymous'}</h4>
+                  <p style={{ fontSize: '0.85rem', color: '#64748B', margin: '0.25rem 0 0 0' }}>{new Date(d.date).toLocaleDateString()}</p>
+                </div>
+                <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#10B981' }}>+ ₹{d.amount}</div>
+              </div>
+            ))}
+            {donations.length === 0 && <p style={{ color: '#64748B' }}>No donations tracked yet.</p>}
+          </div>
+        </div>
+      )}
+
+      {/* Campaign Modal */}
+      {showCampaignModal && (
+        <div className="modal-overlay" onClick={() => setShowCampaignModal(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>New Campaign</h2>
+              <button className="icon-btn" onClick={() => setShowCampaignModal(false)}><X size={20} /></button>
+            </div>
+            <form onSubmit={handleCreateCampaign} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div className="form-group">
+                <label>Title</label>
+                <input type="text" className="form-control" required value={campaignForm.title} onChange={e => setCampaignForm({...campaignForm, title: e.target.value})} />
+              </div>
+              <div className="form-group">
+                <label>Description</label>
+                <textarea className="form-control" required value={campaignForm.description} onChange={e => setCampaignForm({...campaignForm, description: e.target.value})}></textarea>
+              </div>
+              <div className="form-group">
+                <label>Target Amount (₹)</label>
+                <input type="number" className="form-control" required value={campaignForm.targetAmount} onChange={e => setCampaignForm({...campaignForm, targetAmount: e.target.value})} />
+              </div>
+              <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>Create Campaign</button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Expense Modal */}
+      {showExpenseModal && (
+        <div className="modal-overlay" onClick={() => setShowExpenseModal(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Log Expense</h2>
+              <button className="icon-btn" onClick={() => setShowExpenseModal(false)}><X size={20} /></button>
+            </div>
+            <form onSubmit={handleCreateExpense} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div className="form-group">
+                <label>Title</label>
+                <input type="text" className="form-control" required value={expenseForm.title} onChange={e => setExpenseForm({...expenseForm, title: e.target.value})} />
+              </div>
+              <div className="form-group">
+                <label>Amount Spent (₹)</label>
+                <input type="number" className="form-control" required value={expenseForm.amountSpent} onChange={e => setExpenseForm({...expenseForm, amountSpent: e.target.value})} />
+              </div>
+              <div className="form-group">
+                <label>Category</label>
+                <select className="form-control" value={expenseForm.category} onChange={e => setExpenseForm({...expenseForm, category: e.target.value})}>
+                  <option>Logistics</option>
+                  <option>Materials</option>
+                  <option>Labor</option>
+                  <option>Marketing</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Related Campaign (Optional)</label>
+                <select className="form-control" value={expenseForm.campaignId} onChange={e => setExpenseForm({...expenseForm, campaignId: e.target.value})}>
+                  <option value="">None / General Fund</option>
+                  {campaigns.map(c => <option key={c._id} value={c._id}>{c.title}</option>)}
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Description</label>
+                <textarea className="form-control" value={expenseForm.description} onChange={e => setExpenseForm({...expenseForm, description: e.target.value})}></textarea>
+              </div>
+              <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>Log Expense</button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
