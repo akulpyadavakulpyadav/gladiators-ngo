@@ -201,7 +201,6 @@ const CompanyNgoProfile = () => {
             ))}
             {expenses.length === 0 && <p style={{ color: '#94A3B8' }}>No expenses logged yet.</p>}
           </div>
-          </div>
         </div>
         
         {/* Volunteer Programs */}
