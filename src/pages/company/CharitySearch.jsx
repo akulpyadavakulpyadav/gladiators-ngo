@@ -5,12 +5,29 @@ import { useNavigate } from 'react-router-dom';
 const CharitySearch = () => {
   const [ngosList, setNgosList] = useState([]);
   const [searchParams, setSearchParams] = useState({ location: '', domain: '' });
+  const [availableLocations, setAvailableLocations] = useState([]);
+  const [availableDomains, setAvailableDomains] = useState([]);
   
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchNgos();
+    fetchInitialData();
   }, []);
+
+  const fetchInitialData = async () => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/users/ngos/search?`);
+      const data = await res.json();
+      setNgosList(data);
+      
+      const locs = [...new Set(data.map(ngo => ngo.headquarters).filter(Boolean))].sort();
+      const doms = [...new Set(data.map(ngo => ngo.domain).filter(Boolean))].sort();
+      setAvailableLocations(locs);
+      setAvailableDomains(doms);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const fetchNgos = async () => {
     try {
@@ -47,29 +64,35 @@ const CharitySearch = () => {
             <div className="form-group">
               <label>Location</label>
               <div style={{ position: 'relative' }}>
-                <MapPin size={18} style={{ position: 'absolute', left: '12px', top: '12px', color: '#94A3B8' }} />
-                <input 
-                  type="text" 
+                <MapPin size={18} style={{ position: 'absolute', left: '12px', top: '12px', color: '#94A3B8', pointerEvents: 'none' }} />
+                <select 
                   className="form-input" 
-                  placeholder="e.g. Mumbai" 
-                  style={{ paddingLeft: '40px' }}
+                  style={{ paddingLeft: '40px', cursor: 'pointer', appearance: 'auto' }}
                   value={searchParams.location}
                   onChange={(e) => setSearchParams({...searchParams, location: e.target.value})}
-                />
+                >
+                  <option value="">All Locations</option>
+                  {availableLocations.map(loc => (
+                    <option key={loc} value={loc}>{loc}</option>
+                  ))}
+                </select>
               </div>
             </div>
             <div className="form-group">
               <label>Domain/Cause</label>
               <div style={{ position: 'relative' }}>
-                <Target size={18} style={{ position: 'absolute', left: '12px', top: '12px', color: '#94A3B8' }} />
-                <input 
-                  type="text" 
+                <Target size={18} style={{ position: 'absolute', left: '12px', top: '12px', color: '#94A3B8', pointerEvents: 'none' }} />
+                <select 
                   className="form-input" 
-                  placeholder="e.g. Education" 
-                  style={{ paddingLeft: '40px' }}
+                  style={{ paddingLeft: '40px', cursor: 'pointer', appearance: 'auto' }}
                   value={searchParams.domain}
                   onChange={(e) => setSearchParams({...searchParams, domain: e.target.value})}
-                />
+                >
+                  <option value="">All Domains/Causes</option>
+                  {availableDomains.map(dom => (
+                    <option key={dom} value={dom}>{dom}</option>
+                  ))}
+                </select>
               </div>
             </div>
             <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '0.5rem' }}>
