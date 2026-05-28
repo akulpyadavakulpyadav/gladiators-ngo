@@ -1,6 +1,7 @@
 const express = require('express');
 const Program = require('../models/Program');
 const User = require('../models/User');
+const Application = require('../models/Application');
 const router = express.Router();
 
 // @route   POST /api/programs
@@ -35,7 +36,13 @@ router.get('/', async (req, res) => {
   try {
     const programs = await Program.find({ status: 'Active' })
       .populate('ngoId', 'name domain location profilePhoto headquarters about')
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
+      
+    for (let p of programs) {
+      p.volunteerCount = await Application.countDocuments({ programId: p._id, status: 'Approved' });
+    }
+    
     res.status(200).json(programs);
   } catch (error) {
     console.error('Error fetching programs:', error);
@@ -48,7 +55,12 @@ router.get('/', async (req, res) => {
 router.get('/ngo/:ngoId', async (req, res) => {
   try {
     const { ngoId } = req.params;
-    const programs = await Program.find({ ngoId }).sort({ createdAt: -1 });
+    const programs = await Program.find({ ngoId }).sort({ createdAt: -1 }).lean();
+    
+    for (let p of programs) {
+      p.volunteerCount = await Application.countDocuments({ programId: p._id, status: 'Approved' });
+    }
+    
     res.status(200).json(programs);
   } catch (error) {
     console.error('Error fetching NGO programs:', error);
