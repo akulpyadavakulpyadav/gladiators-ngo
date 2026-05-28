@@ -40,12 +40,14 @@ router.get('/ngos/:ngoId/stats', async (req, res) => {
     const { ngoId } = req.params;
     
     const volunteers = await Application.countDocuments({ ngoId, status: 'Approved' });
-    const campaigns = await Campaign.countDocuments({ ngoId });
+    const activeCampaigns = await Campaign.countDocuments({ ngoId, status: 'Active' });
+    const endedCampaigns = await Campaign.countDocuments({ ngoId, status: { $in: ['Completed', 'Cancelled'] } });
+    const campaigns = activeCampaigns + endedCampaigns;
     
     const completedPrograms = await Program.find({ ngoId, status: 'Completed' });
     const hours = completedPrograms.reduce((acc, prog) => acc + (prog.hours || 0), 0);
     
-    res.json({ volunteers, campaigns, hours });
+    res.json({ volunteers, campaigns, activeCampaigns, endedCampaigns, hours });
   } catch (error) {
     console.error('Error fetching NGO stats:', error);
     res.status(500).json({ error: 'Server error while fetching NGO stats' });

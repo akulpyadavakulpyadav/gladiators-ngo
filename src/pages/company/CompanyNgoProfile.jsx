@@ -13,7 +13,7 @@ const CompanyNgoProfile = () => {
   const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
   const [selectedGalleryItem, setSelectedGalleryItem] = useState(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [ngoStats, setNgoStats] = useState({ volunteers: 0, hours: 0, campaigns: 0 });
+  const [ngoStats, setNgoStats] = useState({ volunteers: 0, hours: 0, campaigns: 0, activeCampaigns: 0, endedCampaigns: 0 });
 
   useEffect(() => {
     const fetchNgoData = async () => {
@@ -84,21 +84,26 @@ const CompanyNgoProfile = () => {
             </div>
 
             {/* Impact Stats */}
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem', borderTop: '1px dashed #E2E8F0', paddingTop: '2rem' }}>
-              <div style={{ flex: 1, textAlign: 'center', background: '#F8FAFC', padding: '1rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
+            <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem', borderTop: '1px dashed #E2E8F0', paddingTop: '2rem', flexWrap: 'wrap' }}>
+              <div style={{ flex: '1 1 120px', textAlign: 'center', background: '#F8FAFC', padding: '1rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
                 <Users size={20} style={{ color: 'var(--color-secondary)', margin: '0 auto 0.5rem auto' }} />
                 <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#334155' }}>{ngoStats.volunteers}</div>
                 <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase' }}>Volunteers</div>
               </div>
-              <div style={{ flex: 1, textAlign: 'center', background: '#F8FAFC', padding: '1rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
+              <div style={{ flex: '1 1 120px', textAlign: 'center', background: '#F8FAFC', padding: '1rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
                 <Clock size={20} style={{ color: 'var(--color-secondary)', margin: '0 auto 0.5rem auto' }} />
                 <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#334155' }}>{ngoStats.hours}</div>
                 <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase' }}>Hours Logged</div>
               </div>
-              <div style={{ flex: 1, textAlign: 'center', background: '#F8FAFC', padding: '1rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
-                <Activity size={20} style={{ color: 'var(--color-secondary)', margin: '0 auto 0.5rem auto' }} />
-                <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#334155' }}>{ngoStats.campaigns}</div>
-                <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase' }}>Campaigns</div>
+              <div style={{ flex: '1 1 120px', textAlign: 'center', background: '#F8FAFC', padding: '1rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
+                <Activity size={20} style={{ color: '#3B82F6', margin: '0 auto 0.5rem auto' }} />
+                <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#334155' }}>{ngoStats.activeCampaigns}</div>
+                <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase' }}>Active Campaigns</div>
+              </div>
+              <div style={{ flex: '1 1 120px', textAlign: 'center', background: '#F8FAFC', padding: '1rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
+                <Activity size={20} style={{ color: '#94A3B8', margin: '0 auto 0.5rem auto' }} />
+                <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#334155' }}>{ngoStats.endedCampaigns}</div>
+                <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase' }}>Ended Campaigns</div>
               </div>
             </div>
           </div>
