@@ -3,7 +3,6 @@ import { Search, MapPin, Target, ChevronRight, X, IndianRupee } from 'lucide-rea
 import { useNavigate } from 'react-router-dom';
 
 const CharitySearch = () => {
-  const [ngos, setNgos] = campaigns => setCampaigns(campaigns);
   const [ngosList, setNgosList] = useState([]);
   const [searchParams, setSearchParams] = useState({ location: '', domain: '' });
   
