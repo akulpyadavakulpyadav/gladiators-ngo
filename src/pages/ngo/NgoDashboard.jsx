@@ -1280,6 +1280,8 @@ const NgoDashboard = () => {
   const { language } = useLanguage();
   const [activeTab, setActiveTab] = useState('impact');
   const [totalUnread, setTotalUnread] = useState(0);
+  const [pendingReports, setPendingReports] = useState([]);
+  const [showChecklist, setShowChecklist] = useState(true);
 
   useEffect(() => {
     if (!user?.gcId) return;
@@ -1293,10 +1295,33 @@ const NgoDashboard = () => {
       } catch (error) {}
     };
 
+    const fetchPendingReports = async () => {
+      try {
+        const res = await fetch(`http://localhost:5000/api/finance/campaigns/${user.gcId}/pending-reports`);
+        if (res.ok) {
+          const data = await res.json();
+          setPendingReports(data);
+        }
+      } catch (error) {}
+    };
+
     fetchTotalUnread();
+    fetchPendingReports();
     const interval = setInterval(fetchTotalUnread, 3000);
     return () => clearInterval(interval);
   }, [user?.gcId]);
+
+  const handleGeneratePendingReport = async (campaignId) => {
+    try {
+      await fetch(`http://localhost:5000/api/finance/campaigns/${campaignId}/report`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reportUrl: 'finance_report_' + Date.now() + '.pdf' })
+      });
+      alert('Finance Report Generated Successfully!');
+      setPendingReports(prev => prev.filter(c => c._id !== campaignId));
+    } catch (err) {}
+  };
 
   const tabs = [
     { id: 'impact', label: t('tab_impact_profile', language), icon: <Camera size={16} /> },
@@ -1346,6 +1371,27 @@ const NgoDashboard = () => {
         {activeTab === 'finance' && <FinanceSuite />}
         {activeTab === 'collab' && <CollabHub />}
       </div>
+
+      {/* Floating Checklist Notification */}
+      {showChecklist && pendingReports.length > 0 && (
+        <div style={{ position: 'fixed', bottom: '2rem', right: '2rem', background: 'white', borderRadius: '12px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.2)', width: '320px', padding: '1.5rem', zIndex: 1000, borderLeft: '4px solid var(--color-warning)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+            <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#334155', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <IndianRupee size={18} style={{ color: 'var(--color-warning)' }} /> Pending Tasks
+            </h3>
+            <button className="icon-btn" onClick={() => setShowChecklist(false)} style={{ margin: '-0.5rem -0.5rem 0 0' }}><X size={16} /></button>
+          </div>
+          <p style={{ fontSize: '0.85rem', color: '#64748B', marginBottom: '1rem' }}>You have ended campaigns that need a finance report for transparency.</p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            {pendingReports.map(c => (
+              <div key={c._id} style={{ background: '#F8FAFC', padding: '0.75rem', borderRadius: '8px', fontSize: '0.9rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontWeight: 500 }}>{c.title}</span>
+                <button className="btn btn-outline" style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem' }} onClick={() => handleGeneratePendingReport(c._id)}>Generate</button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
