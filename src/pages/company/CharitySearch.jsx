@@ -6,10 +6,7 @@ const CharitySearch = () => {
   const [ngos, setNgos] = campaigns => setCampaigns(campaigns);
   const [ngosList, setNgosList] = useState([]);
   const [searchParams, setSearchParams] = useState({ location: '', domain: '' });
-  const [selectedNgo, setSelectedNgo] = useState(null);
   
-  const [ngoCampaigns, setNgoCampaigns] = useState([]);
-  const [ngoExpenses, setNgoExpenses] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,22 +29,8 @@ const CharitySearch = () => {
     fetchNgos();
   };
 
-  const fetchNgoFinanceData = async (ngoId) => {
-    try {
-      const [campRes, expRes] = await Promise.all([
-        fetch(`http://localhost:5000/api/finance/campaigns/${ngoId}`),
-        fetch(`http://localhost:5000/api/finance/expenses/${ngoId}`)
-      ]);
-      setNgoCampaigns(await campRes.json());
-      setNgoExpenses(await expRes.json());
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const handleSelectNgo = (ngo) => {
-    setSelectedNgo(ngo);
-    fetchNgoFinanceData(ngo._id);
+    navigate(`/company/ngo/${ngo._id}`);
   };
 
   return (
@@ -133,92 +116,6 @@ const CharitySearch = () => {
           </div>
         </div>
       </div>
-
-      {/* NGO Transparent Profile Modal */}
-      {selectedNgo && (
-        <div className="modal-overlay" onClick={() => setSelectedNgo(null)} style={{ zIndex: 100 }}>
-          <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '800px', width: '90%', maxHeight: '90vh', overflowY: 'auto' }}>
-            <div className="modal-header" style={{ borderBottom: 'none', paddingBottom: 0 }}>
-              <button className="icon-btn" onClick={() => setSelectedNgo(null)} style={{ marginLeft: 'auto' }}><X size={24} /></button>
-            </div>
-            
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '2rem' }}>
-              {selectedNgo.profilePhoto ? (
-                <img src={selectedNgo.profilePhoto} alt={selectedNgo.name} style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover' }} />
-              ) : (
-                <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'var(--color-primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', fontWeight: 'bold' }}>
-                  {selectedNgo.name?.charAt(0)}
-                </div>
-              )}
-              <div>
-                <h1 style={{ margin: 0 }}>{selectedNgo.name}</h1>
-                <p style={{ margin: '0.25rem 0 0 0', color: '#64748B', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <MapPin size={16} /> {selectedNgo.headquarters} | <Target size={16} /> {selectedNgo.domain}
-                </p>
-              </div>
-            </div>
-
-            <div className="glass-card" style={{ padding: '1.5rem', marginBottom: '2rem' }}>
-              <h3 style={{ marginTop: 0 }}>About</h3>
-              <p style={{ lineHeight: 1.6, color: '#334155' }}>{selectedNgo.about || 'No details provided.'}</p>
-            </div>
-
-            <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-              <IndianRupee size={20} style={{ color: 'var(--color-primary)' }} /> Financial Transparency Report
-            </h3>
-            
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
-              {/* Active Campaigns */}
-              <div>
-                <h4 style={{ marginBottom: '1rem', color: '#475569' }}>Active Campaigns</h4>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  {ngoCampaigns.map(c => (
-                    <div key={c._id} style={{ padding: '1rem', background: '#F8FAFC', borderRadius: '8px', borderLeft: '4px solid var(--color-primary)' }}>
-                      <h5 style={{ margin: '0 0 0.5rem 0' }}>{c.title}</h5>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: '0.5rem' }}>
-                        <span>Raised: ₹{c.raisedAmount}</span>
-                        <span>Goal: ₹{c.targetAmount}</span>
-                      </div>
-                      <div style={{ width: '100%', height: '6px', background: '#E2E8F0', borderRadius: '3px', overflow: 'hidden' }}>
-                        <div style={{ width: `${Math.min((c.raisedAmount/c.targetAmount)*100, 100)}%`, height: '100%', background: 'var(--color-primary)' }}></div>
-                      </div>
-                    </div>
-                  ))}
-                  {ngoCampaigns.length === 0 && <p style={{ fontSize: '0.9rem', color: '#94A3B8' }}>No active campaigns.</p>}
-                </div>
-              </div>
-
-              {/* Recent Expenses */}
-              <div>
-                <h4 style={{ marginBottom: '1rem', color: '#475569' }}>Recent Expense Logs</h4>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  {ngoExpenses.slice(0, 5).map(e => (
-                    <div key={e._id} style={{ padding: '1rem', background: '#F8FAFC', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div>
-                        <h5 style={{ margin: '0 0 0.25rem 0' }}>{e.title}</h5>
-                        <p style={{ margin: 0, fontSize: '0.8rem', color: '#64748B' }}>{new Date(e.date).toLocaleDateString()} &bull; {e.category}</p>
-                      </div>
-                      <span style={{ fontWeight: 'bold', color: '#EF4444' }}>- ₹{e.amountSpent}</span>
-                    </div>
-                  ))}
-                  {ngoExpenses.length === 0 && <p style={{ fontSize: '0.9rem', color: '#94A3B8' }}>No expenses logged.</p>}
-                </div>
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
-              <button className="btn btn-primary" style={{ flex: 1 }} onClick={() => {
-                alert('In a full version, this would prompt you to pledge a donation.');
-              }}>
-                Pledge Support
-              </button>
-              <button className="btn btn-secondary" style={{ flex: 1 }} onClick={() => navigate('/messages', { state: { contactId: selectedNgo.gcId, contactName: selectedNgo.name } })}>
-                Message {selectedNgo.pocName || 'NGO'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
     </div>
   );

@@ -17,6 +17,7 @@ import CompanyOnboarding from './pages/company/CompanyOnboarding';
 import CompanyDashboard from './pages/company/CompanyDashboard';
 import CompanyProfile from './pages/company/CompanyProfile';
 import CharitySearch from './pages/company/CharitySearch';
+import CompanyNgoProfile from './pages/company/CompanyNgoProfile';
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRole }) => {
@@ -94,6 +95,11 @@ const App = () => {
               <Route path="company/search" element={
                 <ProtectedRoute allowedRole="company">
                   <CharitySearch />
+                </ProtectedRoute>
+              } />
+              <Route path="company/ngo/:ngoId" element={
+                <ProtectedRoute allowedRole="company">
+                  <CompanyNgoProfile />
                 </ProtectedRoute>
               } />
             </Route>
