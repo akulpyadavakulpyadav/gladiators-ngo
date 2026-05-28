@@ -142,10 +142,10 @@ const CompanyNgoProfile = () => {
       
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2rem' }}>
         
-        {/* Campaigns & Finance Reports */}
+        {/* Campaigns & Volunteer Programs */}
         <div className="glass-card" style={{ padding: '2rem' }}>
           <h3 style={{ marginBottom: '1.5rem', color: '#1E293B', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <FileText size={20} /> Campaigns & Reports
+            <FileText size={20} /> Campaigns & Volunteer Programs
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             {campaigns.map(c => (
@@ -175,7 +175,21 @@ const CompanyNgoProfile = () => {
                 )}
               </div>
             ))}
-            {campaigns.length === 0 && <p style={{ color: '#94A3B8' }}>No campaigns available.</p>}
+            {programs.map(p => (
+              <div key={p._id} style={{ padding: '1.25rem', background: '#F8FAFC', borderRadius: '8px', borderLeft: `4px solid ${p.status === 'Completed' ? '#10B981' : 'var(--color-secondary)'}` }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
+                  <h4 style={{ margin: 0, fontSize: '1.1rem' }}>{p.title}</h4>
+                  <span className={`badge ${p.status === 'Completed' ? 'badge-secondary' : 'badge-primary'}`}>{p.status}</span>
+                </div>
+                <p style={{ fontSize: '0.9rem', color: '#64748B', marginBottom: '1rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{p.description}</p>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  {p.rolesNeeded?.map((role, i) => (
+                    <span key={i} className="badge badge-primary" style={{ padding: '0.15rem 0.4rem', fontSize: '0.75rem' }}>{role}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+            {campaigns.length === 0 && programs.length === 0 && <p style={{ color: '#94A3B8' }}>No campaigns or programs available.</p>}
           </div>
         </div>
 
@@ -203,29 +217,6 @@ const CompanyNgoProfile = () => {
           </div>
         </div>
         
-        {/* Volunteer Programs */}
-        <div className="glass-card" style={{ padding: '2rem', gridColumn: '1 / -1' }}>
-          <h3 style={{ marginBottom: '1.5rem', color: '#1E293B', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Users size={20} /> Volunteer Programs
-          </h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.25rem' }}>
-            {programs.map(p => (
-              <div key={p._id} style={{ padding: '1.25rem', background: '#F8FAFC', borderRadius: '8px', borderLeft: `4px solid ${p.status === 'Completed' ? '#10B981' : 'var(--color-secondary)'}` }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
-                  <h4 style={{ margin: 0, fontSize: '1.1rem' }}>{p.title}</h4>
-                  <span className={`badge ${p.status === 'Completed' ? 'badge-secondary' : 'badge-primary'}`}>{p.status}</span>
-                </div>
-                <p style={{ fontSize: '0.9rem', color: '#64748B', marginBottom: '1rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{p.description}</p>
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                  {p.rolesNeeded?.map((role, i) => (
-                    <span key={i} className="badge badge-primary" style={{ padding: '0.15rem 0.4rem', fontSize: '0.75rem' }}>{role}</span>
-                  ))}
-                </div>
-              </div>
-            ))}
-            {programs.length === 0 && <p style={{ color: '#94A3B8', gridColumn: '1 / -1' }}>No volunteer programs available.</p>}
-          </div>
-        </div>
       </div>
 
       {/* Gallery Slideshow Modal */}
