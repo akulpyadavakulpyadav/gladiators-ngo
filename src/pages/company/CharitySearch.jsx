@@ -41,18 +41,18 @@ const CharitySearch = () => {
 
       <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
         {/* Search Sidebar */}
-        <div className="glass-card" style={{ flex: '1 1 300px', height: 'fit-content', padding: '1.5rem' }}>
+        <div className="glass-card" style={{ flex: '1 1 300px', maxWidth: '350px', height: 'fit-content', padding: '1.5rem' }}>
           <h3 style={{ marginBottom: '1rem' }}>Filters</h3>
           <form onSubmit={handleSearch} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div className="form-group">
               <label>Location</label>
               <div style={{ position: 'relative' }}>
-                <MapPin size={18} style={{ position: 'absolute', left: '10px', top: '12px', color: '#94A3B8' }} />
+                <MapPin size={18} style={{ position: 'absolute', left: '12px', top: '12px', color: '#94A3B8' }} />
                 <input 
                   type="text" 
-                  className="form-control" 
+                  className="form-input" 
                   placeholder="e.g. Mumbai" 
-                  style={{ paddingLeft: '35px' }}
+                  style={{ paddingLeft: '40px' }}
                   value={searchParams.location}
                   onChange={(e) => setSearchParams({...searchParams, location: e.target.value})}
                 />
@@ -61,12 +61,12 @@ const CharitySearch = () => {
             <div className="form-group">
               <label>Domain/Cause</label>
               <div style={{ position: 'relative' }}>
-                <Target size={18} style={{ position: 'absolute', left: '10px', top: '12px', color: '#94A3B8' }} />
+                <Target size={18} style={{ position: 'absolute', left: '12px', top: '12px', color: '#94A3B8' }} />
                 <input 
                   type="text" 
-                  className="form-control" 
+                  className="form-input" 
                   placeholder="e.g. Education" 
-                  style={{ paddingLeft: '35px' }}
+                  style={{ paddingLeft: '40px' }}
                   value={searchParams.domain}
                   onChange={(e) => setSearchParams({...searchParams, domain: e.target.value})}
                 />
