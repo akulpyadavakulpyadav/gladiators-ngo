@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { MapPin, Target, IndianRupee, FileText, Download, ChevronLeft, MessageSquare, Users, Clock, Activity } from 'lucide-react';
+import { MapPin, Target, IndianRupee, FileText, Download, ChevronLeft, MessageSquare, Users, Clock, Activity, Camera, X, ChevronRight } from 'lucide-react';
 
 const CompanyNgoProfile = () => {
   const { ngoId } = useParams();
@@ -9,6 +9,9 @@ const CompanyNgoProfile = () => {
   const [campaigns, setCampaigns] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
+  const [selectedGalleryItem, setSelectedGalleryItem] = useState(null);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   useEffect(() => {
     const fetchNgoData = async () => {
@@ -97,6 +100,40 @@ const CompanyNgoProfile = () => {
       </div>
 
       <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', fontSize: '1.75rem' }}>
+        <Camera size={28} style={{ color: 'var(--color-primary)' }} /> Impact Gallery
+      </h2>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
+        {ngo.mediaGallery?.length > 0 ? (
+          ngo.mediaGallery.map((item, idx) => (
+            <div key={item._id || idx} className="glass-card card-hover" style={{ overflow: 'hidden', cursor: 'pointer' }} onClick={() => { setSelectedGalleryItem(item); setActiveImageIndex(0); setIsGalleryModalOpen(true); }}>
+              <div style={{ height: 160, background: 'var(--color-border)', position: 'relative' }}>
+                {item.images && item.images.length > 0 ? (
+                  <img src={item.images[0]} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94A3B8' }}>
+                    <Camera size={32} />
+                  </div>
+                )}
+                {item.images && item.images.length > 1 && (
+                  <div style={{ position: 'absolute', bottom: 8, right: 8, background: 'rgba(0,0,0,0.6)', color: 'white', fontSize: '0.75rem', padding: '0.2rem 0.5rem', borderRadius: '1rem', fontWeight: 600 }}>
+                    +{item.images.length - 1} photos
+                  </div>
+                )}
+              </div>
+              <div style={{ padding: '1rem' }}>
+                <h4 style={{ fontWeight: 700, color: 'var(--color-primary)', marginBottom: '0.25rem', fontSize: '1rem' }}>{item.title}</h4>
+                <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{item.description}</p>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="glass-card" style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-text-secondary)', gridColumn: '1 / -1' }}>
+            No impact photos available yet.
+          </div>
+        )}
+      </div>
+
+      <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', fontSize: '1.75rem' }}>
         <IndianRupee size={28} style={{ color: 'var(--color-primary)' }} /> Financial Transparency & Reports
       </h2>
       
@@ -164,6 +201,48 @@ const CompanyNgoProfile = () => {
         </div>
         
       </div>
+
+      {/* Gallery Slideshow Modal */}
+      {isGalleryModalOpen && selectedGalleryItem && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.9)', zIndex: 1000, display: 'flex', flexDirection: 'column', padding: '2rem' }}>
+          <button onClick={() => setIsGalleryModalOpen(false)} style={{ position: 'absolute', top: 16, right: 16, background: '#FFFFFF', border: 'none', color: '#334155', cursor: 'pointer', zIndex: 10, width: 36, height: 36, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
+            <X size={20} />
+          </button>
+          
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+            {selectedGalleryItem.images && selectedGalleryItem.images.length > 0 ? (
+              <>
+                <img src={selectedGalleryItem.images[activeImageIndex]} alt="Gallery Item" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                
+                {selectedGalleryItem.images.length > 1 && (
+                  <>
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); setActiveImageIndex(prev => prev > 0 ? prev - 1 : selectedGalleryItem.images.length - 1); }}
+                      style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                    >
+                      <ChevronLeft size={24} />
+                    </button>
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); setActiveImageIndex(prev => prev < selectedGalleryItem.images.length - 1 ? prev + 1 : 0); }}
+                      style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                    >
+                      <ChevronRight size={24} />
+                    </button>
+                  </>
+                )}
+              </>
+            ) : (
+              <div style={{ color: 'white' }}>No images available</div>
+            )}
+          </div>
+
+          <div style={{ marginTop: '2rem', color: 'white', maxWidth: 800, margin: '2rem auto 0', width: '100%' }}>
+            <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.5rem' }}>{selectedGalleryItem.title}</h3>
+            <p style={{ fontSize: '1rem', lineHeight: 1.6, opacity: 0.9 }}>{selectedGalleryItem.description}</p>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
