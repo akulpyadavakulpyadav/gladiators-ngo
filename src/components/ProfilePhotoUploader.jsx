@@ -2,6 +2,7 @@ import React, { useState, useRef, useCallback } from 'react';
 import Cropper from 'react-easy-crop';
 import { Camera, X, Check } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { useToast } from '../context/ToastContext';
 import { t } from '../utils/translations';
 
 const getCroppedImg = async (imageSrc, pixelCrop) => {
@@ -38,6 +39,7 @@ const getCroppedImg = async (imageSrc, pixelCrop) => {
 
 const ProfilePhotoUploader = ({ currentPhoto, onPhotoUpdate }) => {
   const { language } = useLanguage();
+  const { showToast } = useToast();
   const [imageSrc, setImageSrc] = useState(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -69,7 +71,7 @@ const ProfilePhotoUploader = ({ currentPhoto, onPhotoUpdate }) => {
       setImageSrc(null); // close modal
     } catch (e) {
       console.error(e);
-      alert('Failed to crop image');
+      showToast('Failed to crop image', 'error');
     } finally {
       setIsUploading(false);
     }

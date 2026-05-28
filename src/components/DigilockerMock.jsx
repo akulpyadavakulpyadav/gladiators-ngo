@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Shield, CheckCircle, Loader2 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { useToast } from '../context/ToastContext';
 import { t } from '../utils/translations';
 
 const LABELS = {
@@ -11,6 +12,7 @@ const LABELS = {
 
 const DigilockerMock = ({ onVerify, entityType, isLogin }) => {
   const { language } = useLanguage();
+  const { showToast } = useToast();
   const [step, setStep] = useState(1);
   const [idValue, setIdValue] = useState('');
   const handleIdChange = (e) => {
@@ -37,7 +39,7 @@ const DigilockerMock = ({ onVerify, entityType, isLogin }) => {
     if (entityType === 'volunteer') {
       const digitsOnly = idValue.replace(/\D/g, '');
       if (digitsOnly.length !== 12) {
-        alert(t('alert_aadhaar', language));
+        showToast(t('alert_aadhaar', language), 'error');
         return;
       }
     }
