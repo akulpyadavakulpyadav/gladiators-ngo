@@ -1014,6 +1014,9 @@ const FinanceSuite = () => {
   const [showExpenseModal, setShowExpenseModal] = useState(false);
   const [expenseForm, setExpenseForm] = useState({ title: '', amountSpent: '', category: 'Logistics', description: '', proofUrl: '', campaignId: '' });
 
+  const [showEndCampaignModal, setShowEndCampaignModal] = useState(false);
+  const [endingCampaignId, setEndingCampaignId] = useState(null);
+
   useEffect(() => {
     if (user?.gcId) {
       fetchFinanceData();
@@ -1067,6 +1070,28 @@ const FinanceSuite = () => {
     } catch (err) {}
   };
 
+  const triggerEndCampaign = (campaignId) => {
+    setEndingCampaignId(campaignId);
+    setShowEndCampaignModal(true);
+  };
+
+  const handleEndCampaign = async (generateNow) => {
+    try {
+      await fetch(`http://localhost:5000/api/finance/campaigns/${endingCampaignId}/complete`, { method: 'PUT' });
+      if (generateNow) {
+        await fetch(`http://localhost:5000/api/finance/campaigns/${endingCampaignId}/report`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ reportUrl: 'finance_report_' + Date.now() + '.pdf' })
+        });
+        alert('Finance Report Generated Successfully!');
+      }
+      setShowEndCampaignModal(false);
+      setEndingCampaignId(null);
+      fetchFinanceData();
+    } catch (err) {}
+  };
+
   return (
     <div className="animate-fade-in glass-card" style={{ padding: '2rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
@@ -1085,8 +1110,13 @@ const FinanceSuite = () => {
           <button onClick={() => setShowCampaignModal(true)} className="btn btn-secondary" style={{ marginBottom: '1rem' }}><Plus size={16}/> New Campaign</button>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1rem' }}>
             {campaigns.map(c => (
-              <div key={c._id} className="glass-card" style={{ padding: '1rem', borderLeft: '4px solid var(--color-primary)' }}>
-                <h3 style={{ margin: '0 0 0.5rem 0' }}>{c.title}</h3>
+              <div key={c._id} className="glass-card" style={{ padding: '1rem', borderLeft: `4px solid ${c.status === 'Completed' ? '#10B981' : 'var(--color-primary)'}` }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <h3 style={{ margin: '0 0 0.5rem 0' }}>{c.title} {c.status === 'Completed' && <span className="badge badge-secondary" style={{fontSize:'0.7rem', verticalAlign:'middle', marginLeft:'4px'}}>Ended</span>}</h3>
+                  {c.status !== 'Completed' && (
+                    <button className="btn btn-outline" style={{ padding: '0.25rem 0.5rem', fontSize: '0.8rem' }} onClick={() => triggerEndCampaign(c._id)}>End Campaign</button>
+                  )}
+                </div>
                 <p style={{ fontSize: '0.9rem', color: '#64748B', margin: '0 0 1rem 0' }}>{c.description}</p>
                 <div style={{ background: '#F8FAFC', borderRadius: '8px', padding: '0.75rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: '0.5rem', fontWeight: 500 }}>
@@ -1097,6 +1127,9 @@ const FinanceSuite = () => {
                     <div style={{ width: `${Math.min((c.raisedAmount/c.targetAmount)*100, 100)}%`, height: '100%', background: 'var(--color-primary)' }}></div>
                   </div>
                 </div>
+                {c.status === 'Completed' && c.hasFinanceReport && (
+                  <p style={{ fontSize: '0.85rem', color: '#10B981', margin: '0.5rem 0 0 0', fontWeight: 500 }}>Finance Report Generated ✓</p>
+                )}
               </div>
             ))}
             {campaigns.length === 0 && <p style={{ color: '#64748B' }}>No campaigns created yet.</p>}
@@ -1211,6 +1244,27 @@ const FinanceSuite = () => {
               </div>
               <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>Log Expense</button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* End Campaign Modal */}
+      {showEndCampaignModal && (
+        <div className="modal-overlay" onClick={() => setShowEndCampaignModal(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>End Campaign</h2>
+              <button className="icon-btn" onClick={() => setShowEndCampaignModal(false)}><X size={20} /></button>
+            </div>
+            <p>Are you sure you want to end this campaign?</p>
+            <div style={{ background: '#F8FAFC', padding: '1rem', borderRadius: '8px', marginBottom: '1rem' }}>
+              <h4 style={{ margin: '0 0 0.5rem 0' }}>Generate Finance Report?</h4>
+              <p style={{ fontSize: '0.9rem', color: '#64748B', margin: '0 0 1rem 0' }}>It is highly recommended to generate a transparent finance report to build trust with donors.</p>
+              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                <button className="btn btn-primary" onClick={() => handleEndCampaign(true)}>End & Generate Now</button>
+                <button className="btn btn-outline" onClick={() => handleEndCampaign(false)}>End & Do Later</button>
+              </div>
+            </div>
           </div>
         </div>
       )}
