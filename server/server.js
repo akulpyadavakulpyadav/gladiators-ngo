@@ -15,6 +15,8 @@ const chatRoutes = require('./routes/chat');
 const programRoutes = require('./routes/programs');
 const applicationRoutes = require('./routes/applications');
 const logRoutes = require('./routes/logs');
+const financeRoutes = require('./routes/finance');
+const userRoutes = require('./routes/users');
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -22,6 +24,8 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/programs', programRoutes);
 app.use('/api/applications', applicationRoutes);
 app.use('/api/logs', logRoutes);
+app.use('/api/finance', financeRoutes);
+app.use('/api/users', userRoutes);
 
 // MongoDB Connection
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/gladiators';

@@ -1,0 +1,82 @@
+const express = require('express');
+const router = express.Router();
+const Campaign = require('../models/Campaign');
+const Donation = require('../models/Donation');
+const ExpenseLog = require('../models/ExpenseLog');
+
+// 1. Campaigns
+router.post('/campaigns', async (req, res) => {
+  try {
+    const { ngoId, title, description, targetAmount, endDate } = req.body;
+    if (!ngoId) return res.status(400).json({ error: 'ngoId is required' });
+    const newCampaign = new Campaign({ ngoId, title, description, targetAmount, endDate });
+    await newCampaign.save();
+    res.status(201).json(newCampaign);
+  } catch (error) {
+    res.status(500).json({ error: 'Error creating campaign' });
+  }
+});
+
+router.get('/campaigns/:ngoId', async (req, res) => {
+  try {
+    const campaigns = await Campaign.find({ ngoId: req.params.ngoId }).sort({ createdAt: -1 });
+    res.json(campaigns);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching campaigns' });
+  }
+});
+
+// 2. Donations
+router.post('/donations', async (req, res) => {
+  try {
+    const { ngoId, donorId, campaignId, amount, donorName } = req.body;
+    if (!ngoId || !donorId || !amount) return res.status(400).json({ error: 'Missing required fields' });
+    
+    const newDonation = new Donation({ ngoId, donorId, campaignId, amount, donorName });
+    await newDonation.save();
+    
+    if (campaignId) {
+      await Campaign.findByIdAndUpdate(campaignId, { $inc: { raisedAmount: amount } });
+    }
+    
+    res.status(201).json(newDonation);
+  } catch (error) {
+    res.status(500).json({ error: 'Error logging donation' });
+  }
+});
+
+router.get('/donations/:ngoId', async (req, res) => {
+  try {
+    const donations = await Donation.find({ ngoId: req.params.ngoId }).sort({ createdAt: -1 });
+    res.json(donations);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching donations' });
+  }
+});
+
+// 3. Expenses
+router.post('/expenses', async (req, res) => {
+  try {
+    const { ngoId, campaignId, title, amountSpent, category, description, proofUrl } = req.body;
+    if (!ngoId || !title || !amountSpent || !category) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+    
+    const newExpense = new ExpenseLog({ ngoId, campaignId, title, amountSpent, category, description, proofUrl });
+    await newExpense.save();
+    res.status(201).json(newExpense);
+  } catch (error) {
+    res.status(500).json({ error: 'Error logging expense' });
+  }
+});
+
+router.get('/expenses/:ngoId', async (req, res) => {
+  try {
+    const expenses = await ExpenseLog.find({ ngoId: req.params.ngoId }).sort({ createdAt: -1 }).populate('campaignId', 'title');
+    res.json(expenses);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching expenses' });
+  }
+});
+
+module.exports = router;
