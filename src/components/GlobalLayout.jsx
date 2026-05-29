@@ -211,12 +211,12 @@ const GlobalLayout = () => {
 
     // Header Title
     doc.setTextColor(46, 125, 50);
-    doc.setFont('Helvetica', 'bold');
+    doc.setFont('helvetica', 'bold');
     doc.setFontSize(26);
     doc.text('GLADIATORS CONNECT', width / 2, 35, { align: 'center' });
 
     doc.setTextColor(100, 116, 139);
-    doc.setFont('Helvetica', 'normal');
+    doc.setFont('helvetica', 'normal');
     doc.setFontSize(10);
     doc.text('VERIFIED VOLUNTEER IMPACT PLATFORM', width / 2, 41, { align: 'center' });
 
@@ -227,32 +227,32 @@ const GlobalLayout = () => {
 
     // Certificate text
     doc.setTextColor(30, 41, 59);
-    doc.setFont('Times-Roman', 'italic');
+    doc.setFont('times', 'italic');
     doc.setFontSize(16);
     doc.text('This is proudly awarded to', width / 2, 62, { align: 'center' });
 
     // User Name
     doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-    doc.setFont('Helvetica', 'bold');
+    doc.setFont('helvetica', 'bold');
     doc.setFontSize(28);
     doc.text(userName.toUpperCase(), width / 2, 77, { align: 'center' });
 
     // Subtext
     doc.setTextColor(71, 85, 105);
-    doc.setFont('Times-Roman', 'italic');
+    doc.setFont('times', 'italic');
     doc.setFontSize(14);
     doc.text('in recognition of outstanding service and dedication as a verified volunteer,', width / 2, 90, { align: 'center' });
     doc.text('having reached the distinguished milestone and earned the credential of', width / 2, 97, { align: 'center' });
 
     // Badge Name
     doc.setTextColor(accentColor[0], accentColor[1], accentColor[2]);
-    doc.setFont('Helvetica', 'bold');
+    doc.setFont('helvetica', 'bold');
     doc.setFontSize(22);
     doc.text(`${badge.name} (${badge.level} Tier)`, width / 2, 112, { align: 'center' });
 
     // Badge Description
     doc.setTextColor(100, 116, 139);
-    doc.setFont('Helvetica', 'normal');
+    doc.setFont('helvetica', 'normal');
     doc.setFontSize(11);
     doc.text(badge.description || '', width / 2, 120, { align: 'center' });
 
@@ -261,7 +261,7 @@ const GlobalLayout = () => {
       year: 'numeric', month: 'long', day: 'numeric'
     });
     doc.setTextColor(71, 85, 105);
-    doc.setFont('Helvetica', 'bold');
+    doc.setFont('helvetica', 'bold');
     doc.setFontSize(11);
     doc.text(`Date Earned: ${dateStr}`, width / 2, 135, { align: 'center' });
 
@@ -270,25 +270,25 @@ const GlobalLayout = () => {
     doc.setLineWidth(0.5);
     doc.line(40, 170, 95, 170);
     doc.setTextColor(100, 116, 139);
-    doc.setFont('Helvetica', 'normal');
+    doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
     doc.text('Aniruddha M. Jois', 67.5, 175, { align: 'center' });
-    doc.setFont('Helvetica', 'bold');
+    doc.setFont('helvetica', 'bold');
     doc.text('GLADIATORS FOUNDER', 67.5, 179, { align: 'center' });
 
     doc.line(width - 95, 170, width - 40, 170);
     doc.setTextColor(100, 116, 139);
-    doc.setFont('Helvetica', 'normal');
+    doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
     doc.text('Verified via Platform Cryptography', width - 67.5, 175, { align: 'center' });
-    doc.setFont('Helvetica', 'bold');
+    doc.setFont('helvetica', 'bold');
     doc.text('SYSTEM AUTHENTICATION', width - 67.5, 179, { align: 'center' });
 
     // Seal
     doc.setFillColor(accentColor[0], accentColor[1], accentColor[2]);
     doc.circle(width / 2, 168, 8, 'F');
     doc.setTextColor(255, 255, 255);
-    doc.setFont('Helvetica', 'bold');
+    doc.setFont('helvetica', 'bold');
     doc.setFontSize(12);
     doc.text('G', width / 2, 172, { align: 'center' });
 

@@ -228,7 +228,7 @@ const checkAndAwardBadges = async (user) => {
   const completedApps = apps.filter(app => app.programId && app.programId.status === 'Completed');
   
   // Sum the hours
-  const totalHours = completedApps.reduce((acc, app) => acc + (app.programId.hours || 0), 0);
+  const totalHours = completedApps.reduce((acc, app) => acc + (app.programId?.hours || 0), 0);
 
   // Define our badge tiers
   const badgeTiers = [
@@ -281,7 +281,7 @@ router.get('/volunteer/:gcId/badges', async (req, res) => {
     const apps = await Application.find({ volunteerId: user._id, status: 'Approved' })
       .populate('programId');
     const completedApps = apps.filter(app => app.programId && app.programId.status === 'Completed');
-    const totalHours = completedApps.reduce((acc, app) => acc + (app.programId.hours || 0), 0);
+    const totalHours = completedApps.reduce((acc, app) => acc + (app.programId?.hours || 0), 0);
     const eventsCount = completedApps.length;
 
     res.status(200).json({
