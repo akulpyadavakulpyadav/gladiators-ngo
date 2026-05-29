@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, Send, Building2, User, Loader2, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useLocation } from 'react-router-dom';
 
 const CollabHub = () => {
   const { user } = useAuth();
@@ -12,6 +13,7 @@ const CollabHub = () => {
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [unreadCounts, setUnreadCounts] = useState({});
+  const location = useLocation();
   
   const messagesEndRef = useRef(null);
 
@@ -19,18 +21,39 @@ const CollabHub = () => {
   useEffect(() => {
     const fetchContacts = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/chat/ngos');
+        const response = await fetch(`http://localhost:5000/api/chat/contacts/${user.gcId}`);
         const data = await response.json();
-        // Filter out the current user
-        setContacts(data.filter(c => c._id !== user.gcId));
+        setContacts(data);
         setLoadingContacts(false);
       } catch (error) {
         console.error('Error fetching contacts:', error);
         setLoadingContacts(false);
       }
     };
-    fetchContacts();
-  }, [user.gcId]);
+    if (user?.gcId) {
+      fetchContacts();
+    }
+  }, [user?.gcId]);
+
+  // Handle navigation from NGO profile (direct connect)
+  useEffect(() => {
+    if (location.state?.contactId && contacts.length > 0) {
+      const contactToSelect = contacts.find(c => c._id === location.state.contactId);
+      if (contactToSelect) {
+        setSelectedContact(contactToSelect);
+        // Clear state so we don't re-select it on subsequent renders
+        window.history.replaceState({}, document.title);
+      } else {
+        // If the contact isn't in the list (e.g., a new company chatting), we might need to fetch them
+        // But the new backend logic includes all contacted users, so it should be there unless it's a completely new user who is not an NGO.
+        // If they navigated from NGO profile, the target is an NGO, so it will be in the list.
+        if (location.state.contactName) {
+          setSelectedContact({ _id: location.state.contactId, name: location.state.contactName });
+          window.history.replaceState({}, document.title);
+        }
+      }
+    }
+  }, [contacts, location.state]);
 
   // Fetch messages between current user and selected contact
   const fetchMessages = async (contactId, showLoader = false) => {

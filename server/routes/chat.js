@@ -3,17 +3,38 @@ const User = require('../models/User');
 const Message = require('../models/Message');
 const router = express.Router();
 
-// @route   GET /api/chat/ngos
-// @desc    Get all registered NGOs to populate the contacts sidebar
-router.get('/ngos', async (req, res) => {
+// @route   GET /api/chat/contacts/:userId
+// @desc    Get all NGOs and anyone the user has chatted with
+router.get('/contacts/:userId', async (req, res) => {
   try {
-    const ngos = await User.find({ role: 'ngo' })
-      .select('_id name profilePhoto domain headquarters email')
+    const userId = req.params.userId;
+    
+    // Find all messages involving this user
+    const messages = await Message.find({
+      $or: [{ senderId: userId }, { receiverId: userId }]
+    });
+
+    const contactIds = new Set();
+    messages.forEach(m => {
+      if (m.senderId && m.senderId.toString() !== userId) contactIds.add(m.senderId.toString());
+      if (m.receiverId && m.receiverId.toString() !== userId) contactIds.add(m.receiverId.toString());
+    });
+
+    // Also include all NGOs so they are discoverable
+    const allNgos = await User.find({ role: 'ngo' }).select('_id');
+    allNgos.forEach(ngo => contactIds.add(ngo._id.toString()));
+
+    // Ensure we don't return the user themselves
+    contactIds.delete(userId);
+
+    const contacts = await User.find({ _id: { $in: Array.from(contactIds) } })
+      .select('_id name profilePhoto domain headquarters email role')
       .sort({ name: 1 });
-    res.status(200).json(ngos);
+      
+    res.status(200).json(contacts);
   } catch (error) {
-    console.error('Error fetching NGOs:', error);
-    res.status(500).json({ message: 'Server error fetching NGOs.' });
+    console.error('Error fetching contacts:', error);
+    res.status(500).json({ message: 'Server error fetching contacts.' });
   }
 });
 
