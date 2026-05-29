@@ -101,7 +101,7 @@ router.put('/:id/end', async (req, res) => {
           const newMsg = new Message({
             senderId: program.ngoId,
             receiverId: att.volunteerId,
-            content: `Notice: You were marked absent for the program "${program.title}".`
+            content: `Attendance Update: You have been marked absent for the volunteer program "${program.title}". No hours have been credited for this session. If you believe this is an error, please contact the hosting NGO.`
           });
           await newMsg.save();
         }
