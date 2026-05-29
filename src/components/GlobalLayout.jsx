@@ -42,6 +42,27 @@ const GlobalLayout = () => {
   const [editFormData, setEditFormData] = useState({});
   const [interestInput, setInterestInput] = useState('');
   const [csrFocusInput, setCsrFocusInput] = useState('');
+  
+  const [showLangDropdown, setShowLangDropdown] = useState(false);
+  const [activeLang, setActiveLang] = useState('English');
+
+  const languages = [
+    { code: 'en', label: 'English' },
+    { code: 'hi', label: 'हिंदी' },
+    { code: 'kn', label: 'ಕನ್ನಡ' }
+  ];
+
+  const handleLanguageSelect = (lang) => {
+    setActiveLang(lang.label);
+    setShowLangDropdown(false);
+    
+    // Find the hidden Google Translate select element
+    const select = document.querySelector('.goog-te-combo');
+    if (select) {
+      select.value = lang.code;
+      select.dispatchEvent(new Event('change'));
+    }
+  };
 
   const [badgeData, setBadgeData] = useState({ badges: [], totalHours: 0, eventsCount: 0 });
   const [newBadges, setNewBadges] = useState([]);
@@ -439,9 +460,67 @@ const GlobalLayout = () => {
             <span style={{ color: '#475569' }}>24/7 Helpline</span>
           </button>
 
-          <div id="google_translate_element" style={{ display: 'inline-block', minWidth: '150px' }}></div>
+          {/* Custom Language Dropdown that controls hidden Google Translate */}
+          <div style={{ position: 'relative' }}>
+            <button
+              onClick={() => setShowLangDropdown(!showLangDropdown)}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                padding: '0.5rem 1rem', fontSize: '0.8rem', fontWeight: 600,
+                borderRadius: 'var(--radius-md)', border: '1px solid #E2E8F0', cursor: 'pointer',
+                fontFamily: 'inherit',
+                background: '#F8FAFC',
+                color: '#1E293B',
+                transition: 'all var(--transition-fast)'
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = '#F1F5F9'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = '#F8FAFC'; }}
+            >
+              <Globe size={14} style={{ color: '#475569' }} />
+              {activeLang}
+              <ChevronDown size={14} style={{ color: '#94A3B8', transform: showLangDropdown ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+            </button>
+            
+            {showLangDropdown && (
+              <>
+                <div onClick={() => setShowLangDropdown(false)} style={{ position: 'fixed', inset: 0, zIndex: 998 }} />
+                <div style={{
+                  position: 'absolute', top: 'calc(100% + 0.5rem)', right: 0, zIndex: 999,
+                  background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '0.5rem',
+                  boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', overflow: 'hidden', minWidth: '120px'
+                }}>
+                  {languages.map((lang) => (
+                    <div
+                      key={lang.code}
+                      onClick={() => handleLanguageSelect(lang)}
+                      style={{
+                        padding: '0.6rem 1rem', fontSize: '0.85rem', fontWeight: 500,
+                        cursor: 'pointer', color: activeLang === lang.label ? '#1E293B' : '#475569',
+                        background: activeLang === lang.label ? '#F1F5F9' : '#FFFFFF',
+                        borderBottom: '1px solid #F1F5F9',
+                        display: 'flex', alignItems: 'center', justifyContent: 'space-between'
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.background = '#F8FAFC'}
+                      onMouseLeave={e => e.currentTarget.style.background = activeLang === lang.label ? '#F1F5F9' : '#FFFFFF'}
+                    >
+                      {lang.label}
+                      {activeLang === lang.label && <Check size={14} color="#4A6741" />}
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+
+          <div id="google_translate_element" style={{ display: 'none' }}></div>
         </div>
       </nav>
+
+      {/* Hide the top Google Translate frame that gets injected */}
+      <style>{`
+        body { top: 0 !important; }
+        .skiptranslate, #goog-gt-tt { display: none !important; }
+      `}</style>
 
       {/* Click-away overlay for dropdown */}
       {showDropdown && (
