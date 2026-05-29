@@ -186,7 +186,7 @@ const LandingPage = () => {
               marginBottom: '0.4rem',
               letterSpacing: '0.02em'
             }}>
-              {t('role_' + role.key + '_title', language)}
+              {role.title}
             </h3>
             <p style={{
               fontSize: '0.95rem',
@@ -194,7 +194,7 @@ const LandingPage = () => {
               margin: 0,
               lineHeight: 1.4
             }}>
-              {t('role_' + role.key + '_desc', language)}
+              {role.description}
             </p>
           </div>
         ))}
