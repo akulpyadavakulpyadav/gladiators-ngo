@@ -397,6 +397,7 @@ const ManagementSuite = () => {
   const [showEndCampaignModal, setShowEndCampaignModal] = useState(false);
   const [selectedCampaignForEnd, setSelectedCampaignForEnd] = useState(null);
   const [campaignHours, setCampaignHours] = useState('');
+  const [attendanceState, setAttendanceState] = useState({});
   const [volunteerApps, setVolunteerApps] = useState([]);
   const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
   const [programToDelete, setProgramToDelete] = useState(null);
@@ -498,15 +499,22 @@ const ManagementSuite = () => {
     e.preventDefault();
     if (!selectedCampaignForEnd) return;
     try {
+      const attendanceData = Object.keys(attendanceState).map(appId => ({
+        applicationId: appId,
+        volunteerId: attendanceState[appId].volunteerId,
+        status: attendanceState[appId].status
+      }));
+
       await fetch(`http://localhost:5000/api/programs/${selectedCampaignForEnd._id}/end`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ hours: Number(campaignHours) })
+        body: JSON.stringify({ hours: Number(campaignHours), attendanceData })
       });
       const id = user?._id || user?.gcId;
       fetchPrograms(id);
       setShowEndCampaignModal(false);
       setCampaignHours('');
+      setAttendanceState({});
       setSelectedCampaignForEnd(null);
       showToast('Campaign ended successfully.', 'success');
     } catch (e) { console.error(e); }
@@ -575,7 +583,16 @@ const ManagementSuite = () => {
                 <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                   <span className={`badge ${program.status === 'Active' ? 'badge-secondary' : program.status === 'Completed' ? 'badge-primary' : 'badge-warning'}`}>{program.status}</span>
                   {program.status === 'Active' && (
-                    <button className="btn btn-outline" style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem' }} onClick={() => { setSelectedCampaignForEnd(program); setShowEndCampaignModal(true); }}>
+                    <button className="btn btn-outline" style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem' }} onClick={() => { 
+                      setSelectedCampaignForEnd(program);
+                      const approved = applications.filter(a => (a.programId?._id === program._id || a.programId === program._id) && a.status === 'Approved');
+                      const initialAttendance = {};
+                      approved.forEach(a => {
+                        initialAttendance[a._id] = { volunteerId: a.volunteerId?._id || a.volunteerId, status: 'Present' };
+                      });
+                      setAttendanceState(initialAttendance);
+                      setShowEndCampaignModal(true); 
+                    }}>
                       End Campaign
                     </button>
                   )}
@@ -686,16 +703,43 @@ const ManagementSuite = () => {
 
       {showEndCampaignModal && selectedCampaignForEnd && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div className="glass-card" style={{ padding: '2rem', width: '100%', maxWidth: 400 }}>
-            <h3 className="section-title">End Campaign</h3>
-            <p style={{ fontSize: '0.9rem', marginBottom: '1rem' }}>Please enter the total number of hours volunteered for this campaign. This will be added to the volunteers' impact profiles.</p>
+          <div className="glass-card" style={{ padding: '2rem', width: '100%', maxWidth: 500, maxHeight: '90vh', overflowY: 'auto' }}>
+            <h3 className="section-title">End Campaign & Attendance</h3>
+            <p style={{ fontSize: '0.9rem', marginBottom: '1rem' }}>Enter the total hours volunteered. Mark absent volunteers to ensure accurate credit.</p>
             <form onSubmit={handleEndCampaign}>
               <div className="form-group">
                 <label className="form-label">Total Hours</label>
                 <input type="number" className="form-input" required min="1" value={campaignHours} onChange={e => setCampaignHours(e.target.value)} placeholder="e.g. 4" />
               </div>
+              
+              {Object.keys(attendanceState).length > 0 && (
+                <div style={{ marginTop: '1.5rem', marginBottom: '1.5rem' }}>
+                  <label className="form-label">Volunteer Attendance</label>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
+                    {applications.filter(a => (a.programId?._id === selectedCampaignForEnd._id || a.programId === selectedCampaignForEnd._id) && a.status === 'Approved').map(app => (
+                      <div key={app._id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem', background: '#F8FAFC', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                          {app.volunteerId?.profilePhoto ? (
+                            <img src={app.volunteerId.profilePhoto} alt="vol" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }} />
+                          ) : (
+                            <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--color-primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: 'bold' }}>
+                              {app.volunteerId?.name?.charAt(0) || '?'}
+                            </div>
+                          )}
+                          <span style={{ fontWeight: 600, fontSize: '0.9rem', color: '#1E293B' }}>{app.volunteerId?.name || 'Volunteer'}</span>
+                        </div>
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                          <button type="button" onClick={() => setAttendanceState(prev => ({ ...prev, [app._id]: { ...prev[app._id], status: 'Present' } }))} style={{ padding: '0.25rem 0.75rem', fontSize: '0.8rem', borderRadius: '20px', border: 'none', cursor: 'pointer', background: attendanceState[app._id]?.status === 'Present' ? '#10B981' : '#E2E8F0', color: attendanceState[app._id]?.status === 'Present' ? 'white' : '#64748B', fontWeight: 600, transition: 'all 0.2s' }}>Present</button>
+                          <button type="button" onClick={() => setAttendanceState(prev => ({ ...prev, [app._id]: { ...prev[app._id], status: 'Absent' } }))} style={{ padding: '0.25rem 0.75rem', fontSize: '0.8rem', borderRadius: '20px', border: 'none', cursor: 'pointer', background: attendanceState[app._id]?.status === 'Absent' ? '#EF4444' : '#E2E8F0', color: attendanceState[app._id]?.status === 'Absent' ? 'white' : '#64748B', fontWeight: 600, transition: 'all 0.2s' }}>Absent</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
-                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>End Campaign</button>
+                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>Submit & End</button>
                 <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowEndCampaignModal(false)}>Cancel</button>
               </div>
             </form>
