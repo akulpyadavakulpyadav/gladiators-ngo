@@ -55,9 +55,7 @@ const CompanyNgoProfile = () => {
 
   return (
     <div className="page-container animate-fade-in">
-      <button className="btn btn-outline" style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} onClick={() => navigate('/company/search')}>
-        <ChevronLeft size={16} /> Back to Search
-      </button>
+
 
       <div className="glass-card" style={{ padding: '3rem', marginBottom: '2rem' }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '2rem', flexWrap: 'wrap' }}>
