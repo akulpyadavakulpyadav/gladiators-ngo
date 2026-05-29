@@ -68,10 +68,33 @@ const GlobalLayout = () => {
 
   useEffect(() => {
     fetchBadgesAndStats();
-    // Poll for new badges every 8 seconds (handles background completions while navigating any page)
+    // Poll for new badges every 8 seconds
     const interval = setInterval(fetchBadgesAndStats, 8000);
     return () => clearInterval(interval);
   }, [user]);
+
+  useEffect(() => {
+    const addGoogleTranslateScript = () => {
+      if (!document.querySelector('#google-translate-script')) {
+        window.googleTranslateElementInit = () => {
+          if (window.google && window.google.translate) {
+            new window.google.translate.TranslateElement({
+              pageLanguage: 'en',
+              includedLanguages: 'en,hi,kn',
+              layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+              autoDisplay: false
+            }, 'google_translate_element');
+          }
+        };
+        const script = document.createElement('script');
+        script.id = 'google-translate-script';
+        script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+        script.async = true;
+        document.body.appendChild(script);
+      }
+    };
+    addGoogleTranslateScript();
+  }, []);
 
   const handleCloseCelebration = async () => {
     if (!user) return;
