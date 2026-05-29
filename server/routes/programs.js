@@ -2,6 +2,7 @@ const express = require('express');
 const Program = require('../models/Program');
 const User = require('../models/User');
 const Application = require('../models/Application');
+const Message = require('../models/Message');
 const router = express.Router();
 
 // @route   POST /api/programs
@@ -69,11 +70,11 @@ router.get('/ngo/:ngoId', async (req, res) => {
 });
 
 // @route   PUT /api/programs/:id/end
-// @desc    NGO ends a program and logs hours
+// @desc    NGO ends a program and logs hours and attendance
 router.put('/:id/end', async (req, res) => {
   try {
     const { id } = req.params;
-    const { hours } = req.body;
+    const { hours, attendanceData } = req.body;
     
     if (hours === undefined || isNaN(hours) || hours <= 0) {
       return res.status(400).json({ message: 'Valid hours are required to end a campaign' });
@@ -86,6 +87,26 @@ router.put('/:id/end', async (req, res) => {
     );
 
     if (!program) return res.status(404).json({ message: 'Program not found' });
+    
+    // Process attendance if provided
+    if (attendanceData && Array.isArray(attendanceData)) {
+      for (const att of attendanceData) {
+        // Update application
+        await Application.findByIdAndUpdate(att.applicationId, {
+          attendance: att.status
+        });
+        
+        // Notify absent volunteers
+        if (att.status === 'Absent') {
+          const newMsg = new Message({
+            senderId: program.ngoId,
+            receiverId: att.volunteerId,
+            content: `Notice: You were marked absent for the program "${program.title}".`
+          });
+          await newMsg.save();
+        }
+      }
+    }
     
     res.status(200).json(program);
   } catch (error) {
