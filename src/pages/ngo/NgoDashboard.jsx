@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Camera, Users, WifiOff, Wifi, IndianRupee, MessageSquare, Plus, Save, Building2, ChevronLeft, ChevronRight, X, Trash2, Edit3, Clock, Activity } from 'lucide-react';
+import { Camera, Users, WifiOff, Wifi, IndianRupee, MessageSquare, Plus, Save, Building2, ChevronLeft, ChevronRight, X, Trash2, Edit3, Clock, Activity, FileText, Image as ImageIcon } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 import { useConfirm } from '../../context/ConfirmContext';
 import NgoProfile from './NgoProfile';
@@ -1134,12 +1134,16 @@ const FinanceSuite = () => {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
+        reader.onload = () => resolve({
+          url: reader.result,
+          name: file.name,
+          fileType: file.type
+        });
         reader.onerror = error => reject(error);
       });
     });
-    Promise.all(promises).then(base64Files => {
-      setExpenseForm(prev => ({ ...prev, bills: [...prev.bills, ...base64Files] }));
+    Promise.all(promises).then(fileData => {
+      setExpenseForm(prev => ({ ...prev, bills: [...prev.bills, ...fileData] }));
     });
   };
 
@@ -1200,11 +1204,19 @@ const FinanceSuite = () => {
                   <div>
                     <h5 style={{ fontSize: '0.85rem', color: '#475569', marginBottom: '0.5rem' }}>Uploaded Bills ({r.bills.length})</h5>
                     <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                      {r.bills.map((bill, bIdx) => (
-                        <a key={bIdx} href={bill} target="_blank" rel="noreferrer" style={{ display: 'block', width: '50px', height: '50px', border: '1px solid #E2E8F0', borderRadius: '4px', overflow: 'hidden' }}>
-                          <img src={bill} alt="Bill" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        </a>
-                      ))}
+                      {r.bills.map((bill, bIdx) => {
+                        const isObject = typeof bill === 'object' && bill !== null;
+                        const url = isObject ? bill.url : bill;
+                        const name = isObject ? bill.name : `Attached Bill ${bIdx + 1}`;
+                        const type = isObject ? bill.fileType : (typeof url === 'string' && url.startsWith('data:application/pdf') ? 'application/pdf' : 'image/jpeg');
+                        
+                        return (
+                          <a key={bIdx} href={url} target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem', border: '1px solid #E2E8F0', borderRadius: '6px', textDecoration: 'none', color: '#334155', background: '#F8FAFC' }}>
+                            {type.includes('pdf') ? <FileText size={20} color="#EF4444" /> : <ImageIcon size={20} color="#3B82F6" />}
+                            <span style={{ fontSize: '0.85rem', maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{name}</span>
+                          </a>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
@@ -1325,7 +1337,22 @@ const FinanceSuite = () => {
                 <label>Upload Bills (Images/PDFs)</label>
                 <input type="file" multiple accept="image/*,application/pdf" className="form-input" onChange={handleFileUpload} />
                 {expenseForm.bills.length > 0 && (
-                  <p style={{ fontSize: '0.8rem', color: '#10B981', marginTop: '0.25rem' }}>{expenseForm.bills.length} file(s) attached</p>
+                  <div style={{ marginTop: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                    {expenseForm.bills.map((b, i) => {
+                      const isObject = typeof b === 'object' && b !== null;
+                      const name = isObject ? b.name : `Attached Bill ${i + 1}`;
+                      const type = isObject ? b.fileType : (typeof b === 'string' && b.startsWith('data:application/pdf') ? 'application/pdf' : 'image/jpeg');
+                      return (
+                        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: '#475569', background: '#F8FAFC', padding: '0.4rem 0.6rem', borderRadius: '4px' }}>
+                          {type.includes('pdf') ? <FileText size={16} color="#EF4444"/> : <ImageIcon size={16} color="#3B82F6"/>}
+                          <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{name}</span>
+                          <button type="button" onClick={() => setExpenseForm(prev => ({...prev, bills: prev.bills.filter((_, idx) => idx !== i)}))} style={{ background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', padding: 0 }}>
+                            <X size={14} />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
                 )}
               </div>
 
