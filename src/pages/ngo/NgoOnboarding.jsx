@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { 
@@ -45,6 +45,17 @@ const NgoOnboarding = () => {
 
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
+  const [countdown, setCountdown] = useState(0);
+
+  useEffect(() => {
+    let timer;
+    if (countdown > 0) {
+      timer = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [countdown]);
   
   // Verification / Buffering loading states
   const [isBuffering, setIsBuffering] = useState(false);
@@ -67,6 +78,7 @@ const NgoOnboarding = () => {
       
       if (response.ok) {
         setOtpSent(true);
+        setCountdown(60);
         showAlert('OTP has been sent to your POC email address.', 'success');
       } else {
         showAlert(data.message || 'Failed to send OTP.', 'error');
@@ -590,9 +602,20 @@ const NgoOnboarding = () => {
                         <button
                           type="button"
                           onClick={handleSendOtp}
-                          style={{ padding: '0.6rem 1rem', background: '#4A6741', color: '#FFFFFF', border: 'none', borderRadius: '0.5rem', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer' }}
+                          disabled={countdown > 0}
+                          style={{ 
+                            padding: '0.6rem 1rem', 
+                            background: countdown > 0 ? '#94A3B8' : '#4A6741', 
+                            color: '#FFFFFF', 
+                            border: 'none', 
+                            borderRadius: '0.5rem', 
+                            fontWeight: 700, 
+                            fontSize: '0.8rem', 
+                            cursor: countdown > 0 ? 'not-allowed' : 'pointer',
+                            whiteSpace: 'nowrap'
+                          }}
                         >
-                          {otpSent ? 'Resend' : 'Send OTP'}
+                          {countdown > 0 ? `Resend in ${countdown}s` : (otpSent ? 'Resend' : 'Send OTP')}
                         </button>
                       )}
                     </div>
