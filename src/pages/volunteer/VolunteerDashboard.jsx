@@ -363,12 +363,12 @@ const generateCertificate = (badge, userName) => {
 
   // Header Title
   doc.setTextColor(46, 125, 50);
-  doc.setFont('Helvetica', 'bold');
+  doc.setFont('helvetica', 'bold');
   doc.setFontSize(26);
   doc.text('GLADIATORS CONNECT', width / 2, 35, { align: 'center' });
 
   doc.setTextColor(100, 116, 139);
-  doc.setFont('Helvetica', 'normal');
+  doc.setFont('helvetica', 'normal');
   doc.setFontSize(10);
   doc.text('VERIFIED VOLUNTEER IMPACT PLATFORM', width / 2, 41, { align: 'center' });
 
@@ -379,32 +379,32 @@ const generateCertificate = (badge, userName) => {
 
   // Certificate text
   doc.setTextColor(30, 41, 59);
-  doc.setFont('Times-Roman', 'italic');
+  doc.setFont('times', 'italic');
   doc.setFontSize(16);
   doc.text('This is proudly awarded to', width / 2, 62, { align: 'center' });
 
   // User Name
   doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-  doc.setFont('Helvetica', 'bold');
+  doc.setFont('helvetica', 'bold');
   doc.setFontSize(28);
   doc.text(userName.toUpperCase(), width / 2, 77, { align: 'center' });
 
   // Subtext
   doc.setTextColor(71, 85, 105);
-  doc.setFont('Times-Roman', 'italic');
+  doc.setFont('times', 'italic');
   doc.setFontSize(14);
   doc.text('in recognition of outstanding service and dedication as a verified volunteer,', width / 2, 90, { align: 'center' });
   doc.text('having reached the distinguished milestone and earned the credential of', width / 2, 97, { align: 'center' });
 
   // Badge Name
   doc.setTextColor(accentColor[0], accentColor[1], accentColor[2]);
-  doc.setFont('Helvetica', 'bold');
+  doc.setFont('helvetica', 'bold');
   doc.setFontSize(22);
   doc.text(`${badge.name} (${badge.level} Tier)`, width / 2, 112, { align: 'center' });
 
   // Badge Description
   doc.setTextColor(100, 116, 139);
-  doc.setFont('Helvetica', 'normal');
+  doc.setFont('helvetica', 'normal');
   doc.setFontSize(11);
   doc.text(badge.description || '', width / 2, 120, { align: 'center' });
 
@@ -413,7 +413,7 @@ const generateCertificate = (badge, userName) => {
     year: 'numeric', month: 'long', day: 'numeric'
   });
   doc.setTextColor(71, 85, 105);
-  doc.setFont('Helvetica', 'bold');
+  doc.setFont('helvetica', 'bold');
   doc.setFontSize(11);
   doc.text(`Date Earned: ${dateStr}`, width / 2, 135, { align: 'center' });
 
@@ -422,25 +422,25 @@ const generateCertificate = (badge, userName) => {
   doc.setLineWidth(0.5);
   doc.line(40, 170, 95, 170);
   doc.setTextColor(100, 116, 139);
-  doc.setFont('Helvetica', 'normal');
+  doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
   doc.text('Aniruddha M. Jois', 67.5, 175, { align: 'center' });
-  doc.setFont('Helvetica', 'bold');
+  doc.setFont('helvetica', 'bold');
   doc.text('GLADIATORS FOUNDER', 67.5, 179, { align: 'center' });
 
   doc.line(width - 95, 170, width - 40, 170);
   doc.setTextColor(100, 116, 139);
-  doc.setFont('Helvetica', 'normal');
+  doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
   doc.text('Verified via Platform Cryptography', width - 67.5, 175, { align: 'center' });
-  doc.setFont('Helvetica', 'bold');
+  doc.setFont('helvetica', 'bold');
   doc.text('SYSTEM AUTHENTICATION', width - 67.5, 179, { align: 'center' });
 
   // Seal
   doc.setFillColor(accentColor[0], accentColor[1], accentColor[2]);
   doc.circle(width / 2, 168, 8, 'F');
   doc.setTextColor(255, 255, 255);
-  doc.setFont('Helvetica', 'bold');
+  doc.setFont('helvetica', 'bold');
   doc.setFontSize(12);
   doc.text('G', width / 2, 172, { align: 'center' });
 
@@ -492,7 +492,7 @@ const generateProgramCertificate = (act, userName) => {
 
   // Header Title
   doc.setTextColor(46, 125, 50);
-  doc.setFont('Helvetica', 'bold');
+  doc.setFont('helvetica', 'bold');
   doc.setFontSize(26);
   doc.text('CERTIFICATE OF VOLUNTEERING', width / 2, 35, { align: 'center' });
 
@@ -503,31 +503,31 @@ const generateProgramCertificate = (act, userName) => {
 
   // Certificate text
   doc.setTextColor(30, 41, 59);
-  doc.setFont('Times-Roman', 'italic');
+  doc.setFont('times', 'italic');
   doc.setFontSize(16);
   doc.text('This is proudly awarded to', width / 2, 62, { align: 'center' });
 
   // User Name
   doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-  doc.setFont('Helvetica', 'bold');
+  doc.setFont('helvetica', 'bold');
   doc.setFontSize(28);
   doc.text(userName.toUpperCase(), width / 2, 77, { align: 'center' });
 
   // Subtext
   doc.setTextColor(71, 85, 105);
-  doc.setFont('Times-Roman', 'italic');
+  doc.setFont('times', 'italic');
   doc.setFontSize(14);
   doc.text('in recognition of their valuable contribution to', width / 2, 90, { align: 'center' });
   
   // Program Name
   doc.setTextColor(accentColor[0], accentColor[1], accentColor[2]);
-  doc.setFont('Helvetica', 'bold');
+  doc.setFont('helvetica', 'bold');
   doc.setFontSize(22);
   doc.text(act.programId?.title || 'Volunteer Program', width / 2, 105, { align: 'center' });
 
   // NGO Name
   doc.setTextColor(100, 116, 139);
-  doc.setFont('Helvetica', 'normal');
+  doc.setFont('helvetica', 'normal');
   doc.setFontSize(12);
   doc.text(`Hosted by: ${act.ngoId?.name || 'Partner NGO'}`, width / 2, 115, { align: 'center' });
 
@@ -536,7 +536,7 @@ const generateProgramCertificate = (act, userName) => {
     year: 'numeric', month: 'long', day: 'numeric'
   });
   doc.setTextColor(71, 85, 105);
-  doc.setFont('Helvetica', 'bold');
+  doc.setFont('helvetica', 'bold');
   doc.setFontSize(11);
   doc.text(`Date: ${dateStr}   |   Hours Logged: ${act.programId?.hours || 0}`, width / 2, 135, { align: 'center' });
 
@@ -545,25 +545,25 @@ const generateProgramCertificate = (act, userName) => {
   doc.setLineWidth(0.5);
   doc.line(40, 170, 95, 170);
   doc.setTextColor(100, 116, 139);
-  doc.setFont('Helvetica', 'normal');
+  doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
   doc.text('Aniruddha M. Jois', 67.5, 175, { align: 'center' });
-  doc.setFont('Helvetica', 'bold');
+  doc.setFont('helvetica', 'bold');
   doc.text('GLADIATORS FOUNDER', 67.5, 179, { align: 'center' });
 
   doc.line(width - 95, 170, width - 40, 170);
   doc.setTextColor(100, 116, 139);
-  doc.setFont('Helvetica', 'normal');
+  doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
   doc.text('Verified via Platform Cryptography', width - 67.5, 175, { align: 'center' });
-  doc.setFont('Helvetica', 'bold');
+  doc.setFont('helvetica', 'bold');
   doc.text('SYSTEM AUTHENTICATION', width - 67.5, 179, { align: 'center' });
 
   // Seal
   doc.setFillColor(accentColor[0], accentColor[1], accentColor[2]);
   doc.circle(width / 2, 168, 8, 'F');
   doc.setTextColor(255, 255, 255);
-  doc.setFont('Helvetica', 'bold');
+  doc.setFont('helvetica', 'bold');
   doc.setFontSize(12);
   doc.text('G', width / 2, 172, { align: 'center' });
 
@@ -927,6 +927,50 @@ const VolunteerNgoProfileView = ({ ngo, onBack }) => {
   );
 };
 
+const VolunteerInbox = () => {
+  const { user } = useAuth();
+  const [messages, setMessages] = useState([]);
+  
+  useEffect(() => {
+    const id = user?._id || user?.gcId;
+    if (id) {
+      fetch(`http://localhost:5000/api/chat/inbox/${id}`)
+        .then(res => res.json())
+        .then(data => {
+          setMessages(data);
+          // Mark all as read
+          fetch(`http://localhost:5000/api/chat/inbox/read/${id}`, { method: 'PUT' }).catch(console.error);
+        })
+        .catch(console.error);
+    }
+  }, [user]);
+
+  return (
+    <div className="animate-fade-in space-y-6">
+      <h2 className="section-title">My Inbox</h2>
+      {messages.length === 0 ? (
+        <div className="glass-card" style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-text-secondary)' }}>
+          No messages in your inbox.
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {messages.map(msg => (
+            <div key={msg._id} className="glass-card" style={{ padding: '1.5rem', display: 'flex', gap: '1rem', alignItems: 'flex-start', borderLeft: msg.read ? 'none' : '4px solid var(--color-primary)' }}>
+              <div style={{ flex: 1 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                  <span style={{ fontWeight: 600, color: 'var(--color-primary)' }}>{msg.senderId?.name || 'NGO'}</span>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>{new Date(msg.createdAt).toLocaleString()}</span>
+                </div>
+                <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.5, color: 'var(--color-text-primary)' }}>{msg.content}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 /* ─── Volunteer Dashboard ─── */
 const VolunteerDashboard = () => {
   const { user } = useAuth();
@@ -957,7 +1001,8 @@ const VolunteerDashboard = () => {
   const tabs = [
     { id: 'ngos', label: 'NGO Directory' },
     { id: 'broadcasts', label: 'Broadcasts' },
-    { id: 'impact', label: 'My Impact' }
+    { id: 'impact', label: 'My Impact' },
+    { id: 'inbox', label: 'Inbox' }
   ];
 
   return (
@@ -1159,6 +1204,7 @@ const VolunteerDashboard = () => {
         {activeTab === 'impact' && (
           <ImpactDashboard badgeData={badgeData} fetchBadgesAndStats={fetchBadgesAndStats} />
         )}
+        {activeTab === 'inbox' && <VolunteerInbox />}
       </div>
     </div>
   );
