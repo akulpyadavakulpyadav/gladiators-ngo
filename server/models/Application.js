@@ -24,6 +24,11 @@ const applicationSchema = new mongoose.Schema({
     type: String,
     enum: ['Pending', 'Approved', 'Rejected'],
     default: 'Pending'
+  },
+  attendance: {
+    type: String,
+    enum: ['Pending', 'Present', 'Absent'],
+    default: 'Pending'
   }
 }, {
   timestamps: true
