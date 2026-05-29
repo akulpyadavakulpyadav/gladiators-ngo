@@ -42,6 +42,35 @@ router.get('/messages', async (req, res) => {
   }
 });
 
+// @route   GET /api/chat/inbox/:userId
+// @desc    Get all messages for a specific user
+router.get('/inbox/:userId', async (req, res) => {
+  try {
+    const messages = await Message.find({ receiverId: req.params.userId })
+      .populate('senderId', 'name profilePhoto')
+      .sort({ createdAt: -1 });
+    res.status(200).json(messages);
+  } catch (error) {
+    console.error('Error fetching inbox messages:', error);
+    res.status(500).json({ message: 'Server error fetching inbox messages.' });
+  }
+});
+
+// @route   PUT /api/chat/inbox/read/:userId
+// @desc    Mark all messages for a user as read
+router.put('/inbox/read/:userId', async (req, res) => {
+  try {
+    await Message.updateMany(
+      { receiverId: req.params.userId, read: false },
+      { $set: { read: true } }
+    );
+    res.status(200).json({ message: 'Inbox messages marked as read.' });
+  } catch (error) {
+    console.error('Error marking inbox read:', error);
+    res.status(500).json({ message: 'Server error marking inbox read.' });
+  }
+});
+
 // @route   POST /api/chat/messages
 // @desc    Send a new message
 router.post('/messages', async (req, res) => {
