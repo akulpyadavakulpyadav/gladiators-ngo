@@ -1048,23 +1048,13 @@ const OfflineEventLogger = () => {
 const FinanceSuite = () => {
   const { user } = useAuth();
   
-  const [activeSubTab, setActiveSubTab] = useState('campaigns'); // campaigns, expenses, donations, reports
+  const [activeSubTab, setActiveSubTab] = useState('expenses'); // expenses, donations
   const [campaigns, setCampaigns] = useState([]);
-  const [expenses, setExpenses] = useState([]);
+  const [expenses, setExpenses] = useState([]); // This stores the complex expense reports
   const [donations, setDonations] = useState([]);
-  const [reports, setReports] = useState([]);
   
-  const [showReportModal, setShowReportModal] = useState(false);
-  const [reportForm, setReportForm] = useState({ title: '', campaignId: '', rows: [{ particulars: '', expense: '' }], bills: [] });
-  
-  const [showCampaignModal, setShowCampaignModal] = useState(false);
-  const [campaignForm, setCampaignForm] = useState({ title: '', description: '', targetAmount: '', endDate: '' });
-
   const [showExpenseModal, setShowExpenseModal] = useState(false);
-  const [expenseForm, setExpenseForm] = useState({ title: '', amountSpent: '', category: 'Logistics', description: '', proofUrl: '', campaignId: '' });
-
-  const [showEndCampaignModal, setShowEndCampaignModal] = useState(false);
-  const [endingCampaignId, setEndingCampaignId] = useState(null);
+  const [expenseForm, setExpenseForm] = useState({ title: '', campaignId: '', rows: [{ particulars: '', expense: '' }], bills: [] });
 
   useEffect(() => {
     if (user?.gcId) {
@@ -1074,48 +1064,30 @@ const FinanceSuite = () => {
 
   const fetchFinanceData = async () => {
     try {
-      const [campRes, expRes, donRes, repRes] = await Promise.all([
+      const [campRes, expRes, donRes] = await Promise.all([
         fetch(`http://localhost:5000/api/finance/campaigns/${user.gcId}`),
-        fetch(`http://localhost:5000/api/finance/expenses/${user.gcId}`),
-        fetch(`http://localhost:5000/api/finance/donations/${user.gcId}`),
-        fetch(`http://localhost:5000/api/finance/reports/${user.gcId}`)
+        fetch(`http://localhost:5000/api/finance/reports/${user.gcId}`), // We use the reports endpoint for our new expense format
+        fetch(`http://localhost:5000/api/finance/donations/${user.gcId}`)
       ]);
       setCampaigns(await campRes.json());
       setExpenses(await expRes.json());
       setDonations(await donRes.json());
-      setReports(await repRes.json());
     } catch (err) {
       console.error(err);
     }
   };
 
-  const handleCreateCampaign = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await fetch('http://localhost:5000/api/finance/campaigns', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...campaignForm, ngoId: user.gcId })
-      });
-      if (res.ok) {
-        setShowCampaignModal(false);
-        setCampaignForm({ title: '', description: '', targetAmount: '', endDate: '' });
-        fetchFinanceData();
-      }
-    } catch (err) {}
-  };
-
-  const handleCreateReport = async (e) => {
+  const handleCreateExpense = async (e) => {
     e.preventDefault();
     try {
       const res = await fetch('http://localhost:5000/api/finance/reports', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...reportForm, ngoId: user.gcId })
+        body: JSON.stringify({ ...expenseForm, ngoId: user.gcId })
       });
       if (res.ok) {
-        setShowReportModal(false);
-        setReportForm({ title: '', campaignId: '', rows: [{ particulars: '', expense: '' }], bills: [] });
+        setShowExpenseModal(false);
+        setExpenseForm({ title: '', campaignId: '', rows: [{ particulars: '', expense: '' }], bills: [] });
         fetchFinanceData();
       }
     } catch (err) {}
@@ -1132,46 +1104,8 @@ const FinanceSuite = () => {
       });
     });
     Promise.all(promises).then(base64Files => {
-      setReportForm(prev => ({ ...prev, bills: [...prev.bills, ...base64Files] }));
+      setExpenseForm(prev => ({ ...prev, bills: [...prev.bills, ...base64Files] }));
     });
-  };
-
-  const handleCreateExpense = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await fetch('http://localhost:5000/api/finance/expenses', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...expenseForm, ngoId: user.gcId })
-      });
-      if (res.ok) {
-        setShowExpenseModal(false);
-        setExpenseForm({ title: '', amountSpent: '', category: 'Logistics', description: '', proofUrl: '', campaignId: '' });
-        fetchFinanceData();
-      }
-    } catch (err) {}
-  };
-
-  const triggerEndCampaign = (campaignId) => {
-    setEndingCampaignId(campaignId);
-    setShowEndCampaignModal(true);
-  };
-
-  const handleEndCampaign = async (generateNow) => {
-    try {
-      await fetch(`http://localhost:5000/api/finance/campaigns/${endingCampaignId}/complete`, { method: 'PUT' });
-      if (generateNow) {
-        await fetch(`http://localhost:5000/api/finance/campaigns/${endingCampaignId}/report`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ reportUrl: 'finance_report_' + Date.now() + '.pdf' })
-        });
-        showToast('Finance Report Generated Successfully!', 'success');
-      }
-      setShowEndCampaignModal(false);
-      setEndingCampaignId(null);
-      fetchFinanceData();
-    } catch (err) {}
   };
 
   return (
@@ -1181,95 +1115,21 @@ const FinanceSuite = () => {
           <IndianRupee size={24} /> Finance Suite
         </h2>
         <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
-          <button onClick={() => setActiveSubTab('campaigns')} className={`btn ${activeSubTab === 'campaigns' ? 'btn-primary' : 'btn-outline'}`}>Campaigns</button>
           <button onClick={() => setActiveSubTab('expenses')} className={`btn ${activeSubTab === 'expenses' ? 'btn-primary' : 'btn-outline'}`}>Expenses</button>
           <button onClick={() => setActiveSubTab('donations')} className={`btn ${activeSubTab === 'donations' ? 'btn-primary' : 'btn-outline'}`}>Donations</button>
-          <button onClick={() => setActiveSubTab('reports')} className={`btn ${activeSubTab === 'reports' ? 'btn-primary' : 'btn-outline'}`}>Reports</button>
         </div>
       </div>
 
-      {activeSubTab === 'campaigns' && (
-        <div>
-          <button onClick={() => setShowCampaignModal(true)} className="btn btn-secondary" style={{ marginBottom: '1rem' }}><Plus size={16}/> New Campaign</button>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1rem' }}>
-            {campaigns.map(c => (
-              <div key={c._id} className="glass-card" style={{ padding: '1rem', borderLeft: `4px solid ${c.status === 'Completed' ? '#10B981' : 'var(--color-primary)'}` }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <h3 style={{ margin: '0 0 0.5rem 0' }}>{c.title} {c.status === 'Completed' && <span className="badge badge-secondary" style={{fontSize:'0.7rem', verticalAlign:'middle', marginLeft:'4px'}}>Ended</span>}</h3>
-                  {c.status !== 'Completed' && (
-                    <button className="btn btn-outline" style={{ padding: '0.25rem 0.5rem', fontSize: '0.8rem' }} onClick={() => triggerEndCampaign(c._id)}>End Campaign</button>
-                  )}
-                </div>
-                <p style={{ fontSize: '0.9rem', color: '#64748B', margin: '0 0 1rem 0' }}>{c.description}</p>
-                <div style={{ background: '#F8FAFC', borderRadius: '8px', padding: '0.75rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: '0.5rem', fontWeight: 500 }}>
-                    <span style={{ color: 'var(--color-primary)' }}>Raised: ₹{c.raisedAmount}</span>
-                    <span>Goal: ₹{c.targetAmount}</span>
-                  </div>
-                  <div style={{ width: '100%', height: '8px', background: '#E2E8F0', borderRadius: '4px', overflow: 'hidden' }}>
-                    <div style={{ width: `${Math.min((c.raisedAmount/c.targetAmount)*100, 100)}%`, height: '100%', background: 'var(--color-primary)' }}></div>
-                  </div>
-                </div>
-                {c.status === 'Completed' && c.hasFinanceReport && (
-                  <p style={{ fontSize: '0.85rem', color: '#10B981', margin: '0.5rem 0 0 0', fontWeight: 500 }}>Finance Report Generated</p>
-                )}
-              </div>
-            ))}
-            {campaigns.length === 0 && <p style={{ color: '#64748B' }}>No campaigns created yet.</p>}
-          </div>
-        </div>
-      )}
-
       {activeSubTab === 'expenses' && (
         <div>
-          <button onClick={() => setShowExpenseModal(true)} className="btn btn-secondary" style={{ marginBottom: '1rem' }}><Plus size={16}/> Log Expense</button>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {expenses.map(e => (
-              <div key={e._id} className="glass-card" style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <h4 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>{e.title} <span className="badge badge-secondary">{e.category}</span></h4>
-                  <p style={{ fontSize: '0.85rem', color: '#64748B', margin: '0.25rem 0 0 0' }}>{e.description}</p>
-                  {e.campaignId && <p style={{ fontSize: '0.8rem', color: 'var(--color-primary)', margin: '0.25rem 0 0 0', fontWeight: 500 }}>Campaign: {e.campaignId.title}</p>}
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#EF4444' }}>- ₹{e.amountSpent}</div>
-                  <div style={{ fontSize: '0.8rem', color: '#64748B' }}>{new Date(e.date).toLocaleDateString()}</div>
-                </div>
-              </div>
-            ))}
-            {expenses.length === 0 && <p style={{ color: '#64748B' }}>No expenses logged yet.</p>}
-          </div>
-        </div>
-      )}
-
-      {activeSubTab === 'donations' && (
-        <div>
-          <h3 style={{ marginBottom: '1rem', fontSize: '1.2rem' }}>Recent Donations Received</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {donations.map(d => (
-              <div key={d._id} className="glass-card" style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <h4 style={{ margin: 0 }}>{d.donorName || 'Anonymous'}</h4>
-                  <p style={{ fontSize: '0.85rem', color: '#64748B', margin: '0.25rem 0 0 0' }}>{new Date(d.date).toLocaleDateString()}</p>
-                </div>
-                <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#10B981' }}>+ ₹{d.amount}</div>
-              </div>
-            ))}
-            {donations.length === 0 && <p style={{ color: '#64748B' }}>No donations tracked yet.</p>}
-          </div>
-        </div>
-      )}
-
-      {activeSubTab === 'reports' && (
-        <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-            <button onClick={() => setShowReportModal(true)} className="btn btn-secondary"><Plus size={16}/> Add Report</button>
+            <button onClick={() => setShowExpenseModal(true)} className="btn btn-secondary"><Plus size={16}/> Add Expense Log</button>
             <div style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#334155' }}>
-              Grand Total Till Now: ₹{reports.reduce((acc, r) => acc + r.totalAmount, 0)}
+              Grand Total Till Now: ₹{expenses.reduce((acc, r) => acc + r.totalAmount, 0)}
             </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {reports.map(r => (
+            {expenses.map(r => (
               <div key={r._id} className="glass-card" style={{ padding: '1.25rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                   <div>
@@ -1313,55 +1173,46 @@ const FinanceSuite = () => {
                 )}
               </div>
             ))}
-            {reports.length === 0 && <p style={{ color: '#64748B' }}>No reports created yet.</p>}
+            {expenses.length === 0 && <p style={{ color: '#64748B' }}>No expense logs created yet.</p>}
           </div>
         </div>
       )}
 
-      {/* Campaign Modal */}
-      {showCampaignModal && (
-        <div className="modal-overlay" onClick={() => setShowCampaignModal(false)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>New Campaign</h2>
-              <button className="icon-btn" onClick={() => setShowCampaignModal(false)}><X size={20} /></button>
-            </div>
-            <form onSubmit={handleCreateCampaign} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div className="form-group">
-                <label>Title</label>
-                <input type="text" className="form-control" required value={campaignForm.title} onChange={e => setCampaignForm({...campaignForm, title: e.target.value})} />
+      {activeSubTab === 'donations' && (
+        <div>
+          <h3 style={{ marginBottom: '1rem', fontSize: '1.2rem' }}>Recent Donations Received</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {donations.map(d => (
+              <div key={d._id} className="glass-card" style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <h4 style={{ margin: 0 }}>{d.donorName || 'Anonymous'}</h4>
+                  <p style={{ fontSize: '0.85rem', color: '#64748B', margin: '0.25rem 0 0 0' }}>{new Date(d.date).toLocaleDateString()}</p>
+                </div>
+                <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#10B981' }}>+ ₹{d.amount}</div>
               </div>
-              <div className="form-group">
-                <label>Description</label>
-                <textarea className="form-control" required value={campaignForm.description} onChange={e => setCampaignForm({...campaignForm, description: e.target.value})}></textarea>
-              </div>
-              <div className="form-group">
-                <label>Target Amount (₹)</label>
-                <input type="number" className="form-control" required value={campaignForm.targetAmount} onChange={e => setCampaignForm({...campaignForm, targetAmount: e.target.value})} />
-              </div>
-              <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>Create Campaign</button>
-            </form>
+            ))}
+            {donations.length === 0 && <p style={{ color: '#64748B' }}>No donations tracked yet.</p>}
           </div>
         </div>
       )}
 
-      {/* Report Modal */}
-      {showReportModal && (
-        <div className="modal-overlay" onClick={() => setShowReportModal(false)}>
+      {/* Expense Modal (Using the complex report format) */}
+      {showExpenseModal && (
+        <div className="modal-overlay" onClick={() => setShowExpenseModal(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto' }}>
             <div className="modal-header">
-              <h2>Add Finance Report</h2>
-              <button className="icon-btn" onClick={() => setShowReportModal(false)}><X size={20} /></button>
+              <h2>Add Expense Log</h2>
+              <button className="icon-btn" onClick={() => setShowExpenseModal(false)}><X size={20} /></button>
             </div>
-            <form onSubmit={handleCreateReport} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <form onSubmit={handleCreateExpense} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div className="form-group">
                 <label>Report Title</label>
-                <input type="text" className="form-control" required value={reportForm.title} onChange={e => setReportForm({...reportForm, title: e.target.value})} />
+                <input type="text" className="form-input" required value={expenseForm.title} onChange={e => setExpenseForm({...expenseForm, title: e.target.value})} />
               </div>
               
               <div className="form-group">
                 <label>Related Campaign (Optional)</label>
-                <select className="form-control" value={reportForm.campaignId} onChange={e => setReportForm({...reportForm, campaignId: e.target.value})}>
+                <select className="form-input" value={expenseForm.campaignId} onChange={e => setExpenseForm({...expenseForm, campaignId: e.target.value})}>
                   <option value="">None / General Fund</option>
                   {campaigns.map(c => <option key={c._id} value={c._id}>{c.title}</option>)}
                 </select>
@@ -1370,7 +1221,7 @@ const FinanceSuite = () => {
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
                   <label style={{ margin: 0 }}>Particulars & Expenses</label>
-                  <button type="button" onClick={() => setReportForm({...reportForm, rows: [...reportForm.rows, { particulars: '', expense: '' }]})} className="btn btn-outline" style={{ padding: '0.2rem 0.5rem', fontSize: '0.8rem' }}><Plus size={14}/> Add Row</button>
+                  <button type="button" onClick={() => setExpenseForm({...expenseForm, rows: [...expenseForm.rows, { particulars: '', expense: '' }]})} className="btn btn-outline" style={{ padding: '0.2rem 0.5rem', fontSize: '0.8rem' }}><Plus size={14}/> Add Row</button>
                 </div>
                 
                 <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1rem' }}>
@@ -1382,27 +1233,27 @@ const FinanceSuite = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {reportForm.rows.map((row, idx) => (
+                    {expenseForm.rows.map((row, idx) => (
                       <tr key={idx}>
                         <td style={{ padding: '0.5rem', border: '1px solid #E2E8F0' }}>
                           <input type="text" required value={row.particulars} style={{ width: '100%', border: 'none', background: 'transparent', outline: 'none' }} placeholder="E.g., Event Setup" onChange={(e) => {
-                            const newRows = [...reportForm.rows];
+                            const newRows = [...expenseForm.rows];
                             newRows[idx].particulars = e.target.value;
-                            setReportForm({...reportForm, rows: newRows});
+                            setExpenseForm({...expenseForm, rows: newRows});
                           }} />
                         </td>
                         <td style={{ padding: '0.5rem', border: '1px solid #E2E8F0' }}>
                           <input type="number" required value={row.expense} style={{ width: '100%', border: 'none', background: 'transparent', outline: 'none' }} placeholder="Amount" onChange={(e) => {
-                            const newRows = [...reportForm.rows];
+                            const newRows = [...expenseForm.rows];
                             newRows[idx].expense = e.target.value;
-                            setReportForm({...reportForm, rows: newRows});
+                            setExpenseForm({...expenseForm, rows: newRows});
                           }} />
                         </td>
                         <td style={{ padding: '0.5rem', border: '1px solid #E2E8F0', textAlign: 'center' }}>
-                          <button type="button" disabled={reportForm.rows.length === 1} onClick={() => {
-                            const newRows = reportForm.rows.filter((_, rIdx) => rIdx !== idx);
-                            setReportForm({...reportForm, rows: newRows});
-                          }} style={{ background: 'none', border: 'none', color: reportForm.rows.length === 1 ? '#CBD5E1' : '#EF4444', cursor: reportForm.rows.length === 1 ? 'not-allowed' : 'pointer' }}>
+                          <button type="button" disabled={expenseForm.rows.length === 1} onClick={() => {
+                            const newRows = expenseForm.rows.filter((_, rIdx) => rIdx !== idx);
+                            setExpenseForm({...expenseForm, rows: newRows});
+                          }} style={{ background: 'none', border: 'none', color: expenseForm.rows.length === 1 ? '#CBD5E1' : '#EF4444', cursor: expenseForm.rows.length === 1 ? 'not-allowed' : 'pointer' }}>
                             <Trash2 size={16} />
                           </button>
                         </td>
@@ -1413,7 +1264,7 @@ const FinanceSuite = () => {
                     <tr>
                       <td style={{ padding: '0.5rem', border: '1px solid #E2E8F0', fontWeight: 'bold', textAlign: 'right' }}>Grand Total:</td>
                       <td colSpan="2" style={{ padding: '0.5rem', border: '1px solid #E2E8F0', fontWeight: 'bold' }}>
-                        ₹{reportForm.rows.reduce((acc, row) => acc + Number(row.expense || 0), 0)}
+                        ₹{expenseForm.rows.reduce((acc, row) => acc + Number(row.expense || 0), 0)}
                       </td>
                     </tr>
                   </tfoot>
@@ -1422,79 +1273,14 @@ const FinanceSuite = () => {
 
               <div className="form-group">
                 <label>Upload Bills (Images/PDFs)</label>
-                <input type="file" multiple accept="image/*,application/pdf" className="form-control" onChange={handleFileUpload} />
-                {reportForm.bills.length > 0 && (
-                  <p style={{ fontSize: '0.8rem', color: '#10B981', marginTop: '0.25rem' }}>{reportForm.bills.length} file(s) attached</p>
+                <input type="file" multiple accept="image/*,application/pdf" className="form-input" onChange={handleFileUpload} />
+                {expenseForm.bills.length > 0 && (
+                  <p style={{ fontSize: '0.8rem', color: '#10B981', marginTop: '0.25rem' }}>{expenseForm.bills.length} file(s) attached</p>
                 )}
               </div>
 
               <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>Submit Report</button>
             </form>
-          </div>
-        </div>
-      )}
-
-      {/* Expense Modal */}
-      {showExpenseModal && (
-        <div className="modal-overlay" onClick={() => setShowExpenseModal(false)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>Log Expense</h2>
-              <button className="icon-btn" onClick={() => setShowExpenseModal(false)}><X size={20} /></button>
-            </div>
-            <form onSubmit={handleCreateExpense} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div className="form-group">
-                <label>Title</label>
-                <input type="text" className="form-control" required value={expenseForm.title} onChange={e => setExpenseForm({...expenseForm, title: e.target.value})} />
-              </div>
-              <div className="form-group">
-                <label>Amount Spent (₹)</label>
-                <input type="number" className="form-control" required value={expenseForm.amountSpent} onChange={e => setExpenseForm({...expenseForm, amountSpent: e.target.value})} />
-              </div>
-              <div className="form-group">
-                <label>Category</label>
-                <select className="form-control" value={expenseForm.category} onChange={e => setExpenseForm({...expenseForm, category: e.target.value})}>
-                  <option>Logistics</option>
-                  <option>Materials</option>
-                  <option>Labor</option>
-                  <option>Marketing</option>
-                  <option>Other</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label>Related Campaign (Optional)</label>
-                <select className="form-control" value={expenseForm.campaignId} onChange={e => setExpenseForm({...expenseForm, campaignId: e.target.value})}>
-                  <option value="">None / General Fund</option>
-                  {campaigns.map(c => <option key={c._id} value={c._id}>{c.title}</option>)}
-                </select>
-              </div>
-              <div className="form-group">
-                <label>Description</label>
-                <textarea className="form-control" value={expenseForm.description} onChange={e => setExpenseForm({...expenseForm, description: e.target.value})}></textarea>
-              </div>
-              <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>Log Expense</button>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* End Campaign Modal */}
-      {showEndCampaignModal && (
-        <div className="modal-overlay" onClick={() => setShowEndCampaignModal(false)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>End Campaign</h2>
-              <button className="icon-btn" onClick={() => setShowEndCampaignModal(false)}><X size={20} /></button>
-            </div>
-            <p>Are you sure you want to end this campaign?</p>
-            <div style={{ background: '#F8FAFC', padding: '1rem', borderRadius: '8px', marginBottom: '1rem' }}>
-              <h4 style={{ margin: '0 0 0.5rem 0' }}>Generate Finance Report?</h4>
-              <p style={{ fontSize: '0.9rem', color: '#64748B', margin: '0 0 1rem 0' }}>It is highly recommended to generate a transparent finance report to build trust with donors.</p>
-              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                <button className="btn btn-primary" onClick={() => handleEndCampaign(true)}>End & Generate Now</button>
-                <button className="btn btn-outline" onClick={() => handleEndCampaign(false)}>End & Do Later</button>
-              </div>
-            </div>
           </div>
         </div>
       )}
