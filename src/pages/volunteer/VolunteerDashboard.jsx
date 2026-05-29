@@ -176,7 +176,7 @@ const DirectorySearch = () => {
               <Award size={14} /> {program.ngoId?.name}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', color: 'var(--color-text-secondary)', marginBottom: '0.35rem' }}>
-              <Target size={14} /> {t(getDomainTranslationKey(program.ngoId?.domain), language)}
+              <Target size={14} /> {program.ngoId?.domain || 'Unknown'}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', color: 'var(--color-text-secondary)', marginBottom: '0.35rem' }}>
               <MapPin size={14} /> {program.location || (program.ngoId?.location === 'Bangalore' ? (language === 'KN' ? 'ಬೆಂಗಳೂರು' : language === 'HI' ? 'बेंगलुरु' : 'Bangalore') : (program.ngoId?.location || program.ngoId?.headquarters || 'Location TBD'))}
@@ -491,7 +491,7 @@ const ImpactDashboard = ({ badgeData, fetchBadgesAndStats }) => {
               <s.icon size={20} style={{ color: s.color }} />
             </div>
             <div className="stat-value" style={{ color: s.color }}>{s.value}</div>
-            <div className="stat-label">{t(getStatLabelTranslationKey(s.label), language)}</div>
+            <div className="stat-label">{s.label}</div>
           </div>
         ))}
       </div>

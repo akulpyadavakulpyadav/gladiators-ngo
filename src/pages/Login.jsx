@@ -142,7 +142,7 @@ const LoginPage = () => {
                   transition: 'all 0.2s ease-out'
                 }}
               >
-                {t('role_' + role + '_title', language)}
+                {role}
               </button>
             );
           })}

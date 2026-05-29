@@ -81,7 +81,7 @@ const DigilockerMock = ({ onVerify, entityType, isLogin }) => {
         <form onSubmit={handleVerify} className="animate-fade-in" style={{ position: 'relative', zIndex: 1 }}>
           <div className="form-group">
             <label className="form-label" style={{ color: '#334155', fontWeight: 700 }}>
-              {t(entityType === 'ngo' ? 'gov_reg_id' : (entityType === 'company' ? 'cin_reg_id' : 'aadhaar_num'), language)}
+              {entityType === 'ngo' ? 'Government Registration ID' : (entityType === 'company' ? 'CIN Registration ID' : 'Aadhaar Number')}
             </label>
             <input
               type="text"

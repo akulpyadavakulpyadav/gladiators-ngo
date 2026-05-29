@@ -554,7 +554,7 @@ const ManagementSuite = () => {
           <div key={i} className="stat-card">
             <div className="stat-icon" style={{ background: s.bg }}><span style={{ color: s.color, fontWeight: 800 }}>●</span></div>
             <div className="stat-value" style={{ color: s.color }}>{s.value}</div>
-            <div className="stat-label">{t(getStatLabelKey(s.label), language)}</div>
+            <div className="stat-label">{s.label}</div>
           </div>
         ))}
       </div>
