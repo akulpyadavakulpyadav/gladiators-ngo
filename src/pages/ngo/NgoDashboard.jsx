@@ -42,7 +42,7 @@ const ImpactProfile = () => {
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     if (galleryFormData.images.length + files.length > 8) {
-      showToast('You can only upload up to 8 images per activity.', 'error');
+      showToast(t('err_max_8_images', language), 'error');
       return;
     }
     files.forEach(file => {
@@ -76,7 +76,7 @@ const ImpactProfile = () => {
 
   const handleSaveGalleryItem = async () => {
     if (!galleryFormData.title || !galleryFormData.description) {
-      showToast('Title and description are required.', 'error');
+      showToast(t('err_title_desc_req', language), 'error');
       return;
     }
     const updatedGallery = [...(user.mediaGallery || []), galleryFormData];
@@ -88,15 +88,15 @@ const ImpactProfile = () => {
       });
       updateUserProfile({ mediaGallery: updatedGallery });
       setIsGalleryModalOpen(false);
-      showToast('Activity saved successfully!', 'success');
+      showToast(t('success_act_saved', language), 'success');
     } catch (e) {
       console.error(e);
-      showToast('Failed to save activity.', 'error');
+      showToast(t('err_act_save', language), 'error');
     }
   };
 
   const handleDeleteGalleryItem = async (itemToDelete) => {
-    if (!(await askConfirm('Delete this entire gallery activity?'))) return;
+    if (!(await askConfirm(t('confirm_del_gallery', language)))) return;
     const updatedGallery = user.mediaGallery.filter(i => i !== itemToDelete && i._id !== itemToDelete._id);
     try {
       await fetch('http://localhost:5000/api/auth/profile', {
@@ -108,15 +108,15 @@ const ImpactProfile = () => {
       if (selectedGalleryItem && (selectedGalleryItem === itemToDelete || selectedGalleryItem._id === itemToDelete._id)) {
         setIsGalleryModalOpen(false);
       }
-      showToast('Activity deleted.', 'info');
+      showToast(t('info_act_del', language), 'info');
     } catch (e) {
       console.error(e);
-      showToast('Failed to delete gallery item.', 'error');
+      showToast(t('err_del_gallery', language), 'error');
     }
   };
 
   const handleDeletePhoto = async () => {
-    if (!(await askConfirm('Delete this photo?'))) return;
+    if (!(await askConfirm(t('confirm_del_photo', language)))) return;
     const updatedImages = selectedGalleryItem.images.filter((_, idx) => idx !== activeImageIndex);
     const updatedItem = { ...selectedGalleryItem, images: updatedImages };
     
@@ -137,10 +137,10 @@ const ImpactProfile = () => {
       if (activeImageIndex >= updatedImages.length && activeImageIndex > 0) {
         setActiveImageIndex(activeImageIndex - 1);
       }
-      showToast('Photo deleted.', 'info');
+      showToast(t('info_photo_del', language), 'info');
     } catch (e) {
       console.error(e);
-      showToast('Failed to delete photo.', 'error');
+      showToast(t('err_del_photo', language), 'error');
     }
   };
 
@@ -163,10 +163,10 @@ const ImpactProfile = () => {
           </div>
           <div style={{ flex: 1, minWidth: 200 }}>
             <h2 style={{ fontSize: '1.4rem', marginBottom: '0.35rem', color: 'var(--color-primary)' }}>
-              {user?.name || 'NGO Name'}
+              {user?.name || t('ngo_name_fallback', language)}
             </h2>
             <p style={{ fontSize: '0.9rem', marginBottom: '0.75rem', lineHeight: 1.6 }}>
-              {user?.about || 'No about information provided.'}
+              {user?.about || t('ngo_about_fallback', language)}
             </p>
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
               <span className="badge badge-primary">{user?.domain || 'Environment'}</span>
@@ -206,12 +206,12 @@ const ImpactProfile = () => {
           <div style={{ flex: '1 1 120px', textAlign: 'center', background: '#F8FAFC', padding: '1rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
             <Activity size={20} style={{ color: '#3B82F6', margin: '0 auto 0.5rem auto' }} />
             <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#334155' }}>{ngoStats.activeCampaigns}</div>
-            <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase' }}>Active Campaigns</div>
+            <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase' }}>{t('active_campaigns', language)}</div>
           </div>
           <div style={{ flex: '1 1 120px', textAlign: 'center', background: '#F8FAFC', padding: '1rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
             <Activity size={20} style={{ color: '#94A3B8', margin: '0 auto 0.5rem auto' }} />
             <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#334155' }}>{ngoStats.endedCampaigns}</div>
-            <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase' }}>Ended Campaigns</div>
+            <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase' }}>{t('ended_campaigns', language)}</div>
           </div>
         </div>
       </div>
@@ -283,35 +283,35 @@ const ImpactProfile = () => {
 
             {editMode ? (
               <div className="glass-card" style={{ padding: '2.5rem', overflowY: 'auto', border: 'none', boxShadow: 'none' }}>
-                <h3 className="section-title" style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Add Activity to Gallery</h3>
+                <h3 className="section-title" style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>{t('add_act_gallery', language)}</h3>
                 
                 <div className="form-group">
-                  <label className="form-label">Import from Program</label>
+                  <label className="form-label">{t('import_from_prog', language)}</label>
                   <select className="form-input" value={galleryFormData.programId} onChange={(e) => {
                     const p = programs.find(x => x._id === e.target.value);
                     if(p) setGalleryFormData(prev => ({...prev, title: p.title, description: p.description, programId: p._id}));
                     else setGalleryFormData(prev => ({...prev, programId: e.target.value}));
                   }}>
-                    <option value="">-- Start Fresh --</option>
+                    <option value="">{t('start_fresh', language)}</option>
                     {programs.map(p => <option key={p._id} value={p._id}>{p.title} ({p.status})</option>)}
                   </select>
                 </div>
                 
                 <div className="form-group">
-                  <label className="form-label">Title</label>
-                  <input type="text" className="form-input" placeholder="e.g., Beach Cleanup 2026" value={galleryFormData.title} onChange={e => setGalleryFormData({...galleryFormData, title: e.target.value})} required />
+                  <label className="form-label">{t('title_label', language)}</label>
+                  <input type="text" className="form-input" placeholder={t('eg_beach_cleanup', language)} value={galleryFormData.title} onChange={e => setGalleryFormData({...galleryFormData, title: e.target.value})} required />
                 </div>
                 
                 <div className="form-group">
-                  <label className="form-label">Description</label>
-                  <textarea className="form-input" rows="4" placeholder="Share the impact and details..." value={galleryFormData.description} onChange={e => setGalleryFormData({...galleryFormData, description: e.target.value})} required />
+                  <label className="form-label">{t('desc_label', language)}</label>
+                  <textarea className="form-input" rows="4" placeholder={t('share_impact_details', language)} value={galleryFormData.description} onChange={e => setGalleryFormData({...galleryFormData, description: e.target.value})} required />
                 </div>
                 
                 <div className="form-group">
-                  <label className="form-label">Upload Photos (Max 8)</label>
+                  <label className="form-label">{t('upload_photos_max_8', language)}</label>
                   <div style={{ border: '2px dashed #CBD5E1', padding: '1.5rem', borderRadius: '12px', textAlign: 'center', background: '#F8FAFC', marginBottom: '1rem', cursor: 'pointer' }} onClick={() => document.getElementById('gallery-upload').click()}>
                     <Plus size={24} style={{ color: '#64748B', margin: '0 auto 0.5rem' }} />
-                    <p style={{ margin: 0, fontSize: '0.9rem', color: '#64748B', fontWeight: 600 }}>Click to browse images</p>
+                    <p style={{ margin: 0, fontSize: '0.9rem', color: '#64748B', fontWeight: 600 }}>{t('click_browse_images', language)}</p>
                   </div>
                   <input type="file" id="gallery-upload" multiple accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
                   
@@ -324,7 +324,7 @@ const ImpactProfile = () => {
                   </div>
                 </div>
 
-                <button className="btn btn-primary" style={{ width: '100%', padding: '0.85rem' }} onClick={handleSaveGalleryItem}>Save Activity to Gallery</button>
+                <button className="btn btn-primary" style={{ width: '100%', padding: '0.85rem' }} onClick={handleSaveGalleryItem}>{t('save_act_gallery', language)}</button>
               </div>
             ) : (
               selectedGalleryItem && (
@@ -347,7 +347,7 @@ const ImpactProfile = () => {
                     </div>
                   ) : (
                     <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#111', color: '#94A3B8' }}>
-                      No photos available for this activity
+                      {t('no_photos_act', language)}
                     </div>
                   )}
 
@@ -447,8 +447,8 @@ const ManagementSuite = () => {
       setShowBroadcastModal(false);
       setFormData({ title: '', description: '', rolesNeeded: '', location: '' });
       fetchPrograms(id);
-      showToast('Program broadcasted!', 'success');
-    } catch (e) { console.error(e); showToast('Failed to broadcast.', 'error'); }
+      showToast(t('broadcast_success', language), 'success');
+    } catch (e) { console.error(e); showToast(t('broadcast_failed', language), 'error'); }
   };
 
   const handleApprove = async (appId) => {
@@ -461,7 +461,7 @@ const ManagementSuite = () => {
       const id = user?._id || user?.gcId;
       fetchApplications(id);
       setShowProfileModal(false);
-      showToast('Application approved.', 'success');
+      showToast(t('app_approved', language), 'success');
     } catch (e) { console.error(e); }
   };
 
@@ -475,7 +475,7 @@ const ManagementSuite = () => {
       const id = user?._id || user?.gcId;
       fetchApplications(id);
       setShowProfileModal(false);
-      showToast('Application rejected.', 'info');
+      showToast(t('app_rejected', language), 'info');
     } catch (e) { console.error(e); }
   };
 
@@ -494,7 +494,7 @@ const ManagementSuite = () => {
       fetchPrograms(id);
       setShowDeleteConfirmModal(false);
       setProgramToDelete(null);
-      showToast('Program deleted.', 'info');
+      showToast(t('prog_deleted', language), 'info');
     } catch (e) { console.error(e); }
   };
 
@@ -512,7 +512,7 @@ const ManagementSuite = () => {
       setShowEndCampaignModal(false);
       setCampaignHours('');
       setSelectedCampaignForEnd(null);
-      showToast('Campaign ended successfully.', 'success');
+      showToast(t('camp_ended_success', language), 'success');
     } catch (e) { console.error(e); }
   };
 
@@ -563,11 +563,11 @@ const ManagementSuite = () => {
         ))}
       </div>
 
-      <h3 className="section-title" style={{ marginTop: '2rem' }}>Broadcasted Programs</h3>
+      <h3 className="section-title" style={{ marginTop: '2rem' }}>{t('broadcasted_progs', language)}</h3>
       <div className="grid grid-md-2" style={{ marginBottom: '2rem' }}>
         {programs.length === 0 ? (
           <div className="glass-card" style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-text-secondary)', gridColumn: '1 / -1' }}>
-            No programs broadcasted yet. Click "Broadcast Need" to start!
+            {t('no_progs_broadcasted', language)}
           </div>
         ) : programs.map(program => {
           const pApps = applications.filter(a => a.programId?._id === program._id || a.programId === program._id);
@@ -580,11 +580,11 @@ const ManagementSuite = () => {
                   <span className={`badge ${program.status === 'Active' ? 'badge-secondary' : program.status === 'Completed' ? 'badge-primary' : 'badge-warning'}`}>{program.status}</span>
                   {program.status === 'Active' && (
                     <button className="btn btn-outline" style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem' }} onClick={() => { setSelectedCampaignForEnd(program); setShowEndCampaignModal(true); }}>
-                      End Campaign
+                      {t('end_campaign', language)}
                     </button>
                   )}
                   <button className="btn btn-outline" style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem', color: '#EF4444', borderColor: '#EF4444' }} onClick={() => handleDeleteProgram(program)}>
-                    <Trash2 size={12} style={{ display: 'inline', marginRight: '4px' }} /> Delete
+                    <Trash2 size={12} style={{ display: 'inline', marginRight: '4px' }} /> {t('delete_btn', language)}
                   </button>
                 </div>
               </div>
@@ -595,27 +595,27 @@ const ManagementSuite = () => {
                 ))}
               </div>
               <div style={{ fontSize: '0.85rem', color: 'var(--color-text-primary)', fontWeight: 500, paddingTop: '1rem', borderTop: '1px solid var(--color-border)' }}>
-                {pApps.length} Applications ({approved} Approved)
+                {pApps.length} {t('applications_label', language)} ({approved} {t('approved_label', language)})
               </div>
             </div>
           )
         })}
       </div>
 
-      <h3 className="section-title">Volunteer Applications</h3>
+      <h3 className="section-title">{t('vol_applications', language)}</h3>
       <div className="glass-card" style={{ overflow: 'hidden', padding: 0 }}>
         <table className="data-table">
           <thead>
             <tr>
-              <th>{t('name', language)}</th>
-              <th>{t('role', language)}</th>
-              <th>PROGRAM</th>
-              <th>{t('status', language)}</th>
+              <th>{t('name_label', language)}</th>
+              <th>{t('role_label', language)}</th>
+              <th>{t('program_label', language)}</th>
+              <th>{t('status_label', language)}</th>
             </tr>
           </thead>
           <tbody>
             {applications.length === 0 ? (
-              <tr><td colSpan="4" style={{ textAlign: 'center', padding: '2rem' }}>No applications yet.</td></tr>
+              <tr><td colSpan="4" style={{ textAlign: 'center', padding: '2rem' }}>{t('no_apps_yet', language)}</td></tr>
             ) : applications.map((app) => (
               <tr key={app._id} onClick={() => { 
                 setSelectedApp(app); 
@@ -625,7 +625,7 @@ const ManagementSuite = () => {
               }} style={{ cursor: 'pointer' }}>
                 <td style={{ fontWeight: 600 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <span>{app.volunteerId?.name || 'Unknown'}</span>
+                    <span>{app.volunteerId?.name || t('unknown_name', language)}</span>
                     {app.volunteerId?.badges && app.volunteerId.badges.length > 0 && (
                       <div style={{ display: 'flex', gap: '0.15rem', alignItems: 'center' }}>
                         {app.volunteerId.badges.map((badge, idx) => {
@@ -650,7 +650,7 @@ const ManagementSuite = () => {
                   </div>
                 </td>
                 <td>{app.roleApplied}</td>
-                <td>{app.programId?.title || 'Unknown'}</td>
+                <td>{app.programId?.title || t('unknown_name', language)}</td>
                 <td><span className={`badge ${app.status === 'Approved' ? 'badge-secondary' : app.status === 'Pending' ? 'badge-warning' : 'badge-primary'}`}>{getStatusTranslation(app.status, language)}</span></td>
               </tr>
             ))}
@@ -661,14 +661,14 @@ const ManagementSuite = () => {
       {showBroadcastModal && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="glass-card" style={{ padding: '2rem', width: '100%', maxWidth: 500 }}>
-            <h3 className="section-title">Broadcast Need</h3>
+            <h3 className="section-title">{t('broadcast_need', language)}</h3>
             <form onSubmit={handleBroadcast}>
               <div className="form-group">
-                <label className="form-label">Program Title</label>
+                <label className="form-label">{t('prog_title_placeholder', language)}</label>
                 <input className="form-input" required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder="e.g. Beach Cleanup Drive" />
               </div>
               <div className="form-group">
-                <label className="form-label">Description</label>
+                <label className="form-label">{t('desc_label', language)}</label>
                 <textarea className="form-input" required rows="3" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} placeholder="Describe the program..."></textarea>
               </div>
               <div className="form-group">
@@ -691,7 +691,7 @@ const ManagementSuite = () => {
       {showEndCampaignModal && selectedCampaignForEnd && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="glass-card" style={{ padding: '2rem', width: '100%', maxWidth: 400 }}>
-            <h3 className="section-title">End Campaign</h3>
+            <h3 className="section-title">{t('end_campaign', language)}</h3>
             <p style={{ fontSize: '0.9rem', marginBottom: '1rem' }}>Please enter the total number of hours volunteered for this campaign. This will be added to the volunteers' impact profiles.</p>
             <form onSubmit={handleEndCampaign}>
               <div className="form-group">
@@ -738,23 +738,23 @@ const ManagementSuite = () => {
               </div>
               <div>
                 <h4 style={{ fontSize: '1.25rem', margin: '0 0 0.25rem 0', color: 'var(--color-primary)' }}>{selectedApp.volunteerId?.name}</h4>
-                <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>{selectedApp.volunteerId?.location || 'Unknown Location'} • {selectedApp.volunteerId?.age ? selectedApp.volunteerId.age + ' yrs' : 'Age Unknown'}</p>
+                <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>{selectedApp.volunteerId?.location || t('unknown_loc', language)} • {selectedApp.volunteerId?.age ? selectedApp.volunteerId.age + ' yrs' : t('age_unknown', language)}</p>
               </div>
             </div>
             
             <div style={{ marginBottom: '1.5rem' }}>
-              <h5 style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--color-text-secondary)', marginBottom: '0.5rem' }}>Applied For</h5>
+              <h5 style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--color-text-secondary)', marginBottom: '0.5rem' }}>{t('applied_for_label', language)}</h5>
               <p style={{ margin: 0, fontWeight: 600 }}>{selectedApp.programId?.title} - {selectedApp.roleApplied}</p>
             </div>
 
             <div style={{ marginBottom: '1.5rem' }}>
-              <h5 style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--color-text-secondary)', marginBottom: '0.5rem' }}>Interests</h5>
+              <h5 style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--color-text-secondary)', marginBottom: '0.5rem' }}>{t('interests_label', language)}</h5>
               <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                 {(selectedApp.volunteerId?.interests || []).map((interest, idx) => (
                   <span key={idx} className="badge badge-primary">{interest}</span>
                 ))}
                 {(!selectedApp.volunteerId?.interests || selectedApp.volunteerId?.interests.length === 0) && (
-                  <span style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>No specific interests listed.</span>
+                  <span style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>{t('no_interests', language)}</span>
                 )}
               </div>
             </div>
@@ -798,10 +798,10 @@ const ManagementSuite = () => {
               <h5 style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--color-text-secondary)', marginBottom: '0.5rem' }}>Volunteer Impact</h5>
               <div style={{ display: 'flex', gap: '1rem' }}>
                 <div style={{ background: 'var(--color-border)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-sm)' }}>
-                  <span style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--color-primary)' }}>{volunteerApps.filter(a => a.status === 'Approved' && a.programId?.status === 'Completed').reduce((acc, a) => acc + (a.programId?.hours || 0), 0)}</span> <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>Hours</span>
+                  <span style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--color-primary)' }}>{volunteerApps.filter(a => a.status === 'Approved' && a.programId?.status === 'Completed').reduce((acc, a) => acc + (a.programId?.hours || 0), 0)}</span> <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>{t('hrs_label', language)}</span>
                 </div>
                 <div style={{ background: 'var(--color-border)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-sm)' }}>
-                  <span style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--color-primary)' }}>{volunteerApps.filter(a => a.status === 'Approved' && a.programId?.status === 'Completed').length}</span> <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>Events</span>
+                  <span style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--color-primary)' }}>{volunteerApps.filter(a => a.status === 'Approved' && a.programId?.status === 'Completed').length}</span> <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>{t('events_label', language)}</span>
                 </div>
               </div>
             </div>
@@ -809,11 +809,11 @@ const ManagementSuite = () => {
             <div style={{ display: 'flex', gap: '1rem' }}>
               {selectedApp.status === 'Pending' && (
                 <>
-                  <button className="btn btn-primary" style={{ flex: 1 }} onClick={() => handleApprove(selectedApp._id)}>Approve</button>
-                  <button className="btn btn-outline" style={{ flex: 1, borderColor: '#EF4444', color: '#EF4444' }} onClick={() => handleReject(selectedApp._id)}>Reject</button>
+                  <button className="btn btn-primary" style={{ flex: 1 }} onClick={() => handleApprove(selectedApp._id)}>{t('approve_btn', language)}</button>
+                  <button className="btn btn-outline" style={{ flex: 1, borderColor: '#EF4444', color: '#EF4444' }} onClick={() => handleReject(selectedApp._id)}>{t('reject_btn', language)}</button>
                 </>
               )}
-              <button className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowProfileModal(false)}>Close</button>
+              <button className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowProfileModal(false)}>{t('close_btn', language)}</button>
             </div>
           </div>
         </div>
@@ -979,23 +979,23 @@ const OfflineEventLogger = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
             {isOnline ? <Wifi size={14} style={{ color: 'var(--color-secondary)' }} /> : <WifiOff size={14} style={{ color: 'var(--color-warning)' }} />}
             <span style={{ fontSize: '0.8rem', fontWeight: 600, color: isOnline ? 'var(--color-secondary)' : 'var(--color-warning)' }}>
-              {isOnline ? t('online', language) : t('offline', language)}
+              {isOnline ? t('online_label', language) : t('offline_label', language)}
             </span>
           </div>
         </div>
         <form onSubmit={handleSave}>
           <div className="form-group">
-            <label className="form-label">{t('event_title', language)}</label>
-            <input type="text" className="form-input" placeholder="Program Title" required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} />
+            <label className="form-label">{t('event_title_label', language)}</label>
+            <input type="text" className="form-input" placeholder={t('prog_title_placeholder', language)} required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} />
           </div>
           <div className="form-group">
-            <label className="form-label">Notes / Description</label>
-            <textarea className="form-input" rows="4" placeholder="Enter notes here..." required value={formData.notes} onChange={e => setFormData({...formData, notes: e.target.value})} />
+            <label className="form-label">{t('notes_desc_label', language)}</label>
+            <textarea className="form-input" rows="4" placeholder={t('enter_notes_placeholder', language)} required value={formData.notes} onChange={e => setFormData({...formData, notes: e.target.value})} />
           </div>
           <div style={{ display: 'flex', gap: '1rem' }}>
-            <button type="submit" className="btn btn-primary" style={{ flex: 1 }}><Save size={16} /> {formData._id ? 'Update Log' : t('save_event', language)}</button>
+            <button type="submit" className="btn btn-primary" style={{ flex: 1 }}><Save size={16} /> {formData._id ? t('update_log_btn', language) : t('save_event_btn', language)}</button>
             {formData._id && (
-              <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setFormData({ _id: null, title: '', notes: '' })}>Cancel</button>
+              <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setFormData({ _id: null, title: '', notes: '' })}>{t('cancel_btn', language)}</button>
             )}
           </div>
         </form>
@@ -1004,15 +1004,15 @@ const OfflineEventLogger = () => {
       {/* Event List */}
       <div className="glass-card" style={{ padding: '1.5rem', alignSelf: 'start' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-          <h3 className="section-title" style={{ marginBottom: 0 }}>{t('event_logs', language)}</h3>
+          <h3 className="section-title" style={{ marginBottom: 0 }}>{t('event_logs_label', language)}</h3>
           {isOnline && unsyncedCount > 0 && (
             <button onClick={handleSync} className="btn btn-secondary" style={{ fontSize: '0.8rem', padding: '0.4rem 0.9rem' }}>
-              {t('sync_items', language).replace('items', `${unsyncedCount} ${language === 'KN' ? 'ಐಟಂಗಳು' : language === 'HI' ? 'मद' : 'items'}`)}
+              {t('sync_items_btn', language)} ({unsyncedCount})
             </button>
           )}
         </div>
         {events.length === 0 ? (
-          <p style={{ textAlign: 'center', padding: '3rem 0', fontSize: '0.9rem' }}>{t('no_events_yet', language)}</p>
+          <p style={{ textAlign: 'center', padding: '3rem 0', fontSize: '0.9rem' }}>{t('no_events_yet_msg', language)}</p>
         ) : (
           <div className="space-y-4" style={{ maxHeight: 500, overflowY: 'auto', paddingRight: '0.5rem' }}>
             {events.map(ev => {
@@ -1028,9 +1028,7 @@ const OfflineEventLogger = () => {
                     </div>
                     <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                       <span className={`badge ${isPending ? 'badge-warning' : 'badge-secondary'}`}>
-                        {isPending 
-                          ? (language === 'KN' ? 'ಬಾಕಿ ಇದೆ' : language === 'HI' ? 'लंबित' : 'Pending Sync') 
-                          : (language === 'KN' ? 'ಸಿಂಕ್ ಮಾಡಲಾಗಿದೆ' : language === 'HI' ? 'सिंक किया गया' : 'Synced')}
+                        {isPending ? t('pending_sync', language) : t('synced', language)}
                       </span>
                       <button onClick={() => handleEdit(ev)} style={{ background: 'none', border: 'none', color: '#64748B', cursor: 'pointer', padding: '4px' }} title="Edit"><Edit3 size={16} /></button>
                       <button onClick={() => handleDelete(ev._id)} style={{ background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', padding: '4px' }} title="Delete"><Trash2 size={16} /></button>
@@ -1149,57 +1147,57 @@ const FinanceSuite = () => {
     <div className="animate-fade-in glass-card" style={{ padding: '2rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <h2 className="text-gradient-secondary" style={{ fontSize: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
-          <IndianRupee size={24} /> {language === 'KN' ? 'ಹಣಕಾಸು' : language === 'HI' ? 'वित्त' : 'Finance Suite'}
+          <IndianRupee size={24} /> {t('finance_suite', language)}
         </h2>
         <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
-          <button onClick={() => setActiveSubTab('campaigns')} className={`btn ${activeSubTab === 'campaigns' ? 'btn-primary' : 'btn-outline'}`}>Campaigns</button>
-          <button onClick={() => setActiveSubTab('expenses')} className={`btn ${activeSubTab === 'expenses' ? 'btn-primary' : 'btn-outline'}`}>Expenses</button>
-          <button onClick={() => setActiveSubTab('donations')} className={`btn ${activeSubTab === 'donations' ? 'btn-primary' : 'btn-outline'}`}>Donations</button>
+          <button onClick={() => setActiveSubTab('campaigns')} className={`btn ${activeSubTab === 'campaigns' ? 'btn-primary' : 'btn-outline'}`}>{t('campaigns_tab', language)}</button>
+          <button onClick={() => setActiveSubTab('expenses')} className={`btn ${activeSubTab === 'expenses' ? 'btn-primary' : 'btn-outline'}`}>{t('expenses_tab', language)}</button>
+          <button onClick={() => setActiveSubTab('donations')} className={`btn ${activeSubTab === 'donations' ? 'btn-primary' : 'btn-outline'}`}>{t('donations_tab', language)}</button>
         </div>
       </div>
 
       {activeSubTab === 'campaigns' && (
         <div>
-          <button onClick={() => setShowCampaignModal(true)} className="btn btn-secondary" style={{ marginBottom: '1rem' }}><Plus size={16}/> New Campaign</button>
+          <button onClick={() => setShowCampaignModal(true)} className="btn btn-secondary" style={{ marginBottom: '1rem' }}><Plus size={16}/> {t('new_campaign_btn', language)}</button>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1rem' }}>
             {campaigns.map(c => (
               <div key={c._id} className="glass-card" style={{ padding: '1rem', borderLeft: `4px solid ${c.status === 'Completed' ? '#10B981' : 'var(--color-primary)'}` }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <h3 style={{ margin: '0 0 0.5rem 0' }}>{c.title} {c.status === 'Completed' && <span className="badge badge-secondary" style={{fontSize:'0.7rem', verticalAlign:'middle', marginLeft:'4px'}}>Ended</span>}</h3>
+                  <h3 style={{ margin: '0 0 0.5rem 0' }}>{c.title} {c.status === 'Completed' && <span className="badge badge-secondary" style={{fontSize:'0.7rem', verticalAlign:'middle', marginLeft:'4px'}}>{t('ended_badge', language)}</span>}</h3>
                   {c.status !== 'Completed' && (
-                    <button className="btn btn-outline" style={{ padding: '0.25rem 0.5rem', fontSize: '0.8rem' }} onClick={() => triggerEndCampaign(c._id)}>End Campaign</button>
+                    <button className="btn btn-outline" style={{ padding: '0.25rem 0.5rem', fontSize: '0.8rem' }} onClick={() => triggerEndCampaign(c._id)}>{t('end_campaign', language)}</button>
                   )}
                 </div>
                 <p style={{ fontSize: '0.9rem', color: '#64748B', margin: '0 0 1rem 0' }}>{c.description}</p>
                 <div style={{ background: '#F8FAFC', borderRadius: '8px', padding: '0.75rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: '0.5rem', fontWeight: 500 }}>
-                    <span style={{ color: 'var(--color-primary)' }}>Raised: ₹{c.raisedAmount}</span>
-                    <span>Goal: ₹{c.targetAmount}</span>
+                    <span style={{ color: 'var(--color-primary)' }}>{t('raised_label', language)}: ₹{c.raisedAmount}</span>
+                    <span>{t('goal_label', language)}: ₹{c.targetAmount}</span>
                   </div>
                   <div style={{ width: '100%', height: '8px', background: '#E2E8F0', borderRadius: '4px', overflow: 'hidden' }}>
                     <div style={{ width: `${Math.min((c.raisedAmount/c.targetAmount)*100, 100)}%`, height: '100%', background: 'var(--color-primary)' }}></div>
                   </div>
                 </div>
                 {c.status === 'Completed' && c.hasFinanceReport && (
-                  <p style={{ fontSize: '0.85rem', color: '#10B981', margin: '0.5rem 0 0 0', fontWeight: 500 }}>Finance Report Generated ✓</p>
+                  <p style={{ fontSize: '0.85rem', color: '#10B981', margin: '0.5rem 0 0 0', fontWeight: 500 }}>{t('fin_report_gen', language)}</p>
                 )}
               </div>
             ))}
-            {campaigns.length === 0 && <p style={{ color: '#64748B' }}>No campaigns created yet.</p>}
+            {campaigns.length === 0 && <p style={{ color: '#64748B' }}>{t('no_camps_created', language)}</p>}
           </div>
         </div>
       )}
 
       {activeSubTab === 'expenses' && (
         <div>
-          <button onClick={() => setShowExpenseModal(true)} className="btn btn-secondary" style={{ marginBottom: '1rem' }}><Plus size={16}/> Log Expense</button>
+          <button onClick={() => setShowExpenseModal(true)} className="btn btn-secondary" style={{ marginBottom: '1rem' }}><Plus size={16}/> {t('log_expense_btn', language)}</button>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {expenses.map(e => (
               <div key={e._id} className="glass-card" style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
                   <h4 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>{e.title} <span className="badge badge-secondary">{e.category}</span></h4>
                   <p style={{ fontSize: '0.85rem', color: '#64748B', margin: '0.25rem 0 0 0' }}>{e.description}</p>
-                  {e.campaignId && <p style={{ fontSize: '0.8rem', color: 'var(--color-primary)', margin: '0.25rem 0 0 0', fontWeight: 500 }}>Campaign: {e.campaignId.title}</p>}
+                  {e.campaignId && <p style={{ fontSize: '0.8rem', color: 'var(--color-primary)', margin: '0.25rem 0 0 0', fontWeight: 500 }}>{t('campaign_label', language)} {e.campaignId.title}</p>}
                 </div>
                 <div style={{ textAlign: 'right' }}>
                   <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#EF4444' }}>- ₹{e.amountSpent}</div>
@@ -1207,25 +1205,25 @@ const FinanceSuite = () => {
                 </div>
               </div>
             ))}
-            {expenses.length === 0 && <p style={{ color: '#64748B' }}>No expenses logged yet.</p>}
+            {expenses.length === 0 && <p style={{ color: '#64748B' }}>{t('no_expenses_logged', language)}</p>}
           </div>
         </div>
       )}
 
       {activeSubTab === 'donations' && (
         <div>
-          <h3 style={{ marginBottom: '1rem', fontSize: '1.2rem' }}>Recent Donations Received</h3>
+          <h3 style={{ marginBottom: '1rem', fontSize: '1.2rem' }}>{t('recent_donations_recv', language)}</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {donations.map(d => (
               <div key={d._id} className="glass-card" style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                  <h4 style={{ margin: 0 }}>{d.donorName || 'Anonymous'}</h4>
+                  <h4 style={{ margin: 0 }}>{d.donorName || t('anonymous_donor', language)}</h4>
                   <p style={{ fontSize: '0.85rem', color: '#64748B', margin: '0.25rem 0 0 0' }}>{new Date(d.date).toLocaleDateString()}</p>
                 </div>
                 <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#10B981' }}>+ ₹{d.amount}</div>
               </div>
             ))}
-            {donations.length === 0 && <p style={{ color: '#64748B' }}>No donations tracked yet.</p>}
+            {donations.length === 0 && <p style={{ color: '#64748B' }}>{t('no_donations_tracked', language)}</p>}
           </div>
         </div>
       )}
@@ -1235,23 +1233,23 @@ const FinanceSuite = () => {
         <div className="modal-overlay" onClick={() => setShowCampaignModal(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>New Campaign</h2>
+              <h2>{t('new_campaign_btn', language)}</h2>
               <button className="icon-btn" onClick={() => setShowCampaignModal(false)}><X size={20} /></button>
             </div>
             <form onSubmit={handleCreateCampaign} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div className="form-group">
-                <label>Title</label>
+                <label>{t('title_label', language)}</label>
                 <input type="text" className="form-control" required value={campaignForm.title} onChange={e => setCampaignForm({...campaignForm, title: e.target.value})} />
               </div>
               <div className="form-group">
-                <label>Description</label>
+                <label>{t('desc_label', language)}</label>
                 <textarea className="form-control" required value={campaignForm.description} onChange={e => setCampaignForm({...campaignForm, description: e.target.value})}></textarea>
               </div>
               <div className="form-group">
-                <label>Target Amount (₹)</label>
+                <label>{t('target_amount_rs', language)}</label>
                 <input type="number" className="form-control" required value={campaignForm.targetAmount} onChange={e => setCampaignForm({...campaignForm, targetAmount: e.target.value})} />
               </div>
-              <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>Create Campaign</button>
+              <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>{t('create_campaign_btn', language)}</button>
             </form>
           </div>
         </div>
@@ -1262,20 +1260,20 @@ const FinanceSuite = () => {
         <div className="modal-overlay" onClick={() => setShowExpenseModal(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>Log Expense</h2>
+              <h2>{t('log_expense_btn', language)}</h2>
               <button className="icon-btn" onClick={() => setShowExpenseModal(false)}><X size={20} /></button>
             </div>
             <form onSubmit={handleCreateExpense} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div className="form-group">
-                <label>Title</label>
+                <label>{t('title_label', language)}</label>
                 <input type="text" className="form-control" required value={expenseForm.title} onChange={e => setExpenseForm({...expenseForm, title: e.target.value})} />
               </div>
               <div className="form-group">
-                <label>Amount Spent (₹)</label>
+                <label>{t('amt_spent_rs', language)}</label>
                 <input type="number" className="form-control" required value={expenseForm.amountSpent} onChange={e => setExpenseForm({...expenseForm, amountSpent: e.target.value})} />
               </div>
               <div className="form-group">
-                <label>Category</label>
+                <label>{t('category_label', language)}</label>
                 <select className="form-control" value={expenseForm.category} onChange={e => setExpenseForm({...expenseForm, category: e.target.value})}>
                   <option>Logistics</option>
                   <option>Materials</option>
@@ -1285,17 +1283,17 @@ const FinanceSuite = () => {
                 </select>
               </div>
               <div className="form-group">
-                <label>Related Campaign (Optional)</label>
+                <label>{t('related_camp_opt', language)}</label>
                 <select className="form-control" value={expenseForm.campaignId} onChange={e => setExpenseForm({...expenseForm, campaignId: e.target.value})}>
-                  <option value="">None / General Fund</option>
+                  <option value="">{t('none_general_fund', language)}</option>
                   {campaigns.map(c => <option key={c._id} value={c._id}>{c.title}</option>)}
                 </select>
               </div>
               <div className="form-group">
-                <label>Description</label>
+                <label>{t('desc_label', language)}</label>
                 <textarea className="form-control" value={expenseForm.description} onChange={e => setExpenseForm({...expenseForm, description: e.target.value})}></textarea>
               </div>
-              <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>Log Expense</button>
+              <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>{t('log_expense_submit', language)}</button>
             </form>
           </div>
         </div>
@@ -1306,16 +1304,16 @@ const FinanceSuite = () => {
         <div className="modal-overlay" onClick={() => setShowEndCampaignModal(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>End Campaign</h2>
+              <h2>{t('end_campaign', language)}</h2>
               <button className="icon-btn" onClick={() => setShowEndCampaignModal(false)}><X size={20} /></button>
             </div>
-            <p>Are you sure you want to end this campaign?</p>
+            <p>{t('confirm_end_camp', language)}</p>
             <div style={{ background: '#F8FAFC', padding: '1rem', borderRadius: '8px', marginBottom: '1rem' }}>
-              <h4 style={{ margin: '0 0 0.5rem 0' }}>Generate Finance Report?</h4>
-              <p style={{ fontSize: '0.9rem', color: '#64748B', margin: '0 0 1rem 0' }}>It is highly recommended to generate a transparent finance report to build trust with donors.</p>
+              <h4 style={{ margin: '0 0 0.5rem 0' }}>{t('gen_fin_report_q', language)}</h4>
+              <p style={{ fontSize: '0.9rem', color: '#64748B', margin: '0 0 1rem 0' }}>{t('rec_fin_report', language)}</p>
               <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                <button className="btn btn-primary" onClick={() => handleEndCampaign(true)}>End & Generate Now</button>
-                <button className="btn btn-outline" onClick={() => handleEndCampaign(false)}>End & Do Later</button>
+                <button className="btn btn-primary" onClick={() => handleEndCampaign(true)}>{t('end_gen_now', language)}</button>
+                <button className="btn btn-outline" onClick={() => handleEndCampaign(false)}>{t('end_do_later', language)}</button>
               </div>
             </div>
           </div>
@@ -1432,16 +1430,16 @@ const NgoDashboard = () => {
         <div style={{ position: 'fixed', bottom: '2rem', right: '2rem', background: 'white', borderRadius: '12px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.2)', width: '320px', padding: '1.5rem', zIndex: 1000, borderLeft: '4px solid var(--color-warning)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
             <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#334155', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <IndianRupee size={18} style={{ color: 'var(--color-warning)' }} /> Pending Tasks
+              <IndianRupee size={18} style={{ color: 'var(--color-warning)' }} /> {t('pending_tasks', language)}
             </h3>
             <button className="icon-btn" onClick={() => setShowChecklist(false)} style={{ margin: '-0.5rem -0.5rem 0 0' }}><X size={16} /></button>
           </div>
-          <p style={{ fontSize: '0.85rem', color: '#64748B', marginBottom: '1rem' }}>You have ended campaigns that need a finance report for transparency.</p>
+          <p style={{ fontSize: '0.85rem', color: '#64748B', marginBottom: '1rem' }}>{t('pending_fin_reports_msg', language)}</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             {pendingReports.map(c => (
               <div key={c._id} style={{ background: '#F8FAFC', padding: '0.75rem', borderRadius: '8px', fontSize: '0.9rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontWeight: 500 }}>{c.title}</span>
-                <button className="btn btn-outline" style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem' }} onClick={() => handleGeneratePendingReport(c._id)}>Generate</button>
+                <button className="btn btn-outline" style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem' }} onClick={() => handleGeneratePendingReport(c._id)}>{t('generate_btn', language)}</button>
               </div>
             ))}
           </div>
