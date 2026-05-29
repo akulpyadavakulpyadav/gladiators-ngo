@@ -447,6 +447,129 @@ const generateCertificate = (badge, userName) => {
   window.open(doc.output('bloburl'), '_blank');
 };
 
+/* ─── Premium PDF Program Certificate Generator ─── */
+const generateProgramCertificate = (act, userName) => {
+  const doc = new jsPDF({
+    orientation: 'landscape',
+    unit: 'mm',
+    format: 'a4'
+  });
+
+  const width = doc.internal.pageSize.getWidth();
+  const height = doc.internal.pageSize.getHeight();
+
+  const primaryColor = [46, 125, 50]; // emerald green
+  const accentColor = [245, 127, 23]; // golden amber
+
+  // Borders
+  doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+  doc.setLineWidth(1.5);
+  doc.rect(8, 8, width - 16, height - 16);
+
+  doc.setDrawColor(accentColor[0], accentColor[1], accentColor[2]);
+  doc.setLineWidth(3);
+  doc.rect(10, 10, width - 20, height - 20);
+
+  doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+  doc.setLineWidth(0.5);
+  doc.rect(14, 14, width - 28, height - 28);
+
+  // Background tint
+  doc.setFillColor(253, 253, 250);
+  doc.rect(14.5, 14.5, width - 29, height - 29, 'F');
+
+  // Decorative Corner Designs
+  const drawCorner = (x, y, isRight, isBottom) => {
+    doc.setDrawColor(accentColor[0], accentColor[1], accentColor[2]);
+    doc.setLineWidth(1);
+    doc.line(x, y, x + (isRight ? -15 : 15), y);
+    doc.line(x, y, x, y + (isBottom ? -15 : 15));
+  };
+  drawCorner(15, 15, false, false);
+  drawCorner(width - 15, 15, true, false);
+  drawCorner(15, height - 15, false, true);
+  drawCorner(width - 15, height - 15, true, true);
+
+  // Header Title
+  doc.setTextColor(46, 125, 50);
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(26);
+  doc.text('CERTIFICATE OF VOLUNTEERING', width / 2, 35, { align: 'center' });
+
+  // Divider
+  doc.setDrawColor(226, 232, 240);
+  doc.setLineWidth(1);
+  doc.line(40, 48, width - 40, 48);
+
+  // Certificate text
+  doc.setTextColor(30, 41, 59);
+  doc.setFont('Times-Roman', 'italic');
+  doc.setFontSize(16);
+  doc.text('This is proudly awarded to', width / 2, 62, { align: 'center' });
+
+  // User Name
+  doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(28);
+  doc.text(userName.toUpperCase(), width / 2, 77, { align: 'center' });
+
+  // Subtext
+  doc.setTextColor(71, 85, 105);
+  doc.setFont('Times-Roman', 'italic');
+  doc.setFontSize(14);
+  doc.text('in recognition of their valuable contribution to', width / 2, 90, { align: 'center' });
+  
+  // Program Name
+  doc.setTextColor(accentColor[0], accentColor[1], accentColor[2]);
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(22);
+  doc.text(act.programId?.title || 'Volunteer Program', width / 2, 105, { align: 'center' });
+
+  // NGO Name
+  doc.setTextColor(100, 116, 139);
+  doc.setFont('Helvetica', 'normal');
+  doc.setFontSize(12);
+  doc.text(`Hosted by: ${act.ngoId?.name || 'Partner NGO'}`, width / 2, 115, { align: 'center' });
+
+  // Date & Hours
+  const dateStr = new Date(act.updatedAt).toLocaleDateString('en-US', {
+    year: 'numeric', month: 'long', day: 'numeric'
+  });
+  doc.setTextColor(71, 85, 105);
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.text(`Date: ${dateStr}   |   Hours Logged: ${act.programId?.hours || 0}`, width / 2, 135, { align: 'center' });
+
+  // Bottom Elements
+  doc.setDrawColor(148, 163, 184);
+  doc.setLineWidth(0.5);
+  doc.line(40, 170, 95, 170);
+  doc.setTextColor(100, 116, 139);
+  doc.setFont('Helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.text('Aniruddha M. Jois', 67.5, 175, { align: 'center' });
+  doc.setFont('Helvetica', 'bold');
+  doc.text('GLADIATORS FOUNDER', 67.5, 179, { align: 'center' });
+
+  doc.line(width - 95, 170, width - 40, 170);
+  doc.setTextColor(100, 116, 139);
+  doc.setFont('Helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.text('Verified via Platform Cryptography', width - 67.5, 175, { align: 'center' });
+  doc.setFont('Helvetica', 'bold');
+  doc.text('SYSTEM AUTHENTICATION', width - 67.5, 179, { align: 'center' });
+
+  // Seal
+  doc.setFillColor(accentColor[0], accentColor[1], accentColor[2]);
+  doc.circle(width / 2, 168, 8, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(12);
+  doc.text('G', width / 2, 172, { align: 'center' });
+
+  window.open(doc.output('bloburl'), '_blank');
+};
+
 /* ─── Impact Dashboard ─── */
 const ImpactDashboard = ({ badgeData, fetchBadgesAndStats }) => {
   const { user } = useAuth();
@@ -466,7 +589,7 @@ const ImpactDashboard = ({ badgeData, fetchBadgesAndStats }) => {
     if (fetchBadgesAndStats) fetchBadgesAndStats();
   }, [user]);
 
-  const completedApps = applications.filter(a => a.status === 'Approved' && a.programId?.status === 'Completed');
+  const completedApps = applications.filter(a => a.status === 'Approved' && a.programId?.status === 'Completed' && a.attendance !== 'Absent');
   const eventsAttended = badgeData?.eventsCount ?? completedApps.length;
   const hoursVolunteered = badgeData?.totalHours ?? completedApps.reduce((acc, a) => acc + (a.programId?.hours || 0), 0);
   const badgesCount = badgeData?.badges?.length ?? 0;
@@ -546,7 +669,12 @@ const ImpactDashboard = ({ badgeData, fetchBadgesAndStats }) => {
                 <p style={{ fontWeight: 600, color: 'var(--color-text-primary)', fontSize: '0.9rem', margin: 0 }}>{act.programId?.title}</p>
                 <p style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', margin: 0 }}>{act.ngoId?.name} · {new Date(act.updatedAt).toLocaleDateString()}</p>
               </div>
-              <span className="badge badge-primary">+{act.programId?.hours} {language === 'KN' ? 'ಗಂಟೆಗಳು' : language === 'HI' ? 'घंटे' : 'hrs'}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <span className="badge badge-primary">+{act.programId?.hours} hrs</span>
+                <button className="btn btn-outline" style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem' }} onClick={() => generateProgramCertificate(act, user?.name || 'Gladiators Volunteer')}>
+                  Download Certificate
+                </button>
+              </div>
             </div>
           ))}
         </div>
