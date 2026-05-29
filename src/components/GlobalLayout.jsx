@@ -44,7 +44,19 @@ const GlobalLayout = () => {
   const [csrFocusInput, setCsrFocusInput] = useState('');
   
   const [showLangDropdown, setShowLangDropdown] = useState(false);
-  const [activeLang, setActiveLang] = useState('English');
+  
+  const getInitialLang = () => {
+    const match = document.cookie.match(/googtrans=\/en\/([a-z]{2})/);
+    const code = match ? match[1] : 'en';
+    const langObj = [
+      { code: 'en', label: 'English' },
+      { code: 'hi', label: 'हिंदी' },
+      { code: 'kn', label: 'ಕನ್ನಡ' }
+    ].find(l => l.code === code);
+    return langObj ? langObj.label : 'English';
+  };
+  
+  const [activeLang, setActiveLang] = useState(getInitialLang());
 
   const languages = [
     { code: 'en', label: 'English' },
@@ -60,7 +72,11 @@ const GlobalLayout = () => {
     const select = document.querySelector('.goog-te-combo');
     if (select) {
       select.value = lang.code;
-      select.dispatchEvent(new Event('change'));
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+    } else {
+      // Fallback: set cookie and reload if widget hasn't loaded yet
+      document.cookie = `googtrans=/en/${lang.code}; path=/;`;
+      window.location.reload();
     }
   };
 
@@ -512,7 +528,7 @@ const GlobalLayout = () => {
             )}
           </div>
 
-          <div id="google_translate_element" style={{ display: 'none' }}></div>
+          <div id="google_translate_element" style={{ opacity: 0, position: 'absolute', pointerEvents: 'none', zIndex: -1 }}></div>
         </div>
       </nav>
 
