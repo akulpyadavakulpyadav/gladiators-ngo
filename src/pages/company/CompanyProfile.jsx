@@ -76,29 +76,29 @@ const CompanyProfile = () => {
 
     // Validations
     if (!formData.name.trim()) {
-      setNotification({ type: 'error', message: 'Company name cannot be empty.' });
+      setNotification({ type: 'error', message: t('err_company_name_emp', language) });
       return;
     }
     if (!formData.email.trim() || !formData.email.includes('@')) {
-      setNotification({ type: 'error', message: 'Please enter a valid corporate contact email.' });
+      setNotification({ type: 'error', message: t('err_corp_email_val', language) });
       return;
     }
     if (!formData.headquarters.trim()) {
-      setNotification({ type: 'error', message: 'Please enter headquarters address.' });
+      setNotification({ type: 'error', message: t('err_hq_empty', language) });
       return;
     }
 
     // POC Validations
     if (!formData.pocName.trim()) {
-      setNotification({ type: 'error', message: 'Point of Contact name cannot be empty.' });
+      setNotification({ type: 'error', message: t('err_poc_empty', language) });
       return;
     }
     if (formData.pocPhone.length !== 10) {
-      setNotification({ type: 'error', message: 'Point of Contact phone must be exactly 10 digits.' });
+      setNotification({ type: 'error', message: t('err_poc_phone_10', language) });
       return;
     }
     if (!formData.pocEmail.trim() || !formData.pocEmail.includes('@')) {
-      setNotification({ type: 'error', message: 'Please enter a valid Point of Contact email.' });
+      setNotification({ type: 'error', message: t('err_poc_email_val', language) });
       return;
     }
 
@@ -117,7 +117,7 @@ const CompanyProfile = () => {
     });
 
     setIsEditing(false);
-    setNotification({ type: 'success', message: 'Corporate profile updated successfully!' });
+    setNotification({ type: 'success', message: t('success_corp_prof_up', language) });
     setTimeout(() => setNotification(null), 4000);
   };
 
@@ -234,7 +234,7 @@ const CompanyProfile = () => {
                   e.currentTarget.style.background = '#EF4444';
                 }}
               >
-                <LogOut size={16} /> Logout
+                <LogOut size={16} /> {t('logout', language)}
               </button>
             </div>
 
@@ -248,7 +248,7 @@ const CompanyProfile = () => {
             {/* Header toggle */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1.5px solid #E2E8F0', paddingBottom: '0.75rem' }}>
               <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#1E293B', margin: 0, fontFamily: 'var(--font-title)' }}>
-                {isEditing ? 'Modify Corporate Records' : 'Corporate Identity Registry'}
+                {isEditing ? t('modify_corp_records', language) : t('corporate_identity_r', language)}
               </h3>
               {!isEditing && (
                 <button
@@ -270,7 +270,7 @@ const CompanyProfile = () => {
                   className="btn btn-outline"
                   style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
                 >
-                  <Edit3 size={14} /> Edit Details
+                  <Edit3 size={14} /> {t('edit_details', language)}
                 </button>
               )}
             </div>
@@ -405,7 +405,7 @@ const CompanyProfile = () => {
                     <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#EF4444', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('company_security_cod', language)}</label>
                     <div style={{ padding: '0.75rem 1rem', background: '#FEF2F2', borderRadius: 'var(--radius-sm)', border: '1px dashed #FCA5A5', color: '#C62828', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                       <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#EF4444' }} />
-                      Corporate login PIN Redacted (Security Protocol)
+                      {t('corporate_login_pin_', language)}
                     </div>
                   </div>
 
@@ -481,7 +481,7 @@ const CompanyProfile = () => {
                 {/* Sub-Section: Point of Contact (POC) Records */}
                 <div style={{ borderTop: '1px solid #E2E8F0', marginTop: '1rem', paddingTop: '1rem' }}>
                   <h4 style={{ fontSize: '1rem', fontWeight: 800, color: '#1E293B', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <User size={16} style={{ color: '#F57F17' }} /> CSR Point of Contact Details
+                    <User size={16} style={{ color: '#F57F17' }} /> {t('csr_point_of_contact', language)}
                   </h4>
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }} className="grid-sm-1">
@@ -521,7 +521,7 @@ const CompanyProfile = () => {
                         />
                       ) : (
                         <div style={{ padding: '0.75rem 1rem', background: '#F8FAFC', borderRadius: 'var(--radius-sm)', border: '1px solid #E2E8F0', color: '#1E293B', fontWeight: 600 }}>
-                          {user.pocDesignation || 'CSR Representative'}
+                          {user.pocDesignation || t('csr_representative', language)}
                         </div>
                       )}
                     </div>
@@ -588,14 +588,14 @@ const CompanyProfile = () => {
                     className="btn btn-outline"
                     style={{ flex: 1 }}
                   >
-                    Discard Changes
+                    {t('discard_changes', language)}
                   </button>
                   <button
                     type="submit"
                     className="btn btn-primary"
                     style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: 'linear-gradient(135deg, #B8860B, #FBC02D)' }}
                   >
-                    <Save size={16} /> Save Settings
+                    <Save size={16} /> {t('save_settings', language)}
                   </button>
                 </div>
               )}
@@ -631,10 +631,10 @@ const CompanyProfile = () => {
               <LogOut size={24} />
             </div>
             <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#1E293B', marginBottom: '0.5rem' }}>
-              Confirm Funder Logout
+              {t('confirm_funder_logou', language)}
             </h3>
             <p style={{ fontSize: '0.9rem', color: '#64748B', marginBottom: '1.75rem', lineHeight: 1.5 }}>
-              Do you want to logout? Any unsaved changes in your session will be cleared.
+              {t('do_you_want_to_logou', language)}
             </p>
             <div style={{ display: 'flex', gap: '0.75rem' }}>
               <button
@@ -645,7 +645,7 @@ const CompanyProfile = () => {
                   border: '1px solid #CBD5E1', borderRadius: '0.5rem', fontWeight: 600, cursor: 'pointer'
                 }}
               >
-                Cancel
+                {t('cancel', language)}
               </button>
               <button
                 onClick={() => {
@@ -663,7 +663,7 @@ const CompanyProfile = () => {
                 onMouseEnter={e => e.currentTarget.style.background = '#DC2626'}
                 onMouseLeave={e => e.currentTarget.style.background = '#EF4444'}
               >
-                <LogOut size={16} /> Logout
+                <LogOut size={16} /> {t('logout_1', language)}
               </button>
             </div>
           </div>
