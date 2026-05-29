@@ -5,27 +5,21 @@ import App from './App.jsx'
 
 // Fix React crashing when Google Translate modifies the DOM (React DOMException during navigation)
 if (typeof Node === 'function' && Node.prototype) {
-  const originalRemoveChild = Node.prototype.removeChild;
-  Node.prototype.removeChild = function(child) {
-    if (child.parentNode !== this) {
-      if (console) {
-        console.warn('Cannot remove a child from a different parent (Google Translate mutation)', child, this);
+  const methods = ['removeChild', 'insertBefore', 'replaceChild'];
+  methods.forEach(method => {
+    const original = Node.prototype[method];
+    Node.prototype[method] = function() {
+      try {
+        return original.apply(this, arguments);
+      } catch (e) {
+        if (e.name === 'NotFoundError' || e.message.includes('not a child') || e.message.includes('is not a child of this node')) {
+          console.warn(`[Google Translate Patch] Suppressed React DOMException in ${method}:`, e);
+          return arguments[0];
+        }
+        throw e;
       }
-      return child;
-    }
-    return originalRemoveChild.apply(this, arguments);
-  };
-
-  const originalInsertBefore = Node.prototype.insertBefore;
-  Node.prototype.insertBefore = function(newNode, referenceNode) {
-    if (referenceNode && referenceNode.parentNode !== this) {
-      if (console) {
-        console.warn('Cannot insert before a reference node from a different parent (Google Translate mutation)', referenceNode, this);
-      }
-      return newNode;
-    }
-    return originalInsertBefore.apply(this, arguments);
-  };
+    };
+  });
 }
 
 createRoot(document.getElementById('root')).render(
