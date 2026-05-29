@@ -4,7 +4,7 @@ import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
   UserCircle, Phone, Globe, LogOut, ChevronDown, X, Heart, Building2,
-  Briefcase, ShieldCheck, Check, Edit3, Save, User, MapPin, Hash, UserCheck, Trash2, Home, ArrowLeft
+  Briefcase, ShieldCheck, Check, Edit3, Save, User, MapPin, Hash, UserCheck, Trash2, Home, ArrowLeft, Award
 } from 'lucide-react';
 
 const taglines = {
@@ -134,20 +134,22 @@ const GlobalLayout = () => {
   }, []);
 
   const handleCloseCelebration = async () => {
-    if (!user) return;
+    if (!user || newBadges.length === 0) return;
+    const currentBadge = newBadges[0];
     const id = user._id || user.gcId;
     try {
       const res = await fetch(`http://localhost:5000/api/auth/volunteer/${id}/badges/mark-notified`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ level: currentBadge.level })
       });
       if (res.ok) {
-        setNewBadges([]);
+        setNewBadges(prev => prev.slice(1));
         fetchBadgesAndStats();
       }
     } catch (e) {
-      console.error("Error marking badges notified globally:", e);
-      setNewBadges([]);
+      console.error("Error marking badge notified globally:", e);
+      setNewBadges(prev => prev.slice(1));
     }
   };
 
