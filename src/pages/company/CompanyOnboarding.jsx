@@ -61,7 +61,7 @@ const CompanyOnboarding = () => {
 
   const handleSendOtp = async () => {
     if (!formData.pocEmail || !formData.pocEmail.includes('@')) {
-      showAlert('Please enter a valid POC email address', 'error');
+      showAlert(t('err_poc_email', language), 'error');
       return;
     }
     
@@ -75,19 +75,19 @@ const CompanyOnboarding = () => {
       
       if (response.ok) {
         setOtpSent(true);
-        showAlert('OTP has been sent to your POC email address.', 'success');
+        showAlert(t('success_otp_sent', language), 'success');
       } else {
-        showAlert(data.message || 'Failed to send OTP.', 'error');
+        showAlert(data.message || t('err_send_otp', language), 'error');
       }
     } catch (err) {
       console.error(err);
-      showAlert('Server error while sending OTP.', 'error');
+      showAlert(t('err_server_otp', language), 'error');
     }
   };
 
   const handleVerifyOtp = async () => {
     if (formData.otp.length !== 6) {
-      showAlert('Please enter a valid 6-digit OTP', 'error');
+      showAlert(t('err_otp_6_digits', language), 'error');
       return;
     }
 
@@ -101,13 +101,13 @@ const CompanyOnboarding = () => {
       
       if (response.ok) {
         setOtpVerified(true);
-        showAlert('POC email verified successfully!', 'success');
+        showAlert(t('success_email_verified', language), 'success');
       } else {
-        showAlert(data.message || 'Invalid OTP.', 'error');
+        showAlert(data.message || t('err_invalid_otp', language), 'error');
       }
     } catch (err) {
       console.error(err);
-      showAlert('Server error while verifying OTP.', 'error');
+      showAlert(t('err_server_verify_otp', language), 'error');
     }
   };
 
@@ -133,31 +133,31 @@ const CompanyOnboarding = () => {
 
   // Handle step transitions with validation
   const validateStep1 = () => {
-    if (!formData.name.trim()) return 'Company Name is compulsory';
-    if (!formData.email.trim() || !formData.email.includes('@')) return 'Company Official Email is compulsory';
-    if (!formData.hqAddress.trim()) return 'Headquarters Address is compulsory';
-    if (!formData.website.trim() || !formData.website.startsWith('http')) return 'Please enter a valid website URL starting with http:// or https://';
-    if (formData.cin.trim().length !== 21) return 'Company CIN Number must be exactly 21 digits/characters compulsorily';
+    if (!formData.name.trim()) return t('err_comp_name', language);
+    if (!formData.email.trim() || !formData.email.includes('@')) return t('err_comp_email', language);
+    if (!formData.hqAddress.trim()) return t('err_hq_address', language);
+    if (!formData.website.trim() || !formData.website.startsWith('http')) return t('err_website', language);
+    if (formData.cin.trim().length !== 21) return t('err_cin', language);
     return null;
   };
 
   const validateStep2 = () => {
-    if (formData.csrFocusAreas.length === 0) return 'Please select at least one CSR focus area';
+    if (formData.csrFocusAreas.length === 0) return t('err_csr_areas', language);
     return null;
   };
 
   const validateStep3 = () => {
-    if (!formData.pocName.trim()) return 'POC Full Name is compulsory';
-    if (!formData.pocPhone.match(/^\d{10}$/)) return 'Enter a valid 10-digit POC phone number';
-    if (!formData.pocDesignation.trim()) return 'POC Designation is compulsory';
-    if (!formData.pocEmail.trim()) return 'POC Professional Email is compulsory';
-    if (!otpVerified) return 'Please verify the POC email with the OTP first';
+    if (!formData.pocName.trim()) return t('err_poc_name', language);
+    if (!formData.pocPhone.match(/^\d{10}$/)) return t('err_poc_phone', language);
+    if (!formData.pocDesignation.trim()) return t('err_poc_desig', language);
+    if (!formData.pocEmail.trim()) return t('err_poc_email_req', language);
+    if (!otpVerified) return t('err_verify_poc_email', language);
     return null;
   };
 
   const validateStep4 = () => {
-    if (formData.pin.length !== 6 || isNaN(formData.pin)) return 'PIN must be exactly 6 digits';
-    if (formData.pin !== formData.confirmPin) return 'PIN and Confirm PIN do not match';
+    if (formData.pin.length !== 6 || isNaN(formData.pin)) return t('err_pin_length', language);
+    if (formData.pin !== formData.confirmPin) return t('err_pin_match', language);
     return null;
   };
 
@@ -199,11 +199,11 @@ const CompanyOnboarding = () => {
     e.preventDefault();
     const digitsOnly = formData.pocAadhaar.replace(/\D/g, '');
     if (digitsOnly.length !== 12) {
-      showAlert('POC Aadhaar number must be exactly 12 digits', 'error');
+      showAlert(t('err_poc_aadhaar', language), 'error');
       return;
     }
     if (formData.cin.trim().length !== 21) {
-      showAlert('Company CIN must be exactly 21 digits/characters compulsorily to register', 'error');
+      showAlert(t('err_cin_register', language), 'error');
       return;
     }
 
@@ -243,7 +243,7 @@ const CompanyOnboarding = () => {
           if (result.success) {
             setGeneratedUser(result.user);
           } else {
-            showAlert(result.message || 'Registration failed', 'error');
+            showAlert(result.message || t('err_register_failed', language), 'error');
           }
           setIsBuffering(false);
         }, 1500);
@@ -287,7 +287,7 @@ const CompanyOnboarding = () => {
               <>
                 <Loader2 size={36} className="animate-spin" style={{ color: '#F39C12', marginBottom: '1rem' }} />
                 <p style={{ fontWeight: 700, fontSize: '1.1rem', color: '#334155' }}>{t('connecting_to_digilo', language)}</p>
-                <p style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '0.25rem' }}>Verifying POC Aadhaar and {formData.cin.length} character corporate CIN.</p>
+                <p style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '0.25rem' }}>{t('verify_poc_aadhaar_cin', language)}{formData.cin.length}{t('char_corporate_cin', language)}</p>
               </>
             )}
 
@@ -321,7 +321,7 @@ const CompanyOnboarding = () => {
             </div>
             <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#1E293B', marginBottom: '0.5rem' }}>{t('company_onboarded', language)}</h2>
             <p style={{ fontSize: '0.95rem', color: '#475569', marginBottom: '2rem' }}>
-              Your company has been verified and registered successfully. Please record your login credentials.
+              {t('company_verified_success', language)}
             </p>
 
             <div style={{ 
@@ -352,7 +352,7 @@ const CompanyOnboarding = () => {
                 borderRadius: '0.75rem', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', border: 'none'
               }}
             >
-              Enter Corporate Portal
+              {t('enter_corporate_portal', language)}
             </button>
           </div>
         )}
@@ -369,10 +369,10 @@ const CompanyOnboarding = () => {
                 <Briefcase size={26} style={{ color: '#4A6741' }} />
               </div>
               <h1 style={{ fontSize: '1.65rem', marginBottom: '0.5rem', color: '#1E293B', fontWeight: 800 }}>
-                {step === 0 ? 'Corporate Portal' : 'Corporate Onboarding'}
+                {step === 0 ? t('corporate_portal', language) : t('corporate_onboarding', language)}
               </h1>
               <p style={{ fontSize: '0.9rem', color: '#475569' }}>
-                {step === 0 ? 'Register your enterprise or log in to coordinate CSR activities.' : `Step ${step} of 5: Enter details`}
+                {step === 0 ? t('register_or_login_csr', language) : `${t('step_label', language)}${step}${t('of_5_enter_details', language)}`}
               </p>
             </div>
 
@@ -542,14 +542,14 @@ const CompanyOnboarding = () => {
                     onClick={() => setStep(0)}
                     style={{ flex: 1, padding: '0.75rem', background: '#F1F5F9', color: '#475569', border: '1px solid #CBD5E1', borderRadius: '0.5rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}
                   >
-                    <ArrowLeft size={16} /> Back
+                    <ArrowLeft size={16} /> {t('back', language)}
                   </button>
                   <button
                     type="button"
                     onClick={handleNextStep}
                     style={{ flex: 1, padding: '0.75rem', background: '#3D5A34', color: '#FFFFFF', border: 'none', borderRadius: '0.5rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}
                   >
-                    Next <ArrowRight size={16} />
+                    {t('next', language)} <ArrowRight size={16} />
                   </button>
                 </div>
               </div>
@@ -610,7 +610,7 @@ const CompanyOnboarding = () => {
                     }}
                     style={{ padding: '0.6rem 1.25rem', background: '#4A6741', color: '#FFFFFF', border: 'none', borderRadius: '0.5rem', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer' }}
                   >
-                    Add
+                    {t('add', language)}
                   </button>
                 </div>
 
@@ -647,14 +647,14 @@ const CompanyOnboarding = () => {
                     onClick={() => setStep(1)}
                     style={{ flex: 1, padding: '0.75rem', background: '#F1F5F9', color: '#475569', border: '1px solid #CBD5E1', borderRadius: '0.5rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}
                   >
-                    <ArrowLeft size={16} /> Back
+                    <ArrowLeft size={16} /> {t('back', language)}
                   </button>
                   <button
                     type="button"
                     onClick={handleNextStep}
                     style={{ flex: 1, padding: '0.75rem', background: '#3D5A34', color: '#FFFFFF', border: 'none', borderRadius: '0.5rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}
                   >
-                    Next <ArrowRight size={16} />
+                    {t('next', language)} <ArrowRight size={16} />
                   </button>
                 </div>
               </div>
@@ -723,7 +723,7 @@ const CompanyOnboarding = () => {
                           onClick={handleSendOtp}
                           style={{ padding: '0.6rem 1rem', background: '#4A6741', color: '#FFFFFF', border: 'none', borderRadius: '0.5rem', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer' }}
                         >
-                          {otpSent ? 'Resend' : 'Send OTP'}
+                          {otpSent ? t('resend', language) : t('send_otp', language)}
                         </button>
                       )}
                     </div>
@@ -746,7 +746,7 @@ const CompanyOnboarding = () => {
                           onClick={handleVerifyOtp}
                           style={{ padding: '0.5rem 1rem', background: '#3D5A34', color: '#FFFFFF', border: 'none', borderRadius: '0.5rem', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer' }}
                         >
-                          Verify OTP
+                          {t('verify_otp', language)}
                         </button>
                       </div>
                     </div>
@@ -757,7 +757,7 @@ const CompanyOnboarding = () => {
                       display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.8rem', color: '#2E7D32', fontWeight: 700,
                       background: '#E8F5E9', border: '1px solid #C8E6C9', padding: '0.4rem 0.75rem', borderRadius: '0.5rem'
                     }}>
-                      <CheckCircle size={16} /> POC email verified successfully.
+                      <CheckCircle size={16} /> {t('poc_email_verified_success', language)}
                     </div>
                   )}
                 </div>
@@ -769,14 +769,14 @@ const CompanyOnboarding = () => {
                     onClick={() => setStep(2)}
                     style={{ flex: 1, padding: '0.75rem', background: '#F1F5F9', color: '#475569', border: '1px solid #CBD5E1', borderRadius: '0.5rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}
                   >
-                    <ArrowLeft size={16} /> Back
+                    <ArrowLeft size={16} /> {t('back', language)}
                   </button>
                   <button
                     type="button"
                     onClick={handleNextStep}
                     style={{ flex: 1, padding: '0.75rem', background: '#3D5A34', color: '#FFFFFF', border: 'none', borderRadius: '0.5rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}
                   >
-                    Next <ArrowRight size={16} />
+                    {t('next', language)} <ArrowRight size={16} />
                   </button>
                 </div>
               </div>
@@ -791,7 +791,7 @@ const CompanyOnboarding = () => {
                 }}>
                   <Shield size={18} style={{ color: '#4A6741', flexShrink: 0 }} />
                   <div>
-                    <strong>{t('secure_login_setup', language)}</strong> Set a 6-digit PIN which will be required along with your GC-Company ID to access your portal in future sessions.
+                    <strong>{t('secure_login_setup', language)}</strong> {t('secure_pin_desc', language)}
                   </div>
                 </div>
 
@@ -828,14 +828,14 @@ const CompanyOnboarding = () => {
                     onClick={() => setStep(3)}
                     style={{ flex: 1, padding: '0.75rem', background: '#F1F5F9', color: '#475569', border: '1px solid #CBD5E1', borderRadius: '0.5rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}
                   >
-                    <ArrowLeft size={16} /> Back
+                    <ArrowLeft size={16} /> {t('back', language)}
                   </button>
                   <button
                     type="button"
                     onClick={handleNextStep}
                     style={{ flex: 1, padding: '0.75rem', background: '#3D5A34', color: '#FFFFFF', border: 'none', borderRadius: '0.5rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}
                   >
-                    Next <ArrowRight size={16} />
+                    {t('next', language)} <ArrowRight size={16} />
                   </button>
                 </div>
               </div>
@@ -856,7 +856,7 @@ const CompanyOnboarding = () => {
                     <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#1E293B' }}>{t('digilocker_verified_', language)}</h3>
                   </div>
                   <p style={{ fontSize: '0.8rem', color: '#475569', margin: '0 0 1rem 0', lineHeight: 1.45 }}>
-                    To finalize corporate registration, verify the identity of primary contact person <strong>{formData.pocName}</strong> {t('via_digilocker_datab', language)} <strong>{t('12_digit_aadhaar_num', language)}</strong>.
+                    {t('finalize_corp_reg', language)}<strong>{formData.pocName}</strong> {t('via_digilocker_datab', language)} <strong>{t('12_digit_aadhaar_num', language)}</strong>.
                   </p>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
@@ -882,13 +882,12 @@ const CompanyOnboarding = () => {
                   </div>
                 </div>
 
-                {/* Verification Check List */}
                 <div style={{ background: '#E8F5E9', border: '1px solid #C8E6C9', borderRadius: '0.75rem', padding: '1rem', fontSize: '0.8rem', color: '#2E7D32', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 700 }}>
-                    <CheckCircle size={14} /> Corporate CIN status: {formData.cin} (21 chars valid)
+                    <CheckCircle size={14} /> {t('corporate_cin_status', language)}{formData.cin} (21 {t('chars_valid', language)})
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 700 }}>
-                    <CheckCircle size={14} /> OTP Verification status: Verified
+                    <CheckCircle size={14} /> {t('otp_verif_status', language)}
                   </div>
                 </div>
 
@@ -899,13 +898,13 @@ const CompanyOnboarding = () => {
                     onClick={() => setStep(4)}
                     style={{ flex: 1, padding: '0.75rem', background: '#F1F5F9', color: '#475569', border: '1px solid #CBD5E1', borderRadius: '0.5rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}
                   >
-                    <ArrowLeft size={16} /> Back
+                    <ArrowLeft size={16} /> {t('back', language)}
                   </button>
                   <button
                     type="submit"
                     style={{ flex: 1, padding: '0.75rem', background: '#F39C12', color: '#FFFFFF', border: 'none', borderRadius: '0.5rem', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem', boxShadow: '0 4px 6px rgba(243, 156, 18, 0.15)' }}
                   >
-                    <Shield size={16} /> Verify & Register
+                    <Shield size={16} /> {t('verify_and_register', language)}
                   </button>
                 </div>
               </form>
