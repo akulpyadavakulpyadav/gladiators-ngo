@@ -1,9 +1,7 @@
 import React, { useState, useRef, useCallback } from 'react';
 import Cropper from 'react-easy-crop';
 import { Camera, X, Check } from 'lucide-react';
-import { useLanguage } from '../context/LanguageContext';
 import { useToast } from '../context/ToastContext';
-import { t } from '../utils/translations';
 
 const getCroppedImg = async (imageSrc, pixelCrop) => {
   const image = await new Promise((resolve, reject) => {
@@ -38,7 +36,6 @@ const getCroppedImg = async (imageSrc, pixelCrop) => {
 };
 
 const ProfilePhotoUploader = ({ currentPhoto, onPhotoUpdate }) => {
-  const { language } = useLanguage();
   const { showToast } = useToast();
   const [imageSrc, setImageSrc] = useState(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -87,7 +84,7 @@ const ProfilePhotoUploader = ({ currentPhoto, onPhotoUpdate }) => {
           cursor: 'pointer', position: 'relative', overflow: 'hidden'
         }}
         onClick={() => inputRef.current?.click()}
-        title={t('upload_photo', language) || 'Upload Photo'}
+        title={'upload_photo' || 'Upload Photo'}
       >
         {currentPhoto ? (
           <img src={currentPhoto} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />

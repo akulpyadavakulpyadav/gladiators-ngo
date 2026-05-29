@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { useLanguage } from '../../context/LanguageContext';
-import { t } from '../../utils/translations';
 import { useNavigate } from 'react-router-dom';
 import { Briefcase, Mail, Phone, MapPin, Globe, User, Shield, Hash, ArrowLeft, Save, Edit3, LogOut, Check, X, Award } from 'lucide-react';
 import ProfilePhotoUploader from '../../components/ProfilePhotoUploader';
 
 const CompanyProfile = () => {
   const { user, updateUserProfile, logout } = useAuth();
-  const { language } = useLanguage();
   const navigate = useNavigate();
 
   // Local state for editing form
@@ -41,9 +38,9 @@ const CompanyProfile = () => {
   if (!user) {
     return (
       <div className="glass-card" style={{ padding: '3rem', textAlign: 'center', maxWidth: 500, margin: '4rem auto' }}>
-        <h2 style={{ color: 'var(--color-primary)' }}>{t('access_denied', language)}</h2>
-        <p style={{ margin: '1rem 0 2rem' }}>{t('please_log_in_to_vie', language)}</p>
-        <button className="btn btn-primary" onClick={() => navigate('/login')}>{t('go_to_login', language)}</button>
+        <h2 style={{ color: 'var(--color-primary)' }}>Access Denied</h2>
+        <p style={{ margin: '1rem 0 2rem' }}>Please log in to view your corporate profile page.</p>
+        <button className="btn btn-primary" onClick={() => navigate('/login')}>Go to Login</button>
       </div>
     );
   }
@@ -76,29 +73,29 @@ const CompanyProfile = () => {
 
     // Validations
     if (!formData.name.trim()) {
-      setNotification({ type: 'error', message: t('err_company_name_emp', language) });
+      setNotification({ type: 'error', message: 'Company name cannot be empty.' });
       return;
     }
     if (!formData.email.trim() || !formData.email.includes('@')) {
-      setNotification({ type: 'error', message: t('err_corp_email_val', language) });
+      setNotification({ type: 'error', message: 'Please enter a valid corporate contact email.' });
       return;
     }
     if (!formData.headquarters.trim()) {
-      setNotification({ type: 'error', message: t('err_hq_empty', language) });
+      setNotification({ type: 'error', message: 'Please enter headquarters address.' });
       return;
     }
 
     // POC Validations
     if (!formData.pocName.trim()) {
-      setNotification({ type: 'error', message: t('err_poc_empty', language) });
+      setNotification({ type: 'error', message: 'Point of Contact name cannot be empty.' });
       return;
     }
     if (formData.pocPhone.length !== 10) {
-      setNotification({ type: 'error', message: t('err_poc_phone_10', language) });
+      setNotification({ type: 'error', message: 'Point of Contact phone must be exactly 10 digits.' });
       return;
     }
     if (!formData.pocEmail.trim() || !formData.pocEmail.includes('@')) {
-      setNotification({ type: 'error', message: t('err_poc_email_val', language) });
+      setNotification({ type: 'error', message: 'Please enter a valid Point of Contact email.' });
       return;
     }
 
@@ -117,7 +114,7 @@ const CompanyProfile = () => {
     });
 
     setIsEditing(false);
-    setNotification({ type: 'success', message: t('success_corp_prof_up', language) });
+    setNotification({ type: 'success', message: 'Corporate profile updated successfully!' });
     setTimeout(() => setNotification(null), 4000);
   };
 
@@ -127,7 +124,7 @@ const CompanyProfile = () => {
       {/* Top Navigation */}
       <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '1.5rem' }}>
         <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', fontWeight: 600 }}>
-          Role: <span style={{ color: 'var(--color-accent)' }}>{t('corporate_funder', language)}</span>
+          Role: <span style={{ color: 'var(--color-accent)' }}>Corporate Funder</span>
         </span>
       </div>
 
@@ -194,11 +191,11 @@ const CompanyProfile = () => {
                     boxShadow: '0 2px 4px rgba(245, 127, 23, 0.05)'
                   }}>
                     <Briefcase size={14} />
-                    <span>{t('gc_cpy_verified', language)}</span>
+                    <span>GC-CPY Verified</span>
                   </div>
                 </div>
                 <div style={{ padding: '0.4rem 0.75rem', background: '#F8FAFC', borderRadius: 'var(--radius-sm)', border: '1px solid #E2E8F0', fontSize: '0.9rem', fontWeight: 700, color: '#334155', fontFamily: 'monospace' }}>
-                  <span style={{ fontSize: '0.7rem', color: '#64748B', display: 'block', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', lineHeight: 1.2, marginBottom: '0.15rem' }}>{t('corporate_cin_number', language)}</span>
+                  <span style={{ fontSize: '0.7rem', color: '#64748B', display: 'block', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', lineHeight: 1.2, marginBottom: '0.15rem' }}>Corporate CIN Number</span>
                   {(() => {
                     const cin = user.cin || '';
                     const clean = cin.replace(/\s/g, '');
@@ -211,7 +208,7 @@ const CompanyProfile = () => {
             {/* Group 2: Budget display */}
             <div className="profile-summary-stats" style={{ display: 'flex', justifyContent: 'center' }}>
               <div style={{ width: '100%', maxWidth: '240px', padding: '0.75rem 1rem', background: '#FFF9C4', borderRadius: 'var(--radius-sm)', border: '1px solid #FFF59D', textAlign: 'center' }}>
-                <span style={{ fontSize: '0.72rem', color: '#F57F17', fontWeight: 600, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.15rem' }}>{t('industry_sector_1', language)}</span>
+                <span style={{ fontSize: '0.72rem', color: '#F57F17', fontWeight: 600, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.15rem' }}>Industry Sector</span>
                 <span style={{ fontSize: '1rem', fontWeight: 700, color: '#E65100' }}>{user.industrySector || 'CSR Funder'}</span>
               </div>
             </div>
@@ -234,7 +231,7 @@ const CompanyProfile = () => {
                   e.currentTarget.style.background = '#EF4444';
                 }}
               >
-                <LogOut size={16} /> {t('logout', language)}
+                <LogOut size={16} /> Logout
               </button>
             </div>
 
@@ -248,7 +245,7 @@ const CompanyProfile = () => {
             {/* Header toggle */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1.5px solid #E2E8F0', paddingBottom: '0.75rem' }}>
               <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#1E293B', margin: 0, fontFamily: 'var(--font-title)' }}>
-                {isEditing ? t('modify_corp_records', language) : t('corporate_identity_r', language)}
+                {isEditing ? 'Modify Corporate Records' : 'Corporate Identity Registry'}
               </h3>
               {!isEditing && (
                 <button
@@ -270,7 +267,7 @@ const CompanyProfile = () => {
                   className="btn btn-outline"
                   style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
                 >
-                  <Edit3 size={14} /> {t('edit_details', language)}
+                  <Edit3 size={14} /> Edit Details
                 </button>
               )}
             </div>
@@ -282,7 +279,7 @@ const CompanyProfile = () => {
                 
                 {/* Company Name */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                  <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('corporate_registered', language)}</label>
+                  <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Corporate Registered Entity Name</label>
                   {isEditing ? (
                     <input
                       type="text"
@@ -305,7 +302,7 @@ const CompanyProfile = () => {
                   
                   {/* CSR Email */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('csr_contact', language)}</label>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>CSR Contact Email</label>
                     {isEditing ? (
                       <input
                         type="email"
@@ -326,7 +323,7 @@ const CompanyProfile = () => {
 
                   {/* Website */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('website_url', language)}</label>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Website URL</label>
                     {isEditing ? (
                       <input
                         type="url"
@@ -335,7 +332,7 @@ const CompanyProfile = () => {
                         style={{ color: '#1E293B', background: '#FFFFFF', border: '1.5px solid #CBD5E1' }}
                         value={formData.website}
                         onChange={handleChange}
-                        placeholder={t('https_example_com', language)}
+                        placeholder="https://example.com"
                       />
                     ) : (
                       <div style={{ padding: '0.75rem 1rem', background: '#F8FAFC', borderRadius: 'var(--radius-sm)', border: '1px solid #E2E8F0', color: '#1E293B', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -345,7 +342,7 @@ const CompanyProfile = () => {
                             {user.website}
                           </a>
                         ) : (
-                          <span style={{ color: '#94A3B8', fontStyle: 'italic' }}>{t('not_provided', language)}</span>
+                          <span style={{ color: '#94A3B8', fontStyle: 'italic' }}>Not provided</span>
                         )}
                       </div>
                     )}
@@ -355,7 +352,7 @@ const CompanyProfile = () => {
 
                 {/* Headquarters Address */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                  <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('office_headquarters_', language)}</label>
+                  <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Office Headquarters Address</label>
                   {isEditing ? (
                     <textarea
                       name="headquarters"
@@ -365,7 +362,7 @@ const CompanyProfile = () => {
                       style={{ color: '#1E293B', background: '#FFFFFF', border: '1.5px solid #CBD5E1', minHeight: 80, resize: 'vertical', padding: '0.6rem 0.75rem' }}
                       value={formData.headquarters}
                       onChange={handleChange}
-                      placeholder={t('corporate_official_h', language)}
+                      placeholder="Corporate official headquarters address"
                     />
                   ) : (
                     <div style={{ padding: '0.85rem 1rem', background: '#F8FAFC', borderRadius: 'var(--radius-sm)', border: '1px solid #E2E8F0', color: '#1E293B', fontWeight: 600, display: 'flex', alignItems: 'flex-start', gap: '0.5rem', lineHeight: 1.5 }}>
@@ -380,7 +377,7 @@ const CompanyProfile = () => {
                   
                   {/* Industry Sector Select */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('industry_sector_2', language)}</label>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Industry Sector</label>
                     {isEditing ? (
                       <input
                         type="text"
@@ -390,7 +387,7 @@ const CompanyProfile = () => {
                         style={{ color: '#1E293B', background: '#FFFFFF', border: '1.5px solid #CBD5E1' }}
                         value={formData.industrySector}
                         onChange={handleChange}
-                        placeholder={t('e_g_technology_manuf', language)}
+                        placeholder="e.g. Technology, Manufacturing, Banking"
                       />
                     ) : (
                       <div style={{ padding: '0.75rem 1rem', background: '#F8FAFC', borderRadius: 'var(--radius-sm)', border: '1px solid #E2E8F0', color: '#1E293B', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -402,10 +399,10 @@ const CompanyProfile = () => {
 
                   {/* Redacted PIN Data */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#EF4444', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('company_security_cod', language)}</label>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#EF4444', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Company Security Code</label>
                     <div style={{ padding: '0.75rem 1rem', background: '#FEF2F2', borderRadius: 'var(--radius-sm)', border: '1px dashed #FCA5A5', color: '#C62828', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                       <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#EF4444' }} />
-                      {t('corporate_login_pin_', language)}
+                      Corporate login PIN Redacted (Security Protocol)
                     </div>
                   </div>
 
@@ -413,11 +410,11 @@ const CompanyProfile = () => {
 
                 {/* CSR Focus Tag Box Checkbox multiselect */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                  <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('preferred_csr_focus_', language)}</label>
+                  <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Preferred CSR Focus Domains</label>
                   
                   {isEditing ? (
                     <div style={{ padding: '1rem', background: '#F8FAFC', border: '1.5px solid #CBD5E1', borderRadius: 'var(--radius-sm)' }}>
-                      <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', marginBottom: '0.75rem' }}>{t('select_domains_to_fu', language)}</div>
+                      <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', marginBottom: '0.75rem' }}>Select domains to fund:</div>
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }} className="grid-sm-2">
                         {availableCsrDomains.map((domain) => {
                           const isSelected = formData.csrFocus.includes(domain);
@@ -472,7 +469,7 @@ const CompanyProfile = () => {
                           </span>
                         ))
                       ) : (
-                        <span style={{ fontStyle: 'italic', color: '#64748B', fontSize: '0.85rem' }}>{t('no_csr_domains_selec', language)}</span>
+                        <span style={{ fontStyle: 'italic', color: '#64748B', fontSize: '0.85rem' }}>No CSR domains selected yet</span>
                       )}
                     </div>
                   )}
@@ -481,14 +478,14 @@ const CompanyProfile = () => {
                 {/* Sub-Section: Point of Contact (POC) Records */}
                 <div style={{ borderTop: '1px solid #E2E8F0', marginTop: '1rem', paddingTop: '1rem' }}>
                   <h4 style={{ fontSize: '1rem', fontWeight: 800, color: '#1E293B', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <User size={16} style={{ color: '#F57F17' }} /> {t('csr_point_of_contact', language)}
+                    <User size={16} style={{ color: '#F57F17' }} /> CSR Point of Contact Details
                   </h4>
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }} className="grid-sm-1">
                     
                     {/* POC Name */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('poc_full_name_1', language)}</label>
+                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>POC Full Name</label>
                       {isEditing ? (
                         <input
                           type="text"
@@ -508,7 +505,7 @@ const CompanyProfile = () => {
 
                     {/* POC Designation */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('poc_designation', language)}</label>
+                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>POC Designation</label>
                       {isEditing ? (
                         <input
                           type="text"
@@ -521,7 +518,7 @@ const CompanyProfile = () => {
                         />
                       ) : (
                         <div style={{ padding: '0.75rem 1rem', background: '#F8FAFC', borderRadius: 'var(--radius-sm)', border: '1px solid #E2E8F0', color: '#1E293B', fontWeight: 600 }}>
-                          {user.pocDesignation || t('csr_representative', language)}
+                          {user.pocDesignation || 'CSR Representative'}
                         </div>
                       )}
                     </div>
@@ -532,7 +529,7 @@ const CompanyProfile = () => {
                     
                     {/* POC Phone */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('poc_phone_number', language)}</label>
+                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>POC Phone Number</label>
                       {isEditing ? (
                         <input
                           type="text"
@@ -542,7 +539,7 @@ const CompanyProfile = () => {
                           style={{ color: '#1E293B', background: '#FFFFFF', border: '1.5px solid #CBD5E1' }}
                           value={formData.pocPhone}
                           onChange={handleChange}
-                          placeholder={t('10_digit_number', language)}
+                          placeholder="10-digit number"
                         />
                       ) : (
                         <div style={{ padding: '0.75rem 1rem', background: '#F8FAFC', borderRadius: 'var(--radius-sm)', border: '1px solid #E2E8F0', color: '#1E293B', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -554,7 +551,7 @@ const CompanyProfile = () => {
 
                     {/* POC Email */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('poc_contact_email', language)}</label>
+                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>POC Contact Email</label>
                       {isEditing ? (
                         <input
                           type="email"
@@ -588,14 +585,14 @@ const CompanyProfile = () => {
                     className="btn btn-outline"
                     style={{ flex: 1 }}
                   >
-                    {t('discard_changes', language)}
+                    Discard Changes
                   </button>
                   <button
                     type="submit"
                     className="btn btn-primary"
                     style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: 'linear-gradient(135deg, #B8860B, #FBC02D)' }}
                   >
-                    <Save size={16} /> {t('save_settings', language)}
+                    <Save size={16} /> Save Settings
                   </button>
                 </div>
               )}
@@ -631,10 +628,10 @@ const CompanyProfile = () => {
               <LogOut size={24} />
             </div>
             <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#1E293B', marginBottom: '0.5rem' }}>
-              {t('confirm_funder_logou', language)}
+              Confirm Funder Logout
             </h3>
             <p style={{ fontSize: '0.9rem', color: '#64748B', marginBottom: '1.75rem', lineHeight: 1.5 }}>
-              {t('do_you_want_to_logou', language)}
+              Do you want to logout? Any unsaved changes in your session will be cleared.
             </p>
             <div style={{ display: 'flex', gap: '0.75rem' }}>
               <button
@@ -645,7 +642,7 @@ const CompanyProfile = () => {
                   border: '1px solid #CBD5E1', borderRadius: '0.5rem', fontWeight: 600, cursor: 'pointer'
                 }}
               >
-                {t('cancel', language)}
+                Cancel
               </button>
               <button
                 onClick={() => {
@@ -663,7 +660,7 @@ const CompanyProfile = () => {
                 onMouseEnter={e => e.currentTarget.style.background = '#DC2626'}
                 onMouseLeave={e => e.currentTarget.style.background = '#EF4444'}
               >
-                <LogOut size={16} /> {t('logout_1', language)}
+                <LogOut size={16} /> Logout
               </button>
             </div>
           </div>

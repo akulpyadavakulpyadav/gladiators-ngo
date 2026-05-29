@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { useLanguage } from '../../context/LanguageContext';
-import { t } from '../../utils/translations';
 import { 
   Briefcase, CheckCircle, Loader2, Shield, Lock, Plus, X, 
   MapPin, Mail, Phone, Globe, User, ArrowRight, ArrowLeft 
 } from 'lucide-react';
 
 const CompanyOnboarding = () => {
-  const { language } = useLanguage();
   const { login, registerUser } = useAuth();
   const navigate = useNavigate();
 
@@ -61,7 +58,7 @@ const CompanyOnboarding = () => {
 
   const handleSendOtp = async () => {
     if (!formData.pocEmail || !formData.pocEmail.includes('@')) {
-      showAlert(t('err_poc_email', language), 'error');
+      showAlert('Please enter a valid POC email address', 'error');
       return;
     }
     
@@ -75,19 +72,19 @@ const CompanyOnboarding = () => {
       
       if (response.ok) {
         setOtpSent(true);
-        showAlert(t('success_otp_sent', language), 'success');
+        showAlert('OTP has been sent to your POC email address.', 'success');
       } else {
-        showAlert(data.message || t('err_send_otp', language), 'error');
+        showAlert(data.message || 'Failed to send OTP.', 'error');
       }
     } catch (err) {
       console.error(err);
-      showAlert(t('err_server_otp', language), 'error');
+      showAlert('Server error while sending OTP.', 'error');
     }
   };
 
   const handleVerifyOtp = async () => {
     if (formData.otp.length !== 6) {
-      showAlert(t('err_otp_6_digits', language), 'error');
+      showAlert('Please enter a valid 6-digit OTP', 'error');
       return;
     }
 
@@ -101,13 +98,13 @@ const CompanyOnboarding = () => {
       
       if (response.ok) {
         setOtpVerified(true);
-        showAlert(t('success_email_verified', language), 'success');
+        showAlert('POC email verified successfully!', 'success');
       } else {
-        showAlert(data.message || t('err_invalid_otp', language), 'error');
+        showAlert(data.message || 'Invalid OTP.', 'error');
       }
     } catch (err) {
       console.error(err);
-      showAlert(t('err_server_verify_otp', language), 'error');
+      showAlert('Server error while verifying OTP.', 'error');
     }
   };
 
@@ -133,31 +130,31 @@ const CompanyOnboarding = () => {
 
   // Handle step transitions with validation
   const validateStep1 = () => {
-    if (!formData.name.trim()) return t('err_comp_name', language);
-    if (!formData.email.trim() || !formData.email.includes('@')) return t('err_comp_email', language);
-    if (!formData.hqAddress.trim()) return t('err_hq_address', language);
-    if (!formData.website.trim() || !formData.website.startsWith('http')) return t('err_website', language);
-    if (formData.cin.trim().length !== 21) return t('err_cin', language);
+    if (!formData.name.trim()) return 'Company Name is compulsory';
+    if (!formData.email.trim() || !formData.email.includes('@')) return 'Company Official Email is compulsory';
+    if (!formData.hqAddress.trim()) return 'Headquarters Address is compulsory';
+    if (!formData.website.trim() || !formData.website.startsWith('http')) return 'Please enter a valid website URL starting with http:// or https://';
+    if (formData.cin.trim().length !== 21) return 'Company CIN Number must be exactly 21 digits/characters compulsorily';
     return null;
   };
 
   const validateStep2 = () => {
-    if (formData.csrFocusAreas.length === 0) return t('err_csr_areas', language);
+    if (formData.csrFocusAreas.length === 0) return 'Please select at least one CSR focus area';
     return null;
   };
 
   const validateStep3 = () => {
-    if (!formData.pocName.trim()) return t('err_poc_name', language);
-    if (!formData.pocPhone.match(/^\d{10}$/)) return t('err_poc_phone', language);
-    if (!formData.pocDesignation.trim()) return t('err_poc_desig', language);
-    if (!formData.pocEmail.trim()) return t('err_poc_email_req', language);
-    if (!otpVerified) return t('err_verify_poc_email', language);
+    if (!formData.pocName.trim()) return 'POC Full Name is compulsory';
+    if (!formData.pocPhone.match(/^\d{10}$/)) return 'Enter a valid 10-digit POC phone number';
+    if (!formData.pocDesignation.trim()) return 'POC Designation is compulsory';
+    if (!formData.pocEmail.trim()) return 'POC Professional Email is compulsory';
+    if (!otpVerified) return 'Please verify the POC email with the OTP first';
     return null;
   };
 
   const validateStep4 = () => {
-    if (formData.pin.length !== 6 || isNaN(formData.pin)) return t('err_pin_length', language);
-    if (formData.pin !== formData.confirmPin) return t('err_pin_match', language);
+    if (formData.pin.length !== 6 || isNaN(formData.pin)) return 'PIN must be exactly 6 digits';
+    if (formData.pin !== formData.confirmPin) return 'PIN and Confirm PIN do not match';
     return null;
   };
 
@@ -199,11 +196,11 @@ const CompanyOnboarding = () => {
     e.preventDefault();
     const digitsOnly = formData.pocAadhaar.replace(/\D/g, '');
     if (digitsOnly.length !== 12) {
-      showAlert(t('err_poc_aadhaar', language), 'error');
+      showAlert('POC Aadhaar number must be exactly 12 digits', 'error');
       return;
     }
     if (formData.cin.trim().length !== 21) {
-      showAlert(t('err_cin_register', language), 'error');
+      showAlert('Company CIN must be exactly 21 digits/characters compulsorily to register', 'error');
       return;
     }
 
@@ -243,7 +240,7 @@ const CompanyOnboarding = () => {
           if (result.success) {
             setGeneratedUser(result.user);
           } else {
-            showAlert(result.message || t('err_register_failed', language), 'error');
+            showAlert(result.message || 'Registration failed', 'error');
           }
           setIsBuffering(false);
         }, 1500);
@@ -286,24 +283,24 @@ const CompanyOnboarding = () => {
             {bufferStatus === 'verifying' && (
               <>
                 <Loader2 size={36} className="animate-spin" style={{ color: '#F39C12', marginBottom: '1rem' }} />
-                <p style={{ fontWeight: 700, fontSize: '1.1rem', color: '#334155' }}>{t('connecting_to_digilo', language)}</p>
-                <p style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '0.25rem' }}>{t('verify_poc_aadhaar_cin', language)}{formData.cin.length}{t('char_corporate_cin', language)}</p>
+                <p style={{ fontWeight: 700, fontSize: '1.1rem', color: '#334155' }}>Connecting to DigiLocker Aadhaar Gateway...</p>
+                <p style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '0.25rem' }}>Verifying POC Aadhaar and {formData.cin.length} character corporate CIN.</p>
               </>
             )}
 
             {bufferStatus === 'verified_success' && (
               <>
                 <CheckCircle size={44} style={{ color: '#2E7D32', marginBottom: '1rem' }} />
-                <h3 style={{ fontWeight: 800, fontSize: '1.5rem', color: '#2E7D32', margin: 0 }}>{t('verified_successfull', language)}</h3>
-                <p style={{ fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem' }}>{t('corporate_cin_aadhaa', language)}</p>
+                <h3 style={{ fontWeight: 800, fontSize: '1.5rem', color: '#2E7D32', margin: 0 }}>Verified Successfully</h3>
+                <p style={{ fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem' }}>Corporate CIN & Aadhaar matching checks completed.</p>
               </>
             )}
 
             {bufferStatus === 'registering' && (
               <>
                 <Loader2 size={36} className="animate-spin" style={{ color: '#2E7D32', marginBottom: '1rem' }} />
-                <h3 style={{ fontWeight: 800, fontSize: '1.5rem', color: '#2E7D32', margin: 0 }}>{t('registering', language)}</h3>
-                <p style={{ fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem' }}>{t('creating_secure_gc_c', language)}</p>
+                <h3 style={{ fontWeight: 800, fontSize: '1.5rem', color: '#2E7D32', margin: 0 }}>Registering</h3>
+                <p style={{ fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem' }}>Creating secure GC-Company credentials...</p>
               </>
             )}
           </div>
@@ -319,9 +316,9 @@ const CompanyOnboarding = () => {
             }}>
               <CheckCircle size={36} />
             </div>
-            <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#1E293B', marginBottom: '0.5rem' }}>{t('company_onboarded', language)}</h2>
+            <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#1E293B', marginBottom: '0.5rem' }}>Company Onboarded!</h2>
             <p style={{ fontSize: '0.95rem', color: '#475569', marginBottom: '2rem' }}>
-              {t('company_verified_success', language)}
+              Your company has been verified and registered successfully. Please record your login credentials.
             </p>
 
             <div style={{ 
@@ -330,14 +327,14 @@ const CompanyOnboarding = () => {
               textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '0.75rem' 
             }}>
               <div>
-                <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>{t('gc_company_id', language)}</span>
+                <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>GC-Company ID</span>
                 <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#3D5A34', fontFamily: 'monospace', letterSpacing: '0.05em', marginTop: '0.2rem' }}>
                   {generatedUser.gcId}
                 </div>
               </div>
               <hr style={{ border: 'none', borderTop: '1px solid #E2E8F0', margin: '0.25rem 0' }} />
               <div>
-                <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>{t('secure_6_digit_pin', language)}</span>
+                <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>Secure 6-Digit PIN</span>
                 <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1E293B', marginTop: '0.2rem' }}>
                   {generatedUser.pin}
                 </div>
@@ -352,7 +349,7 @@ const CompanyOnboarding = () => {
                 borderRadius: '0.75rem', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', border: 'none'
               }}
             >
-              {t('enter_corporate_portal', language)}
+              Enter Corporate Portal
             </button>
           </div>
         )}
@@ -369,10 +366,10 @@ const CompanyOnboarding = () => {
                 <Briefcase size={26} style={{ color: '#4A6741' }} />
               </div>
               <h1 style={{ fontSize: '1.65rem', marginBottom: '0.5rem', color: '#1E293B', fontWeight: 800 }}>
-                {step === 0 ? t('corporate_portal', language) : t('corporate_onboarding', language)}
+                {step === 0 ? 'Corporate Portal' : 'Corporate Onboarding'}
               </h1>
               <p style={{ fontSize: '0.9rem', color: '#475569' }}>
-                {step === 0 ? t('register_or_login_csr', language) : `${t('step_label', language)}${step}${t('of_5_enter_details', language)}`}
+                {step === 0 ? 'Register your enterprise or log in to coordinate CSR activities.' : `$Step ${step}$ of 5: Enter details`}
               </p>
             </div>
 
@@ -423,8 +420,8 @@ const CompanyOnboarding = () => {
                     <Lock size={18} style={{ color: '#4A6741' }} />
                   </div>
                   <div>
-                    <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#1E293B', margin: '0 0 0.15rem 0' }}>{t('login', language)}</h3>
-                    <p style={{ fontSize: '0.8rem', color: '#475569', margin: 0 }}>{t('access_your_corporat', language)}</p>
+                    <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#1E293B', margin: '0 0 0.15rem 0' }}>Login</h3>
+                    <p style={{ fontSize: '0.8rem', color: '#475569', margin: 0 }}>Access your corporate CSR portal using your GC-Company ID and 6-digit PIN.</p>
                   </div>
                 </button>
 
@@ -442,8 +439,8 @@ const CompanyOnboarding = () => {
                     <Plus size={18} style={{ color: '#4A6741' }} />
                   </div>
                   <div>
-                    <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#1E293B', margin: '0 0 0.15rem 0' }}>{t('register_enterprise', language)}</h3>
-                    <p style={{ fontSize: '0.8rem', color: '#475569', margin: 0 }}>{t('validate_via_corpora', language)}</p>
+                    <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#1E293B', margin: '0 0 0.15rem 0' }}>Register Enterprise</h3>
+                    <p style={{ fontSize: '0.8rem', color: '#475569', margin: 0 }}>Validate via Corporate CIN and DigiLocker to start matching CSR opportunities.</p>
                   </div>
                 </button>
               </div>
@@ -453,11 +450,11 @@ const CompanyOnboarding = () => {
             {step === 1 && (
               <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('name_of_the_company', language)}</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Name of the Company *</label>
                   <input
                     type="text"
                     required
-                    placeholder={t('enter_registered_cor', language)}
+                    placeholder="Enter registered corporate name"
                     value={formData.name}
                     onChange={e => setFormData({ ...formData, name: e.target.value })}
                     style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem' }}
@@ -466,26 +463,26 @@ const CompanyOnboarding = () => {
 
                 <div style={{ display: 'flex', gap: '1rem' }}>
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('industry_sector', language)}</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Industry Sector *</label>
                     <select
                       value={formData.sector}
                       onChange={e => setFormData({ ...formData, sector: e.target.value })}
                       style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem', background: '#FFFFFF' }}
                     >
-                      <option value="Technology">{t('technology', language)}</option>
-                      <option value="Finance & Banking">{t('finance_banking', language)}</option>
-                      <option value="Manufacturing">{t('manufacturing', language)}</option>
-                      <option value="Healthcare">{t('healthcare', language)}</option>
-                      <option value="Energy & Utilities">{t('energy_utilities', language)}</option>
-                      <option value="Consumer Goods">{t('consumer_goods', language)}</option>
+                      <option value="Technology">Technology</option>
+                      <option value="Finance & Banking">Finance & Banking</option>
+                      <option value="Manufacturing">Manufacturing</option>
+                      <option value="Healthcare">Healthcare</option>
+                      <option value="Energy & Utilities">Energy & Utilities</option>
+                      <option value="Consumer Goods">Consumer Goods</option>
                     </select>
                   </div>
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('official_website_url', language)}</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Official Website URL</label>
                     <input
                       type="text"
                       required
-                      placeholder={t('https_www_company_co', language)}
+                      placeholder="https://www.company.com"
                       value={formData.website}
                       onChange={e => setFormData({ ...formData, website: e.target.value })}
                       style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem' }}
@@ -494,11 +491,11 @@ const CompanyOnboarding = () => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('official_corporate_e', language)}</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Official Corporate Email ID *</label>
                   <input
                     type="email"
                     required
-                    placeholder={t('placeholder_csr_email', language)}
+                    placeholder="csr@company.com"
                     value={formData.email}
                     onChange={e => setFormData({ ...formData, email: e.target.value })}
                     style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem' }}
@@ -506,11 +503,11 @@ const CompanyOnboarding = () => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('headquarters_address', language)}</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Headquarters Address *</label>
                   <textarea
                     required
                     rows={2}
-                    placeholder={t('corporate_hq_address', language)}
+                    placeholder="Corporate HQ address"
                     value={formData.hqAddress}
                     onChange={e => setFormData({ ...formData, hqAddress: e.target.value })}
                     style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem', resize: 'vertical' }}
@@ -519,7 +516,7 @@ const CompanyOnboarding = () => {
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('cin_number_exactly_2', language)}</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>CIN Number (exactly 21 characters/digits) *</label>
                     <span style={{ fontSize: '0.75rem', fontWeight: 600, color: formData.cin.length === 21 ? '#2E7D32' : '#E67E22' }}>
                       {formData.cin.length} / 21
                     </span>
@@ -528,7 +525,7 @@ const CompanyOnboarding = () => {
                     type="text"
                     required
                     maxLength={21}
-                    placeholder={t('e_g_l01234ka2026plc0', language)}
+                    placeholder="e.g. L01234KA2026PLC012345"
                     value={formData.cin}
                     onChange={e => setFormData({ ...formData, cin: e.target.value.toUpperCase() })}
                     style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem', fontFamily: 'monospace', letterSpacing: '0.05em' }}
@@ -542,14 +539,14 @@ const CompanyOnboarding = () => {
                     onClick={() => setStep(0)}
                     style={{ flex: 1, padding: '0.75rem', background: '#F1F5F9', color: '#475569', border: '1px solid #CBD5E1', borderRadius: '0.5rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}
                   >
-                    <ArrowLeft size={16} /> {t('back', language)}
+                    <ArrowLeft size={16} /> Back
                   </button>
                   <button
                     type="button"
                     onClick={handleNextStep}
                     style={{ flex: 1, padding: '0.75rem', background: '#3D5A34', color: '#FFFFFF', border: 'none', borderRadius: '0.5rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}
                   >
-                    {t('next', language)} <ArrowRight size={16} />
+                    Next <ArrowRight size={16} />
                   </button>
                 </div>
               </div>
@@ -559,7 +556,7 @@ const CompanyOnboarding = () => {
             {step === 2 && (
               <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.85rem', fontWeight: 700, color: '#475569' }}>{t('selected_csr_focus_a', language)}</label>
+                  <label style={{ fontSize: '0.85rem', fontWeight: 700, color: '#475569' }}>Selected CSR Focus Areas *</label>
                   <div style={{
                     display: 'flex', flexWrap: 'wrap', gap: '0.4rem',
                     border: '2px solid #CBD5E1', padding: '0.75rem',
@@ -584,7 +581,7 @@ const CompanyOnboarding = () => {
                         </span>
                       ))
                     ) : (
-                      <span style={{ fontSize: '0.85rem', color: '#94A3B8', fontStyle: 'italic' }}>{t('please_select_target', language)}</span>
+                      <span style={{ fontSize: '0.85rem', color: '#94A3B8', fontStyle: 'italic' }}>Please select target CSR priorities from below or enter custom sectors</span>
                     )}
                   </div>
                 </div>
@@ -592,7 +589,7 @@ const CompanyOnboarding = () => {
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
                   <input
                     type="text"
-                    placeholder={t('type_custom_sector', language)}
+                    placeholder="Type custom sector..."
                     value={csrInput}
                     onChange={e => setCsrInput(e.target.value)}
                     onKeyDown={e => {
@@ -610,12 +607,12 @@ const CompanyOnboarding = () => {
                     }}
                     style={{ padding: '0.6rem 1.25rem', background: '#4A6741', color: '#FFFFFF', border: 'none', borderRadius: '0.5rem', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer' }}
                   >
-                    {t('add', language)}
+                    Add
                   </button>
                 </div>
 
                 <div>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#64748B', display: 'block', marginBottom: '0.5rem' }}>{t('predefined_csr_secto', language)}</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#64748B', display: 'block', marginBottom: '0.5rem' }}>Predefined CSR Sectors:</label>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
                     {quickCsrFocus.map((csr, i) => {
                       const selected = formData.csrFocusAreas.includes(csr);
@@ -647,14 +644,14 @@ const CompanyOnboarding = () => {
                     onClick={() => setStep(1)}
                     style={{ flex: 1, padding: '0.75rem', background: '#F1F5F9', color: '#475569', border: '1px solid #CBD5E1', borderRadius: '0.5rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}
                   >
-                    <ArrowLeft size={16} /> {t('back', language)}
+                    <ArrowLeft size={16} /> Back
                   </button>
                   <button
                     type="button"
                     onClick={handleNextStep}
                     style={{ flex: 1, padding: '0.75rem', background: '#3D5A34', color: '#FFFFFF', border: 'none', borderRadius: '0.5rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}
                   >
-                    {t('next', language)} <ArrowRight size={16} />
+                    Next <ArrowRight size={16} />
                   </button>
                 </div>
               </div>
@@ -663,26 +660,26 @@ const CompanyOnboarding = () => {
             {/* Step 3: Primary Contact Person Details & OTP */}
             {step === 3 && (
               <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#1E293B', borderBottom: '1px solid #E2E8F0', paddingBottom: '0.5rem', margin: 0 }}>{t('primary_point_of_con', language)}</h3>
+                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#1E293B', borderBottom: '1px solid #E2E8F0', paddingBottom: '0.5rem', margin: 0 }}>Primary Point of Contact Details</h3>
                 
                 <div style={{ display: 'flex', gap: '1rem' }}>
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('full_name_1', language)}</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Full Name *</label>
                     <input
                       type="text"
                       required
-                      placeholder={t('poc_full_name', language)}
+                      placeholder="POC Full Name"
                       value={formData.pocName}
                       onChange={e => setFormData({ ...formData, pocName: e.target.value })}
                       style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem' }}
                     />
                   </div>
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('designation', language)}</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Designation</label>
                     <input
                       type="text"
                       required
-                      placeholder={t('e_g_csr_head_vp_hr', language)}
+                      placeholder="e.g. CSR Head, VP HR"
                       value={formData.pocDesignation}
                       onChange={e => setFormData({ ...formData, pocDesignation: e.target.value })}
                       style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem' }}
@@ -691,12 +688,12 @@ const CompanyOnboarding = () => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('phone_number_1', language)}</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Phone Number *</label>
                   <input
                     type="text"
                     required
                     maxLength={10}
-                    placeholder={t('10_digit_poc_phone_n', language)}
+                    placeholder="10-digit POC phone number"
                     value={formData.pocPhone}
                     onChange={e => setFormData({ ...formData, pocPhone: e.target.value.replace(/\D/g, '') })}
                     style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem' }}
@@ -706,13 +703,13 @@ const CompanyOnboarding = () => {
                 {/* POC Email Verification Block */}
                 <div style={{ background: '#F8FAFC', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid #E2E8F0', display: 'flex', flexDirection: 'column', gap: '0.75rem', minHeight: '220px' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('poc_professional_ema', language)}</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>POC Professional Email *</label>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
                       <input
                         type="email"
                         required
                         disabled={otpVerified}
-                        placeholder={t('poc_name_company_com', language)}
+                        placeholder="poc.name@company.com"
                         value={formData.pocEmail}
                         onChange={e => setFormData({ ...formData, pocEmail: e.target.value })}
                         style={{ flex: 1, padding: '0.6rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem', background: otpVerified ? '#E2E8F0' : '#FFFFFF' }}
@@ -723,7 +720,7 @@ const CompanyOnboarding = () => {
                           onClick={handleSendOtp}
                           style={{ padding: '0.6rem 1rem', background: '#4A6741', color: '#FFFFFF', border: 'none', borderRadius: '0.5rem', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer' }}
                         >
-                          {otpSent ? t('resend', language) : t('send_otp', language)}
+                          {otpSent ? 'Resend' : 'Send OTP'}
                         </button>
                       )}
                     </div>
@@ -731,12 +728,12 @@ const CompanyOnboarding = () => {
 
                   {otpSent && !otpVerified && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', animation: 'fadeIn 0.2s ease-out' }}>
-                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>{t('enter_6_digit_otp', language)}</label>
+                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>Enter 6-Digit OTP *</label>
                       <div style={{ display: 'flex', gap: '0.5rem' }}>
                         <input
                            type="text"
                            maxLength={6}
-                           placeholder={t('e_g_123456', language)}
+                           placeholder="e.g. 123456"
                            value={formData.otp}
                            onChange={e => setFormData({ ...formData, otp: e.target.value.replace(/\D/g, '') })}
                            style={{ flex: 1, padding: '0.5rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem', textAlign: 'center', letterSpacing: '0.2em', fontWeight: 700 }}
@@ -746,7 +743,7 @@ const CompanyOnboarding = () => {
                           onClick={handleVerifyOtp}
                           style={{ padding: '0.5rem 1rem', background: '#3D5A34', color: '#FFFFFF', border: 'none', borderRadius: '0.5rem', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer' }}
                         >
-                          {t('verify_otp', language)}
+                          Verify OTP
                         </button>
                       </div>
                     </div>
@@ -757,7 +754,7 @@ const CompanyOnboarding = () => {
                       display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.8rem', color: '#2E7D32', fontWeight: 700,
                       background: '#E8F5E9', border: '1px solid #C8E6C9', padding: '0.4rem 0.75rem', borderRadius: '0.5rem'
                     }}>
-                      <CheckCircle size={16} /> {t('poc_email_verified_success', language)}
+                      <CheckCircle size={16} /> POC email verified successfully.
                     </div>
                   )}
                 </div>
@@ -769,14 +766,14 @@ const CompanyOnboarding = () => {
                     onClick={() => setStep(2)}
                     style={{ flex: 1, padding: '0.75rem', background: '#F1F5F9', color: '#475569', border: '1px solid #CBD5E1', borderRadius: '0.5rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}
                   >
-                    <ArrowLeft size={16} /> {t('back', language)}
+                    <ArrowLeft size={16} /> Back
                   </button>
                   <button
                     type="button"
                     onClick={handleNextStep}
                     style={{ flex: 1, padding: '0.75rem', background: '#3D5A34', color: '#FFFFFF', border: 'none', borderRadius: '0.5rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}
                   >
-                    {t('next', language)} <ArrowRight size={16} />
+                    Next <ArrowRight size={16} />
                   </button>
                 </div>
               </div>
@@ -791,12 +788,12 @@ const CompanyOnboarding = () => {
                 }}>
                   <Shield size={18} style={{ color: '#4A6741', flexShrink: 0 }} />
                   <div>
-                    <strong>{t('secure_login_setup', language)}</strong> {t('secure_pin_desc', language)}
+                    <strong>Secure Login Setup:</strong> Set a 6-digit PIN which will be required along with your GC-Company ID to access your portal in future sessions.
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('enter_6_digit_pin', language)}</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Enter 6-Digit PIN *</label>
                   <input
                     type="password"
                     maxLength={6}
@@ -809,7 +806,7 @@ const CompanyOnboarding = () => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('confirm_6_digit_pin', language)}</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Confirm 6-Digit PIN *</label>
                   <input
                     type="password"
                     maxLength={6}
@@ -828,14 +825,14 @@ const CompanyOnboarding = () => {
                     onClick={() => setStep(3)}
                     style={{ flex: 1, padding: '0.75rem', background: '#F1F5F9', color: '#475569', border: '1px solid #CBD5E1', borderRadius: '0.5rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}
                   >
-                    <ArrowLeft size={16} /> {t('back', language)}
+                    <ArrowLeft size={16} /> Back
                   </button>
                   <button
                     type="button"
                     onClick={handleNextStep}
                     style={{ flex: 1, padding: '0.75rem', background: '#3D5A34', color: '#FFFFFF', border: 'none', borderRadius: '0.5rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}
                   >
-                    {t('next', language)} <ArrowRight size={16} />
+                    Next <ArrowRight size={16} />
                   </button>
                 </div>
               </div>
@@ -853,14 +850,14 @@ const CompanyOnboarding = () => {
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
                     <Shield size={20} style={{ color: '#F39C12' }} />
-                    <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#1E293B' }}>{t('digilocker_verified_', language)}</h3>
+                    <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#1E293B' }}>DigiLocker Verified Gateway</h3>
                   </div>
                   <p style={{ fontSize: '0.8rem', color: '#475569', margin: '0 0 1rem 0', lineHeight: 1.45 }}>
-                    {t('finalize_corp_reg', language)}<strong>{formData.pocName}</strong> {t('via_digilocker_datab', language)} <strong>{t('12_digit_aadhaar_num', language)}</strong>.
+                    To finalize corporate registration, verify the identity of primary contact person <strong>{formData.pocName}</strong> via DigiLocker database. Enter their <strong>12-digit Aadhaar number</strong>.
                   </p>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('primary_contact_aadh', language)}</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Primary Contact Aadhaar Number *</label>
                     <input
                       type="text"
                       required
@@ -884,10 +881,10 @@ const CompanyOnboarding = () => {
 
                 <div style={{ background: '#E8F5E9', border: '1px solid #C8E6C9', borderRadius: '0.75rem', padding: '1rem', fontSize: '0.8rem', color: '#2E7D32', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 700 }}>
-                    <CheckCircle size={14} /> {t('corporate_cin_status', language)}{formData.cin} (21 {t('chars_valid', language)})
+                    <CheckCircle size={14} /> Corporate CIN status: {formData.cin} (21  chars valid)
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 700 }}>
-                    <CheckCircle size={14} /> {t('otp_verif_status', language)}
+                    <CheckCircle size={14} /> OTP Verification status: Verified
                   </div>
                 </div>
 
@@ -898,13 +895,13 @@ const CompanyOnboarding = () => {
                     onClick={() => setStep(4)}
                     style={{ flex: 1, padding: '0.75rem', background: '#F1F5F9', color: '#475569', border: '1px solid #CBD5E1', borderRadius: '0.5rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}
                   >
-                    <ArrowLeft size={16} /> {t('back', language)}
+                    <ArrowLeft size={16} /> Back
                   </button>
                   <button
                     type="submit"
                     style={{ flex: 1, padding: '0.75rem', background: '#F39C12', color: '#FFFFFF', border: 'none', borderRadius: '0.5rem', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem', boxShadow: '0 4px 6px rgba(243, 156, 18, 0.15)' }}
                   >
-                    <Shield size={16} /> {t('verify_and_register', language)}
+                    <Shield size={16} /> Verify & Register
                   </button>
                 </div>
               </form>

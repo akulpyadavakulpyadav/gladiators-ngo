@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useLanguage } from '../context/LanguageContext';
-import { t } from '../utils/translations';
 import { Users, Shield, KeyRound, Lock, ArrowRight, AlertCircle, Building2, Briefcase } from 'lucide-react';
 
 const LoginPage = () => {
   const { login } = useAuth();
-  const { language } = useLanguage();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -43,18 +40,18 @@ const LoginPage = () => {
 
     // Validate inputs
     if (!formattedId) {
-      setErrorMessage(t('error_enter_gc_id', language));
+      setErrorMessage('Please enter your GC-ID.');
       return;
     }
     if (cleanPin.length !== 6 || isNaN(cleanPin)) {
-      setErrorMessage(t('error_pin_6_digits', language));
+      setErrorMessage('PIN must be a 6-digit number.');
       return;
     }
 
     const result = await login({ gcId: formattedId, pin: cleanPin, role: selectedRole });
 
     if (!result.success) {
-      setErrorMessage(result.message || t('error_login_failed', language));
+      setErrorMessage(result.message || 'Login failed.');
       return;
     }
 
@@ -105,10 +102,10 @@ const LoginPage = () => {
             <img src="/images/logo.png" alt="GladiConnect Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
           <h1 className="text-gradient" style={{ fontSize: '1.75rem', marginBottom: '0.4rem', fontWeight: 800, color: '#1E293B' }}>
-            {t('login_title', language)}
+            Access Your Account
           </h1>
           <p style={{ fontSize: '0.9rem', color: '#475569', margin: 0 }}>
-            {t('login_desc', language)}
+            Enter your GC-ID and 6-digit PIN to access your portal
           </p>
         </div>
 
@@ -166,7 +163,7 @@ const LoginPage = () => {
         <form onSubmit={handleLoginSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
             <label className="form-label" style={{ color: '#475569', fontWeight: 700, fontSize: '0.8rem' }}>
-              {t('gc_id_label', language).replace('GC-ID', `GC-${selectedRole.toUpperCase()} ID`)}
+              {'GC-ID *'.replace('GC-ID', `GC-${selectedRole.toUpperCase()} ID`)}
             </label>
             <div style={{ position: 'relative' }}>
               <div style={{ 
@@ -202,7 +199,7 @@ const LoginPage = () => {
 
           <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
             <label className="form-label" style={{ color: '#475569', fontWeight: 700, fontSize: '0.8rem' }}>
-              {t('pin_label', language)}
+              6-Digit Secure PIN *
             </label>
             <div style={{ position: 'relative' }}>
               <KeyRound size={18} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#64748B' }} />
@@ -249,13 +246,13 @@ const LoginPage = () => {
               borderRadius: '0.75rem'
             }}
           >
-            {t('access_portal', language)} <ArrowRight size={18} />
+            Access CSR Portal <ArrowRight size={18} />
           </button>
         </form>
 
         <div style={{ textAlign: 'center', marginTop: '2rem' }}>
           <p style={{ fontSize: '0.85rem', color: '#64748B', margin: 0 }}>
-            {t('no_account', language)}
+            Don\
           </p>
           <button
             onClick={() => {
@@ -274,7 +271,7 @@ const LoginPage = () => {
               textDecoration: 'underline'
             }}
           >
-            {t('register_new', language).replace('profile', `${selectedRole} profile`)}
+            {'Register a new profile here'.replace('profile', `${selectedRole} profile`)}
           </button>
         </div>
 
@@ -293,7 +290,7 @@ const LoginPage = () => {
           justifyContent: 'center',
           gap: '0.35rem'
         }}>
-          <Lock size={12} /> {t('live_session_notice', language)}
+          <Lock size={12} /> Live Session: Refreshing will wipe all registered details.
         </div>
       </div>
     </div>

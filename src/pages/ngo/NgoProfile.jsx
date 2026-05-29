@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { useLanguage } from '../../context/LanguageContext';
-import { t } from '../../utils/translations';
 import { useNavigate } from 'react-router-dom';
 import { Building2, Mail, Phone, MapPin, Globe, User, Shield, Hash, ArrowLeft, Save, Edit3, LogOut, Check, X, Briefcase } from 'lucide-react';
 import ProfilePhotoUploader from '../../components/ProfilePhotoUploader';
 
 const NgoProfile = () => {
   const { user, updateUserProfile, logout } = useAuth();
-  const { language } = useLanguage();
   const navigate = useNavigate();
 
   // Local state for editing form
@@ -46,9 +43,9 @@ const NgoProfile = () => {
   if (!user) {
     return (
       <div className="glass-card" style={{ padding: '3rem', textAlign: 'center', maxWidth: 500, margin: '4rem auto' }}>
-        <h2 style={{ color: 'var(--color-primary)' }}>{t('access_denied_1', language)}</h2>
-        <p style={{ margin: '1rem 0 2rem' }}>{t('please_log_in_to_vie_1', language)}</p>
-        <button className="btn btn-primary" onClick={() => navigate('/login')}>{t('go_to_login_1', language)}</button>
+        <h2 style={{ color: 'var(--color-primary)' }}>Access Denied</h2>
+        <p style={{ margin: '1rem 0 2rem' }}>Please log in to view your NGO profile page.</p>
+        <button className="btn btn-primary" onClick={() => navigate('/login')}>Go to Login</button>
       </div>
     );
   }
@@ -135,7 +132,7 @@ const NgoProfile = () => {
       {/* Top Breadcrumbs */}
       <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '1.5rem' }}>
         <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', fontWeight: 600 }}>
-          Role: <span style={{ color: 'var(--color-primary)' }}>{t('ngo_portal', language)}</span>
+          Role: <span style={{ color: 'var(--color-primary)' }}>NGO Portal</span>
         </span>
       </div>
 
@@ -202,11 +199,11 @@ const NgoProfile = () => {
                     boxShadow: '0 2px 4px rgba(0, 105, 92, 0.05)'
                   }}>
                     <Building2 size={14} />
-                    <span>{t('gc_ngo_verified', language)}</span>
+                    <span>GC-NGO Verified</span>
                   </div>
                 </div>
                 <div style={{ padding: '0.4rem 0.75rem', background: '#F8FAFC', borderRadius: 'var(--radius-sm)', border: '1px solid #E2E8F0', fontSize: '0.9rem', fontWeight: 700, color: '#334155', fontFamily: 'monospace' }}>
-                  <span style={{ fontSize: '0.7rem', color: '#64748B', display: 'block', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', lineHeight: 1.2, marginBottom: '0.15rem' }}>{t('ngo_darpan_id', language)}</span>
+                  <span style={{ fontSize: '0.7rem', color: '#64748B', display: 'block', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', lineHeight: 1.2, marginBottom: '0.15rem' }}>NGO Darpan ID</span>
                   {(() => {
                     const darpan = user.ngoDarpanId || '';
                     const clean = darpan.replace(/\s/g, '');
@@ -219,7 +216,7 @@ const NgoProfile = () => {
             {/* Group 2: Sector focus display */}
             <div className="profile-summary-stats" style={{ display: 'flex', justifyContent: 'center' }}>
               <div style={{ width: '100%', maxWidth: '240px', padding: '0.75rem 1rem', background: '#E0F2F1', borderRadius: 'var(--radius-sm)', border: '1px solid #B2DFDB', textAlign: 'center' }}>
-                <span style={{ fontSize: '0.72rem', color: '#00695C', fontWeight: 600, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.15rem' }}>{t('primary_focus_domain', language)}</span>
+                <span style={{ fontSize: '0.72rem', color: '#00695C', fontWeight: 600, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.15rem' }}>Primary focus domain</span>
                 <span style={{ fontSize: '1rem', fontWeight: 700, color: '#004D40' }}>{user.domain}</span>
               </div>
             </div>
@@ -292,7 +289,7 @@ const NgoProfile = () => {
                 
                 {/* NGO Name */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                  <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('organization_registe', language)}</label>
+                  <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Organization Registered Name</label>
                   {isEditing ? (
                     <input
                       type="text"
@@ -315,7 +312,7 @@ const NgoProfile = () => {
                   
                   {/* Official Email */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('official_ngo_email_i', language)}</label>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Official NGO Email ID</label>
                     {isEditing ? (
                       <input
                         type="email"
@@ -336,7 +333,7 @@ const NgoProfile = () => {
 
                   {/* Website */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('website_web_portal', language)}</label>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Website / Web Portal</label>
                     {isEditing ? (
                       <input
                         type="url"
@@ -345,7 +342,7 @@ const NgoProfile = () => {
                         style={{ color: '#1E293B', background: '#FFFFFF', border: '1.5px solid #CBD5E1' }}
                         value={formData.website}
                         onChange={handleChange}
-                        placeholder={t('https_example_org', language)}
+                        placeholder="https://example.org"
                       />
                     ) : (
                       <div style={{ padding: '0.75rem 1rem', background: '#F8FAFC', borderRadius: 'var(--radius-sm)', border: '1px solid #E2E8F0', color: '#1E293B', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -355,7 +352,7 @@ const NgoProfile = () => {
                             {user.website}
                           </a>
                         ) : (
-                          <span style={{ color: '#94A3B8', fontStyle: 'italic' }}>{t('not_provided_1', language)}</span>
+                          <span style={{ color: '#94A3B8', fontStyle: 'italic' }}>Not provided</span>
                         )}
                       </div>
                     )}
@@ -365,7 +362,7 @@ const NgoProfile = () => {
 
                 {/* HQ Headquarters Address */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                  <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('headquarters_address_2', language)}</label>
+                  <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Headquarters Address</label>
                   {isEditing ? (
                     <textarea
                       name="headquarters"
@@ -375,7 +372,7 @@ const NgoProfile = () => {
                       style={{ color: '#1E293B', background: '#FFFFFF', border: '1.5px solid #CBD5E1', minHeight: 80, resize: 'vertical', padding: '0.6rem 0.75rem' }}
                       value={formData.headquarters}
                       onChange={handleChange}
-                      placeholder={t('full_official_office', language)}
+                      placeholder="Full official office headquarters address"
                     />
                   ) : (
                     <div style={{ padding: '0.85rem 1rem', background: '#F8FAFC', borderRadius: 'var(--radius-sm)', border: '1px solid #E2E8F0', color: '#1E293B', fontWeight: 600, display: 'flex', alignItems: 'flex-start', gap: '0.5rem', lineHeight: 1.5 }}>
@@ -410,7 +407,7 @@ const NgoProfile = () => {
                   
                   {/* Focus Domain Select */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('ngo_core_focus_domai', language)}</label>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>NGO Core Focus Domain</label>
                     {isEditing ? (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                         <select
@@ -422,14 +419,14 @@ const NgoProfile = () => {
                           {standardDomains.map(dom => (
                             <option key={dom} value={dom}>{dom}</option>
                           ))}
-                          <option value="Other">{t('other_focus_domain', language)}</option>
+                          <option value="Other">Other Focus Domain</option>
                         </select>
                         {isCustomDomain && (
                           <input
                             type="text"
                             name="customDomain"
                             required
-                            placeholder={t('specify_custom_focus', language)}
+                            placeholder="Specify custom focus domain"
                             className="form-input animate-fade-in"
                             style={{ color: '#1E293B', background: '#FFFFFF', border: '1.5px solid #CBD5E1' }}
                             value={formData.customDomain}
@@ -447,7 +444,7 @@ const NgoProfile = () => {
 
                   {/* Redacted PIN Data */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#EF4444', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('ngo_security_pin', language)}</label>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#EF4444', textTransform: 'uppercase', letterSpacing: '0.04em' }}>NGO Security Pin</label>
                     <div style={{ padding: '0.75rem 1rem', background: '#FEF2F2', borderRadius: 'var(--radius-sm)', border: '1px dashed #FCA5A5', color: '#C62828', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                       <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#EF4444' }} />
                       Verification PIN Redacted (Security Protocol)
@@ -466,7 +463,7 @@ const NgoProfile = () => {
                     
                     {/* POC Name */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('poc_full_name_3', language)}</label>
+                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>POC Full Name</label>
                       {isEditing ? (
                         <input
                           type="text"
@@ -486,7 +483,7 @@ const NgoProfile = () => {
 
                     {/* POC Designation */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('poc_designation_1', language)}</label>
+                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>POC Designation</label>
                       {isEditing ? (
                         <input
                           type="text"
@@ -510,7 +507,7 @@ const NgoProfile = () => {
                     
                     {/* POC Phone */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('poc_phone_number_1', language)}</label>
+                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>POC Phone Number</label>
                       {isEditing ? (
                         <input
                           type="text"
@@ -520,7 +517,7 @@ const NgoProfile = () => {
                           style={{ color: '#1E293B', background: '#FFFFFF', border: '1.5px solid #CBD5E1' }}
                           value={formData.pocPhone}
                           onChange={handleChange}
-                          placeholder={t('10_digit_number_1', language)}
+                          placeholder="10-digit number"
                         />
                       ) : (
                         <div style={{ padding: '0.75rem 1rem', background: '#F8FAFC', borderRadius: 'var(--radius-sm)', border: '1px solid #E2E8F0', color: '#1E293B', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -532,7 +529,7 @@ const NgoProfile = () => {
 
                     {/* POC Email */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('poc_official_email', language)}</label>
+                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>POC Official Email</label>
                       {isEditing ? (
                         <input
                           type="email"

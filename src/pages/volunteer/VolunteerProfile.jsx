@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { useLanguage } from '../../context/LanguageContext';
-import { t } from '../../utils/translations';
 import { useNavigate } from 'react-router-dom';
 import { User, Mail, Phone, MapPin, Calendar, Award, Heart, Edit3, ArrowLeft, Save, LogOut, Check, X } from 'lucide-react';
 import ProfilePhotoUploader from '../../components/ProfilePhotoUploader';
@@ -153,7 +151,6 @@ const generateCertificate = (badge, userName) => {
 
 const VolunteerProfile = () => {
   const { user, updateUserProfile, logout } = useAuth();
-  const { language } = useLanguage();
   const navigate = useNavigate();
 
   const [badgeData, setBadgeData] = useState({ badges: [], totalHours: 0, eventsCount: 0 });
@@ -203,9 +200,9 @@ const VolunteerProfile = () => {
   if (!user) {
     return (
       <div className="glass-card" style={{ padding: '3rem', textAlign: 'center', maxWidth: 500, margin: '4rem auto' }}>
-        <h2 style={{ color: 'var(--color-primary)' }}>{t('access_denied_2', language)}</h2>
-        <p style={{ margin: '1rem 0 2rem' }}>{t('please_log_in_to_vie_2', language)}</p>
-        <button className="btn btn-primary" onClick={() => navigate('/login')}>{t('go_to_login_2', language)}</button>
+        <h2 style={{ color: 'var(--color-primary)' }}>Access Denied</h2>
+        <p style={{ margin: '1rem 0 2rem' }}>Please log in to view your volunteer profile page.</p>
+        <button className="btn btn-primary" onClick={() => navigate('/login')}>Go to Login</button>
       </div>
     );
   }
@@ -291,7 +288,7 @@ const VolunteerProfile = () => {
       {/* Top Navigation / Breadcrumb */}
       <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '1.5rem' }}>
         <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', fontWeight: 600 }}>
-          Role: <span style={{ color: 'var(--color-primary)' }}>{t('role_volunteer_title', language)}</span>
+          Role: <span style={{ color: 'var(--color-primary)' }}>Volunteer</span>
         </span>
       </div>
 
@@ -357,11 +354,11 @@ const VolunteerProfile = () => {
                     boxShadow: '0 2px 4px rgba(46, 125, 50, 0.05)'
                   }}>
                     <Heart size={14} fill="#2E7D32" />
-                    <span>{t('gc_vlt_verified', language)}</span>
+                    <span>GC-VLT Verified</span>
                   </div>
                 </div>
                 <div style={{ padding: '0.4rem 0.75rem', background: '#F8FAFC', borderRadius: 'var(--radius-sm)', border: '1px solid #E2E8F0', fontSize: '0.9rem', fontWeight: 700, color: '#334155', fontFamily: 'monospace' }}>
-                  <span style={{ fontSize: '0.7rem', color: '#64748B', display: 'block', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', lineHeight: 1.2, marginBottom: '0.15rem' }}>{t('gladiconnect_id', language)}</span>
+                  <span style={{ fontSize: '0.7rem', color: '#64748B', display: 'block', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', lineHeight: 1.2, marginBottom: '0.15rem' }}>GladiConnect ID</span>
                   {user.gcId}
                 </div>
               </div>
@@ -371,15 +368,15 @@ const VolunteerProfile = () => {
             <div className="profile-summary-stats">
               <div style={{ flex: 1, minWidth: '70px', padding: '0.75rem 0.5rem', background: '#E8F5E9', borderRadius: 'var(--radius-sm)', border: '1px solid #C8E6C9', textAlign: 'center' }}>
                 <span style={{ display: 'block', fontSize: '1.25rem', fontWeight: 800, color: '#2E7D32' }}>{badgeData.totalHours}</span>
-                <span style={{ fontSize: '0.7rem', color: '#2E7D32', fontWeight: 600 }}>{t('hours', language)}</span>
+                <span style={{ fontSize: '0.7rem', color: '#2E7D32', fontWeight: 600 }}>Hours</span>
               </div>
               <div style={{ flex: 1, minWidth: '70px', padding: '0.75rem 0.5rem', background: '#FFF9C4', borderRadius: 'var(--radius-sm)', border: '1px solid #FFF59D', textAlign: 'center' }}>
                 <span style={{ display: 'block', fontSize: '1.25rem', fontWeight: 800, color: '#F57F17' }}>{badgeData.badges.length}</span>
-                <span style={{ fontSize: '0.7rem', color: '#F57F17', fontWeight: 600 }}>{t('badges', language)}</span>
+                <span style={{ fontSize: '0.7rem', color: '#F57F17', fontWeight: 600 }}>Badges</span>
               </div>
               <div style={{ flex: 1, minWidth: '70px', padding: '0.75rem 0.5rem', background: '#E3F2FD', borderRadius: 'var(--radius-sm)', border: '1px solid #BBDEFB', textAlign: 'center' }}>
                 <span style={{ display: 'block', fontSize: '1.25rem', fontWeight: 800, color: '#1565C0' }}>{badgeData.eventsCount}</span>
-                <span style={{ fontSize: '0.7rem', color: '#1565C0', fontWeight: 600 }}>{t('events', language)}</span>
+                <span style={{ fontSize: '0.7rem', color: '#1565C0', fontWeight: 600 }}>Events</span>
               </div>
             </div>
 
@@ -446,7 +443,7 @@ const VolunteerProfile = () => {
                 
                 {/* Full Name */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                  <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('name_government_reco', language)}</label>
+                  <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Name (Government Records)</label>
                   {isEditing ? (
                     <input
                       type="text"
@@ -469,7 +466,7 @@ const VolunteerProfile = () => {
                   
                   {/* Email */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('official_email_addre', language)}</label>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Official Email Address</label>
                     {isEditing ? (
                       <input
                         type="email"
@@ -490,7 +487,7 @@ const VolunteerProfile = () => {
 
                   {/* Phone */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('phone_number', language)}</label>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Phone Number</label>
                     {isEditing ? (
                       <input
                         type="text"
@@ -500,7 +497,7 @@ const VolunteerProfile = () => {
                         style={{ color: '#1E293B', background: '#FFFFFF', border: '1.5px solid #CBD5E1' }}
                         value={formData.phone}
                         onChange={handleChange}
-                        placeholder={t('10_digit_number_3', language)}
+                        placeholder="10-digit number"
                       />
                     ) : (
                       <div style={{ padding: '0.75rem 1rem', background: '#F8FAFC', borderRadius: 'var(--radius-sm)', border: '1px solid #E2E8F0', color: '#1E293B', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -517,7 +514,7 @@ const VolunteerProfile = () => {
                   
                   {/* Age */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('age_digits_only', language)}</label>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Age (Digits only)</label>
                     {isEditing ? (
                       <input
                         type="text"
@@ -538,7 +535,7 @@ const VolunteerProfile = () => {
 
                   {/* Redacted Identity Verification (Aadhaar / PIN) */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#EF4444', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('aadhaar_number_maske', language)}</label>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#EF4444', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Aadhaar Number (Masked)</label>
                     <div style={{ padding: '0.75rem 1rem', background: '#FEF2F2', borderRadius: 'var(--radius-sm)', border: '1px dashed #FCA5A5', color: '#C62828', fontWeight: 600, fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'monospace' }}>
                       <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#EF4444' }} />
                       {(() => {
@@ -552,7 +549,7 @@ const VolunteerProfile = () => {
 
                 {/* Full Address */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                  <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('full_delivery_contac', language)}</label>
+                  <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Full Delivery & Contact Address</label>
                   {isEditing ? (
                     <textarea
                       name="address"
@@ -562,7 +559,7 @@ const VolunteerProfile = () => {
                       style={{ color: '#1E293B', background: '#FFFFFF', border: '1.5px solid #CBD5E1', minHeight: 80, resize: 'vertical', padding: '0.6rem 0.75rem' }}
                       value={formData.address}
                       onChange={handleChange}
-                      placeholder={t('enter_house_no_stree', language)}
+                      placeholder="Enter house no, street address, locality, city, state"
                     />
                   ) : (
                     <div style={{ padding: '0.85rem 1rem', background: '#F8FAFC', borderRadius: 'var(--radius-sm)', border: '1px solid #E2E8F0', color: '#1E293B', fontWeight: 600, minHeight: 50, display: 'flex', alignItems: 'flex-start', gap: '0.5rem', lineHeight: 1.5 }}>
@@ -574,7 +571,7 @@ const VolunteerProfile = () => {
 
                 {/* Interests Tag Box */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                  <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('primary_social_impac', language)}</label>
+                  <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Primary Social Impact Interests</label>
                   
                   {isEditing ? (
                     <div style={{ padding: '1rem', background: '#F8FAFC', border: '1.5px solid #CBD5E1', borderRadius: 'var(--radius-sm)' }}>
@@ -597,13 +594,13 @@ const VolunteerProfile = () => {
                             </span>
                           ))
                         ) : (
-                          <span style={{ color: '#64748B', fontSize: '0.85rem', fontStyle: 'italic' }}>{t('select_interests_fro', language)}</span>
+                          <span style={{ color: '#64748B', fontSize: '0.85rem', fontStyle: 'italic' }}>Select interests from options below</span>
                         )}
                       </div>
 
                       {/* Options to add */}
                       <div style={{ borderTop: '1px solid #E2E8F0', paddingTop: '0.75rem' }}>
-                        <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', marginBottom: '0.5rem' }}>{t('click_to_add_focus_a', language)}</div>
+                        <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', marginBottom: '0.5rem' }}>Click to add focus areas:</div>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
                           {availableInterests.map((interest) => {
                             const isAdded = formData.interests.includes(interest);
@@ -650,7 +647,7 @@ const VolunteerProfile = () => {
                             </span>
                           ))
                         ) : (
-                          <span style={{ fontStyle: 'italic', color: '#64748B', fontSize: '0.85rem' }}>{t('no_social_interests_', language)}</span>
+                          <span style={{ fontStyle: 'italic', color: '#64748B', fontSize: '0.85rem' }}>No social interests specified</span>
                         )}
                       </div>
 

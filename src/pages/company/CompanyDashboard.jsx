@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { IndianRupee, FileText, Target, TrendingUp, Search, MessageSquare, ChevronDown, ChevronUp } from 'lucide-react';
-import { useLanguage } from '../../context/LanguageContext';
-import { t } from '../../utils/translations';
 import { useNavigate } from 'react-router-dom';
 
 /* ─── Impact Tracker ─── */
 const ImpactTracker = () => {
   const { user } = useAuth();
-  const { language } = useLanguage();
   const [donations, setDonations] = useState([]);
   const [expandedDonationId, setExpandedDonationId] = useState(null);
   const [donationExpenses, setDonationExpenses] = useState({});
@@ -56,7 +53,7 @@ const ImpactTracker = () => {
   return (
     <div className="animate-fade-in space-y-6">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h3 className="section-title">{t('impact_receipt_tracker', language)}</h3>
+        <h3 className="section-title">Impact & Receipt Tracker</h3>
       </div>
       
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -68,8 +65,8 @@ const ImpactTracker = () => {
             >
               <div>
                 <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '1.1rem' }}>{d.campaignTitle}</h4>
-                <p style={{ margin: 0, color: '#64748B', fontWeight: 500 }}>{t('supported_ngo', language)}{d.ngoName}</p>
-                <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.85rem', color: '#94A3B8' }}>{t('donated_on', language)}{new Date(d.date).toLocaleDateString()}</p>
+                <p style={{ margin: 0, color: '#64748B', fontWeight: 500 }}>Supported NGO: {d.ngoName}</p>
+                <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.85rem', color: '#94A3B8' }}>Donated on {new Date(d.date).toLocaleDateString()}</p>
               </div>
               <div style={{ textAlign: 'right', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                 <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-primary)' }}>₹{d.amount.toLocaleString()}</div>
@@ -79,7 +76,7 @@ const ImpactTracker = () => {
             
             {expandedDonationId === d._id && (
               <div style={{ padding: '1.5rem', borderTop: '1px solid #E2E8F0', background: '#F8FAFC' }}>
-                <h5 style={{ margin: '0 0 1rem 0', color: '#475569' }}>{t('expense_logs_receipts', language)}</h5>
+                <h5 style={{ margin: '0 0 1rem 0', color: '#475569' }}>Expense Logs & Receipts</h5>
                 {(donationExpenses[d._id] || []).length > 0 ? (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                     {donationExpenses[d._id].map(exp => (
@@ -96,7 +93,7 @@ const ImpactTracker = () => {
                     ))}
                   </div>
                 ) : (
-                  <p style={{ color: '#94A3B8', fontSize: '0.9rem' }}>{t('loading_expenses', language)}</p>
+                  <p style={{ color: '#94A3B8', fontSize: '0.9rem' }}>Loading expenses or no expenses logged yet.</p>
                 )}
               </div>
             )}
@@ -110,29 +107,28 @@ const ImpactTracker = () => {
 /* ─── Company Dashboard ─── */
 const CompanyDashboard = () => {
   const { user } = useAuth();
-  const { language } = useLanguage();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('impact');
 
   const tabs = [
-    { id: 'impact', label: t('impact_tracker', language) },
-    { id: 'reports', label: t('tab_csr_reports', language) }
+    { id: 'impact', label: 'Impact Tracker' },
+    { id: 'reports', label: 'CSR Reports' }
   ];
 
   return (
     <div>
       <div className="page-header">
-        <h1 className="text-gradient">{t('company_dashboard', language)}</h1>
-        <p>{t('company_dashboard_desc', language)}</p>
+        <h1 className="text-gradient">Company Dashboard</h1>
+        <p>Manage your CSR impact, verify NGOs, and track every dollar.</p>
       </div>
 
       {/* Quick Actions */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
         <button className="btn btn-primary" onClick={() => navigate('/company/search')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '1rem' }}>
-          <Search size={20} /> {t('charity_search_engine_btn', language)}
+          <Search size={20} /> Charity Search Engine
         </button>
         <button className="btn btn-secondary" onClick={() => navigate('/messages')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '1rem' }}>
-          <MessageSquare size={20} /> {t('direct_connect_btn', language)}
+          <MessageSquare size={20} /> Direct Connect
         </button>
       </div>
 
@@ -155,11 +151,11 @@ const CompanyDashboard = () => {
             <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'rgba(0, 0, 0, 0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem' }}>
               <FileText size={32} style={{ color: 'var(--color-primary)' }} />
             </div>
-            <h2 className="text-gradient" style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{t('csr_reports_title', language)}</h2>
+            <h2 className="text-gradient" style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Impact & CSR Reports</h2>
             <p style={{ fontSize: '0.95rem', maxWidth: 480, margin: '0 auto 1.5rem' }}>
-              {t('csr_reports_desc', language)}
+              Generate comprehensive, transparent reports formatted for compliance and stakeholder reviews.
             </p>
-            <button className="btn btn-primary"><TrendingUp size={16} /> {t('gen_q3_report', language)}</button>
+            <button className="btn btn-primary"><TrendingUp size={16} /> Generate Q3 Report</button>
           </div>
         )}
       </div>

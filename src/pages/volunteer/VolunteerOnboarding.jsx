@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { useLanguage } from '../../context/LanguageContext';
-import { t } from '../../utils/translations';
 import { 
   Users, CheckCircle, Loader2, Shield, Heart, Lock, Plus, X, 
   MapPin, Mail, Phone, Calendar, ArrowRight, ArrowLeft 
 } from 'lucide-react';
 
 const VolunteerOnboarding = () => {
-  const { language } = useLanguage();
   const { login, registerUser } = useAuth();
   const navigate = useNavigate();
 
@@ -255,24 +252,24 @@ const VolunteerOnboarding = () => {
             {bufferStatus === 'verifying' && (
               <>
                 <Loader2 size={36} className="animate-spin" style={{ color: '#F39C12', marginBottom: '1rem' }} />
-                <p style={{ fontWeight: 700, fontSize: '1.1rem', color: '#334155' }}>{t('connecting_to_digilo_2', language)}</p>
-                <p style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '0.25rem' }}>{t('please_verify_aadhaa', language)}</p>
+                <p style={{ fontWeight: 700, fontSize: '1.1rem', color: '#334155' }}>Connecting to DigiLocker Aadhaar Gateway...</p>
+                <p style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '0.25rem' }}>Please verify Aadhaar credentials on your device.</p>
               </>
             )}
 
             {bufferStatus === 'verified_success' && (
               <>
                 <CheckCircle size={44} style={{ color: '#2E7D32', marginBottom: '1rem' }} />
-                <h3 style={{ fontWeight: 800, fontSize: '1.5rem', color: '#2E7D32', margin: 0 }}>{t('verified_successfull_2', language)}</h3>
-                <p style={{ fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem' }}>{t('aadhaar_matching_che', language)}</p>
+                <h3 style={{ fontWeight: 800, fontSize: '1.5rem', color: '#2E7D32', margin: 0 }}>Verified Successfully</h3>
+                <p style={{ fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem' }}>Aadhaar matching checks completed.</p>
               </>
             )}
 
             {bufferStatus === 'registering' && (
               <>
                 <Loader2 size={36} className="animate-spin" style={{ color: '#2E7D32', marginBottom: '1rem' }} />
-                <h3 style={{ fontWeight: 800, fontSize: '1.5rem', color: '#2E7D32', margin: 0 }}>{t('registering_2', language)}</h3>
-                <p style={{ fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem' }}>{t('creating_secure_gc_v', language)}</p>
+                <h3 style={{ fontWeight: 800, fontSize: '1.5rem', color: '#2E7D32', margin: 0 }}>Registering</h3>
+                <p style={{ fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem' }}>Creating secure GC-Volunteer credentials...</p>
               </>
             )}
           </div>
@@ -288,7 +285,7 @@ const VolunteerOnboarding = () => {
             }}>
               <CheckCircle size={36} />
             </div>
-            <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#1E293B', marginBottom: '0.5rem' }}>{t('welcome_to_gladiconn', language)}</h2>
+            <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#1E293B', marginBottom: '0.5rem' }}>Welcome to GladiConnect!</h2>
             <p style={{ fontSize: '0.95rem', color: '#475569', marginBottom: '2rem' }}>
               Your profile has been created and verified. Please note down your credentials.
             </p>
@@ -299,14 +296,14 @@ const VolunteerOnboarding = () => {
               textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '0.75rem' 
             }}>
               <div>
-                <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>{t('gc_volunteer_id', language)}</span>
+                <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>GC-Volunteer ID</span>
                 <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#3D5A34', fontFamily: 'monospace', letterSpacing: '0.05em', marginTop: '0.2rem' }}>
                   {generatedUser.gcId}
                 </div>
               </div>
               <hr style={{ border: 'none', borderTop: '1px solid #E2E8F0', margin: '0.25rem 0' }} />
               <div>
-                <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>{t('secure_6_digit_pin_2', language)}</span>
+                <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>Secure 6-Digit PIN</span>
                 <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1E293B', marginTop: '0.2rem' }}>
                   {generatedUser.pin}
                 </div>
@@ -392,8 +389,8 @@ const VolunteerOnboarding = () => {
                     <Lock size={18} style={{ color: '#4A6741' }} />
                   </div>
                   <div>
-                    <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#1E293B', margin: '0 0 0.15rem 0' }}>{t('login', language)}</h3>
-                    <p style={{ fontSize: '0.8rem', color: '#475569', margin: 0 }}>{t('access_your_voluntee', language)}</p>
+                    <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#1E293B', margin: '0 0 0.15rem 0' }}>Login</h3>
+                    <p style={{ fontSize: '0.8rem', color: '#475569', margin: 0 }}>Access your volunteer portal using your GC-ID and 6-digit PIN.</p>
                   </div>
                 </button>
 
@@ -411,8 +408,8 @@ const VolunteerOnboarding = () => {
                     <Plus size={18} style={{ color: '#4A6741' }} />
                   </div>
                   <div>
-                    <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#1E293B', margin: '0 0 0.15rem 0' }}>{t('register', language)}</h3>
-                    <p style={{ fontSize: '0.8rem', color: '#475569', margin: 0 }}>{t('verify_credentials_c', language)}</p>
+                    <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#1E293B', margin: '0 0 0.15rem 0' }}>Register</h3>
+                    <p style={{ fontSize: '0.8rem', color: '#475569', margin: 0 }}>Verify credentials, choose interests and start volunteering.</p>
                   </div>
                 </button>
               </div>
@@ -422,11 +419,11 @@ const VolunteerOnboarding = () => {
             {step === 1 && (
               <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('name_as_per_records', language)}</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Name as per records *</label>
                   <input
                     type="text"
                     required
-                    placeholder={t('enter_your_official_', language)}
+                    placeholder="Enter your official full name"
                     value={formData.name}
                     onChange={e => setFormData({ ...formData, name: e.target.value })}
                     style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem' }}
@@ -435,23 +432,23 @@ const VolunteerOnboarding = () => {
 
                 <div style={{ display: 'flex', gap: '1rem' }}>
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('age', language)}</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Age *</label>
                     <input
                       type="text"
                       inputMode="numeric"
                       required
-                      placeholder={t('e_g_21', language)}
+                      placeholder="e.g. 21"
                       value={formData.age}
                       onChange={e => setFormData({ ...formData, age: e.target.value.replace(/\D/g, '') })}
                       style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem' }}
                     />
                   </div>
                   <div style={{ flex: 2, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('full_address', language)}</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Full Address *</label>
                     <textarea
                       required
                       rows={1}
-                      placeholder={t('street_city_state_pi', language)}
+                      placeholder="Street, City, State, PIN"
                       value={formData.fullAddress}
                       onChange={e => setFormData({ ...formData, fullAddress: e.target.value })}
                       style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem', fontFamily: 'inherit', resize: 'vertical' }}
@@ -460,12 +457,12 @@ const VolunteerOnboarding = () => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('phone_number_3', language)}</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Phone Number *</label>
                   <input
                     type="text"
                     required
                     maxLength={10}
-                    placeholder={t('10_digit_number_2', language)}
+                    placeholder="10-digit number"
                     value={formData.phone}
                     onChange={e => setFormData({ ...formData, phone: e.target.value.replace(/\D/g, '') })}
                     style={{ padding: '0.65rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem' }}
@@ -475,13 +472,13 @@ const VolunteerOnboarding = () => {
                 {/* Email Verification Form Block */}
                 <div style={{ background: '#F8FAFC', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid #E2E8F0', display: 'flex', flexDirection: 'column', gap: '0.75rem', minHeight: '220px' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('email_address_1', language)}</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Email Address *</label>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
                       <input
                         type="email"
                         required
                         disabled={otpVerified}
-                        placeholder={t('email_example_com', language)}
+                        placeholder="email@example.com"
                         value={formData.email}
                         onChange={e => setFormData({ ...formData, email: e.target.value })}
                         style={{ flex: 1, padding: '0.6rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem', background: otpVerified ? '#E2E8F0' : '#FFFFFF' }}
@@ -500,12 +497,12 @@ const VolunteerOnboarding = () => {
 
                   {otpSent && !otpVerified && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', animation: 'fadeIn 0.2s ease-out' }}>
-                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>{t('enter_6_digit_otp_2', language)}</label>
+                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>Enter 6-Digit OTP *</label>
                       <div style={{ display: 'flex', gap: '0.5rem' }}>
                         <input
                           type="text"
                           maxLength={6}
-                          placeholder={t('e_g_123456_2', language)}
+                          placeholder="e.g. 123456"
                           value={formData.otp}
                           onChange={e => setFormData({ ...formData, otp: e.target.value.replace(/\D/g, '') })}
                           style={{ flex: 1, padding: '0.5rem 0.75rem', border: '2px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem', textAlign: 'center', letterSpacing: '0.2em', fontWeight: 700 }}
@@ -555,7 +552,7 @@ const VolunteerOnboarding = () => {
             {step === 2 && (
               <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.85rem', fontWeight: 700, color: '#475569' }}>{t('selected_primary_int', language)}</label>
+                  <label style={{ fontSize: '0.85rem', fontWeight: 700, color: '#475569' }}>Selected Primary Interests *</label>
                   <div style={{
                     display: 'flex', flexWrap: 'wrap', gap: '0.4rem',
                     border: '2px solid #CBD5E1', padding: '0.75rem',
@@ -580,7 +577,7 @@ const VolunteerOnboarding = () => {
                         </span>
                       ))
                     ) : (
-                      <span style={{ fontSize: '0.85rem', color: '#94A3B8', fontStyle: 'italic' }}>{t('please_select_primar', language)}</span>
+                      <span style={{ fontSize: '0.85rem', color: '#94A3B8', fontStyle: 'italic' }}>Please select primary interest areas from below or add custom ones</span>
                     )}
                   </div>
                 </div>
@@ -588,7 +585,7 @@ const VolunteerOnboarding = () => {
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
                   <input
                     type="text"
-                    placeholder={t('type_custom_interest', language)}
+                    placeholder="Type custom interest..."
                     value={interestInput}
                     onChange={e => setInterestInput(e.target.value)}
                     onKeyDown={e => {
@@ -611,7 +608,7 @@ const VolunteerOnboarding = () => {
                 </div>
 
                 <div>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#64748B', display: 'block', marginBottom: '0.5rem' }}>{t('quick_selection', language)}</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#64748B', display: 'block', marginBottom: '0.5rem' }}>Quick Selection:</label>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
                     {quickInterests.map((interest, i) => {
                       const selected = formData.interests.includes(interest);
@@ -665,12 +662,12 @@ const VolunteerOnboarding = () => {
                 }}>
                   <Shield size={18} style={{ color: '#4A6741', flexShrink: 0 }} />
                   <div>
-                    <strong>{t('secure_login_setup_2', language)}</strong> Set a 6-digit PIN which will be required along with your GC-ID to access your portal in future sessions.
+                    <strong>Secure Login Setup:</strong> Set a 6-digit PIN which will be required along with your GC-ID to access your portal in future sessions.
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('enter_6_digit_pin_2', language)}</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Enter 6-Digit PIN *</label>
                   <input
                     type="password"
                     maxLength={6}
@@ -683,7 +680,7 @@ const VolunteerOnboarding = () => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('confirm_6_digit_pin_2', language)}</label>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Confirm 6-Digit PIN *</label>
                   <input
                     type="password"
                     maxLength={6}
@@ -727,14 +724,14 @@ const VolunteerOnboarding = () => {
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
                     <Shield size={20} style={{ color: '#F39C12' }} />
-                    <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#1E293B' }}>{t('digilocker_verified__2', language)}</h3>
+                    <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#1E293B' }}>DigiLocker Verified Gateway</h3>
                   </div>
                   <p style={{ fontSize: '0.8rem', color: '#475569', margin: '0 0 1rem 0', lineHeight: 1.45 }}>
-                    To complete your registration, authenticate via the official Indian DigiLocker database. Enter your <strong>{t('12_digit_aadhaar_car', language)}</strong> to verify your identity.
+                    To complete your registration, authenticate via the official Indian DigiLocker database. Enter your <strong>12-digit Aadhaar Card number</strong> to verify your identity.
                   </p>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>{t('volunteer_aadhaar_nu', language)}</label>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Volunteer Aadhaar Number *</label>
                     <input
                       type="text"
                       required

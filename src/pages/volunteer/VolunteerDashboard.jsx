@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Search, MapPin, Target, Calendar, Award, Clock, Users, Activity, X, Building2, Camera, ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useLanguage } from '../../context/LanguageContext';
-import { t } from '../../utils/translations';
 import { jsPDF } from 'jspdf';
 
 /* ─── Program Feed ─── */
 const DirectorySearch = () => {
   const { user } = useAuth();
-  const { language } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
   const [programs, setPrograms] = useState([]);
   const [showApplyModal, setShowApplyModal] = useState(false);
@@ -134,7 +131,7 @@ const DirectorySearch = () => {
               type="text"
               className="form-input"
               style={{ paddingLeft: '2.5rem' }}
-              placeholder={t('search_placeholder', language)}
+              placeholder="Search NGOs by name..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
             />
@@ -145,13 +142,13 @@ const DirectorySearch = () => {
             value={domainFilter}
             onChange={e => setDomainFilter(e.target.value)}
           >
-            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="All">{t('filter_all', language)}</option>
+            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="All">All Domains</option>
             {((Array.isArray(user?.interests) && user.interests.length > 0) || (typeof user?.interests === 'string' && user?.interests)) && (
               <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="My Interests">My Interests</option>
             )}
-            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Environment">{t('filter_env', language)}</option>
-            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Education">{t('filter_edu', language)}</option>
-            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Health">{t('filter_health', language)}</option>
+            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Environment">Environment</option>
+            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Education">Education</option>
+            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Health">Health</option>
             <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Disaster Relief">Disaster Relief</option>
             <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Animal Welfare">Animal Welfare</option>
             <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Rural Development">Rural Development</option>
@@ -185,7 +182,7 @@ const DirectorySearch = () => {
               <MapPin size={14} /> {program.location || (program.ngoId?.location === 'Bangalore' ? (language === 'KN' ? 'ಬೆಂಗಳೂರು' : language === 'HI' ? 'बेंगलुरु' : 'Bangalore') : (program.ngoId?.location || program.ngoId?.headquarters || 'Location TBD'))}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', color: '#10B981', fontWeight: 600, marginBottom: '1.25rem' }}>
-              <Users size={14} /> {program.volunteerCount || 0} {t('volunteers', language) || 'Volunteers'}
+              <Users size={14} /> {program.volunteerCount || 0} {'volunteers' || 'Volunteers'}
             </div>
             <div style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid var(--color-border)', display: 'flex', gap: '0.5rem' }}>
               {(() => {
@@ -199,7 +196,7 @@ const DirectorySearch = () => {
                 }
                 return (
                   <button className="btn btn-secondary" style={{ flex: 1 }} onClick={() => { setSelectedProgram(program); setSelectedRole(''); setApplyMessage(''); setShowApplyModal(true); }}>
-                    {t('btn_connect', language)}
+                    Connect
                   </button>
                 );
               })()}
@@ -452,7 +449,6 @@ const generateCertificate = (badge, userName) => {
 
 /* ─── Impact Dashboard ─── */
 const ImpactDashboard = ({ badgeData, fetchBadgesAndStats }) => {
-  const { language } = useLanguage();
   const { user } = useAuth();
   const [applications, setApplications] = useState([]);
 
@@ -540,7 +536,7 @@ const ImpactDashboard = ({ badgeData, fetchBadgesAndStats }) => {
       </div>
 
       <div className="glass-card" style={{ padding: '1.5rem' }}>
-        <h3 className="section-title">{t('recent_activity', language)}</h3>
+        <h3 className="section-title">Recent Activity</h3>
         <div className="space-y-4">
           {completedApps.length === 0 ? (
             <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.9rem', margin: 0 }}>No completed activities yet.</p>
@@ -562,7 +558,6 @@ const ImpactDashboard = ({ badgeData, fetchBadgesAndStats }) => {
 /* ─── NGO Directory View ─── */
 const NgoDirectoryView = ({ onSelectNgo }) => {
   const { user } = useAuth();
-  const { language } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
   const [ngos, setNgos] = useState([]);
   
@@ -613,7 +608,7 @@ const NgoDirectoryView = ({ onSelectNgo }) => {
               type="text"
               className="form-input"
               style={{ paddingLeft: '2.5rem' }}
-              placeholder={t('search_placeholder', language)}
+              placeholder="Search NGOs by name..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
             />
@@ -624,13 +619,13 @@ const NgoDirectoryView = ({ onSelectNgo }) => {
             value={domainFilter}
             onChange={e => setDomainFilter(e.target.value)}
           >
-            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="All">{t('filter_all', language)}</option>
+            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="All">All Domains</option>
             {((Array.isArray(user?.interests) && user.interests.length > 0) || (typeof user?.interests === 'string' && user?.interests)) && (
               <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="My Interests">My Interests</option>
             )}
-            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Environment">{t('filter_env', language)}</option>
-            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Education">{t('filter_edu', language)}</option>
-            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Health">{t('filter_health', language)}</option>
+            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Environment">Environment</option>
+            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Education">Education</option>
+            <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Health">Health</option>
             <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Disaster Relief">Disaster Relief</option>
             <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Animal Welfare">Animal Welfare</option>
             <option style={{ color: '#1E293B', background: '#FFFFFF' }} value="Rural Development">Rural Development</option>
@@ -641,7 +636,7 @@ const NgoDirectoryView = ({ onSelectNgo }) => {
       <div className="grid grid-md-3">
         {filtered.length === 0 ? (
           <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '3rem', color: 'var(--color-text-secondary)' }}>
-            {t('no_ngos_domain', language)}
+            No NGOs found for this domain.
           </div>
         ) : filtered.map(ngo => (
           <div 
@@ -655,14 +650,14 @@ const NgoDirectoryView = ({ onSelectNgo }) => {
             </div>
             
             <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', marginBottom: '1rem', flex: 1, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-              {ngo.about || t('ngo_focused_impact', language)}
+              {ngo.about || 'This NGO is focused on making a profound impact in their dedicated domain.'}
             </p>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', color: 'var(--color-text-primary)', marginBottom: '0.35rem', fontWeight: 600 }}>
-              <Target size={14} /> {t('domain_label', language)} {ngo.domain || 'N/A'}
+              <Target size={14} /> Domain: {ngo.domain || 'N/A'}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>
-              <MapPin size={14} /> {ngo.location || ngo.headquarters || t('location_not_specified', language)}
+              <MapPin size={14} /> {ngo.location || ngo.headquarters || 'Location not specified'}
             </div>
           </div>
         ))}
@@ -673,7 +668,6 @@ const NgoDirectoryView = ({ onSelectNgo }) => {
 
 /* ─── Volunteer NGO Profile View ─── */
 const VolunteerNgoProfileView = ({ ngo, onBack }) => {
-  const { language } = useLanguage();
   const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
   const [selectedGalleryItem, setSelectedGalleryItem] = useState(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -687,7 +681,7 @@ const VolunteerNgoProfileView = ({ ngo, onBack }) => {
         className="btn btn-outline"
         style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', border: 'none', background: 'var(--color-border)', color: 'var(--color-text-primary)' }}
       >
-        <ArrowLeft size={16} /> {t('back_to_directory', language)}
+        <ArrowLeft size={16} /> Back to Directory
       </button>
 
       {/* NGO Header (Impact Profile Style) */}
@@ -706,10 +700,10 @@ const VolunteerNgoProfileView = ({ ngo, onBack }) => {
           </div>
           <div style={{ flex: 1, minWidth: 200 }}>
             <h2 style={{ fontSize: '1.4rem', marginBottom: '0.35rem', color: 'var(--color-primary)' }}>
-              {ngo?.name || t('ngo_name', language)}
+              {ngo?.name || 'NGO Name'}
             </h2>
             <p style={{ fontSize: '0.9rem', marginBottom: '0.75rem', lineHeight: 1.6 }}>
-              {ngo?.about || t('no_about_info', language)}
+              {ngo?.about || 'No about information provided.'}
             </p>
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
               <span className="badge badge-primary">{ngo?.domain || 'Environment'}</span>
@@ -721,7 +715,7 @@ const VolunteerNgoProfileView = ({ ngo, onBack }) => {
                 boxShadow: '0 2px 4px rgba(0, 105, 92, 0.05)'
               }}>
                 <Building2 size={14} />
-                <span>{t('gc_ngo_verified', language)}</span>
+                <span>GC-NGO Verified</span>
               </div>
             </div>
           </div>
@@ -729,11 +723,11 @@ const VolunteerNgoProfileView = ({ ngo, onBack }) => {
       </div>
 
       {/* Impact Gallery (Read-Only) */}
-      <h3 className="section-title" style={{ marginTop: '2rem' }}>{t('impact_gallery', language)}</h3>
+      <h3 className="section-title" style={{ marginTop: '2rem' }}>Impact Gallery</h3>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
         {mediaGallery.length === 0 ? (
           <div className="glass-card" style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-text-secondary)', gridColumn: '1 / -1' }}>
-            {t('no_impact_photos', language)}
+            This NGO hasn\
           </div>
         ) : mediaGallery.map((item, idx) => (
           <div key={item._id || idx} className="glass-card card-hover" style={{ overflow: 'hidden', cursor: 'pointer' }} onClick={() => { setSelectedGalleryItem(item); setActiveImageIndex(0); setIsGalleryModalOpen(true); }}>
@@ -808,7 +802,6 @@ const VolunteerNgoProfileView = ({ ngo, onBack }) => {
 /* ─── Volunteer Dashboard ─── */
 const VolunteerDashboard = () => {
   const { user } = useAuth();
-  const { language } = useLanguage();
   const [activeTab, setActiveTab] = useState('ngos');
   const [selectedNgoProfile, setSelectedNgoProfile] = useState(null);
 
@@ -834,18 +827,18 @@ const VolunteerDashboard = () => {
   }, [user]);
 
   const tabs = [
-    { id: 'ngos', label: t('tab_ngo_directory', language) },
-    { id: 'broadcasts', label: t('tab_broadcasts', language) },
-    { id: 'impact', label: t('tab_impact', language) }
+    { id: 'ngos', label: 'NGO Directory' },
+    { id: 'broadcasts', label: 'Broadcasts' },
+    { id: 'impact', label: 'My Impact' }
   ];
 
   return (
     <div>
       <div className="page-header">
-        <h1 className="text-gradient">{t('vol_dash_title', language)}</h1>
+        <h1 className="text-gradient">Volunteer Dashboard</h1>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.25rem' }}>
           <p style={{ margin: 0 }}>
-            {t('make_impact', language)} <span style={{ fontWeight: 600, color: 'var(--color-text-primary)' }}>{user?.name}</span>
+            Make an impact, <span style={{ fontWeight: 600, color: 'var(--color-text-primary)' }}>{user?.name}</span>
           </p>
           {badgeData.badges && badgeData.badges.length > 0 && (
             <div style={{ display: 'flex', gap: '0.25rem', alignItems: 'center', marginLeft: '0.5rem' }}>

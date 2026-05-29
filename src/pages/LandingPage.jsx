@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import { useLanguage } from '../context/LanguageContext';
-import { t } from '../utils/translations';
 
 const roles = [
   {
@@ -37,7 +35,6 @@ const sdgTags = [
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  const { language } = useLanguage();
   const [selectedRoleCard, setSelectedRoleCard] = useState(null);
 
   // Always scroll to top when landing page mounts
@@ -61,7 +58,7 @@ const LandingPage = () => {
       {/* SDG Badge */}
       <div className="sdg-badge animate-fade-in" style={{ marginBottom: '2rem', position: 'relative', zIndex: 1 }}>
         <span>🌱</span>
-        <span>{t('sdg_16_amp_17_gladic', language)}</span>
+        <span>SDG 16 &amp; 17 · GLADICONNECT</span>
       </div>
 
       {/* Logo — aesthetically sized, centered, glow effect */}
@@ -124,7 +121,7 @@ const LandingPage = () => {
           letterSpacing: '-0.03em',
           fontFamily: "'Playfair Display', serif"
         }}>
-          {t('hero_title_1', language)}
+          Bridge the gap.
         </h1>
         <h1 style={{
           fontSize: 'clamp(2.5rem, 7vw, 5rem)',
@@ -135,7 +132,7 @@ const LandingPage = () => {
           letterSpacing: '-0.03em',
           fontFamily: "'Playfair Display', serif"
         }}>
-          {t('hero_title_2', language)}
+          Amplify impact.
         </h1>
         <p style={{
           fontSize: 'clamp(1rem, 2vw, 1.15rem)',
@@ -144,7 +141,7 @@ const LandingPage = () => {
           maxWidth: 560,
           margin: '0 auto'
         }}>
-          {t('hero_desc', language)}
+          The unified platform connecting NGOs, volunteers, and companies to drive collective social impact aligned with UN Sustainable Development Goals.
         </p>
         <p style={{
           fontSize: '1rem',
@@ -154,7 +151,7 @@ const LandingPage = () => {
           color: 'rgba(255, 255, 255, 0.45)',
           marginTop: '1rem'
         }}>
-          {t('hero_slogan', language)}
+          Unite · Empower · Transform
         </p>
       </div>
 
@@ -214,13 +211,13 @@ const LandingPage = () => {
           color: 'rgba(255, 255, 255, 0.5)',
           fontWeight: 500
         }}>
-          {t('aligned_with', language)}
+          Aligned with:
         </span>
         {[
-          t('sdg_16', language),
-          t('sdg_17', language),
-          t('sdg_4', language),
-          t('sdg_13', language)
+          'SDG 16 — Peace & Justice',
+          'SDG 17 — Partnerships',
+          'SDG 4 — Education',
+          'SDG 13 — Climate Action'
         ].map((tag, i) => (
           <span key={i} className="sdg-tag">{tag}</span>
         ))}

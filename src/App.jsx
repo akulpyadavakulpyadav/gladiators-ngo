@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import { LanguageProvider } from './context/LanguageContext';
+
 import { ToastProvider } from './context/ToastContext';
 import { ConfirmProvider } from './context/ConfirmContext';
 import GlobalLayout from './components/GlobalLayout';
@@ -49,7 +49,7 @@ const ScrollToTop = () => {
 const App = () => {
   return (
     <AuthProvider>
-      <LanguageProvider>
+
         <ToastProvider>
           <ConfirmProvider>
             <BrowserRouter>
@@ -126,7 +126,7 @@ const App = () => {
             </BrowserRouter>
           </ConfirmProvider>
         </ToastProvider>
-      </LanguageProvider>
+
     </AuthProvider>
   );
 };

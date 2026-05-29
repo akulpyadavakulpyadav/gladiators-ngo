@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { Shield, CheckCircle, Loader2 } from 'lucide-react';
-import { useLanguage } from '../context/LanguageContext';
 import { useToast } from '../context/ToastContext';
-import { t } from '../utils/translations';
 
 const LABELS = {
   ngo: 'Government Registration ID',
@@ -11,7 +9,6 @@ const LABELS = {
 };
 
 const DigilockerMock = ({ onVerify, entityType, isLogin }) => {
-  const { language } = useLanguage();
   const { showToast } = useToast();
   const [step, setStep] = useState(1);
   const [idValue, setIdValue] = useState('');
@@ -39,7 +36,7 @@ const DigilockerMock = ({ onVerify, entityType, isLogin }) => {
     if (entityType === 'volunteer') {
       const digitsOnly = idValue.replace(/\D/g, '');
       if (digitsOnly.length !== 12) {
-        showToast(t('alert_aadhaar', language), 'error');
+        showToast('Please enter a valid 12-digit Aadhaar number.', 'error');
         return;
       }
     }
@@ -77,7 +74,7 @@ const DigilockerMock = ({ onVerify, entityType, isLogin }) => {
         }}>
           <Shield size={20} style={{ color: '#F39C12' }} />
         </div>
-        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0, color: '#0F172A' }}>{t('digilocker_title', language)}</h3>
+        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0, color: '#0F172A' }}>DigiLocker Verification</h3>
       </div>
 
       {step === 1 && (
@@ -90,14 +87,14 @@ const DigilockerMock = ({ onVerify, entityType, isLogin }) => {
               type="text"
               className="form-input"
               style={{ background: '#FFFFFF', color: '#0F172A', borderColor: '#CBD5E1', borderWidth: '2px' }}
-              placeholder={entityType === 'volunteer' ? t('placeholder_aadhaar', language) : t('placeholder_id', language)}
+              placeholder={entityType === 'volunteer' ? 'XXXX XXXX XXXX' : 'Enter your ID for verification'}
               value={idValue}
               onChange={handleIdChange}
               required
             />
           </div>
           <button type="submit" className="btn btn-secondary" style={{ width: '100%', background: '#F39C12', color: '#FFFFFF', fontWeight: 700 }}>
-            <Shield size={16} /> {t('verify_button', language)}
+            <Shield size={16} /> Verify with DigiLocker
           </button>
         </form>
       )}
@@ -108,8 +105,8 @@ const DigilockerMock = ({ onVerify, entityType, isLogin }) => {
           padding: '2.5rem 0', position: 'relative', zIndex: 1 
         }}>
           <Loader2 size={40} className="animate-spin" style={{ color: '#F39C12', marginBottom: '1rem' }} />
-          <p style={{ fontWeight: 600, fontSize: '0.95rem', color: '#0F172A' }}>{t('db_connecting', language)}</p>
-          <p style={{ fontSize: '0.8rem', color: '#475569', marginTop: '0.25rem' }}>{t('please_wait', language)}</p>
+          <p style={{ fontWeight: 600, fontSize: '0.95rem', color: '#0F172A' }}>Connecting to Government Databases...</p>
+          <p style={{ fontSize: '0.8rem', color: '#475569', marginTop: '0.25rem' }}>Please wait</p>
         </div>
       )}
 
@@ -119,8 +116,8 @@ const DigilockerMock = ({ onVerify, entityType, isLogin }) => {
           padding: '2.5rem 0', position: 'relative', zIndex: 1 
         }}>
           <CheckCircle size={44} style={{ color: '#27AE60', marginBottom: '0.75rem' }} />
-          <p style={{ fontSize: '1.1rem', fontWeight: 700, color: '#27AE60' }}>{t('verify_success', language)}</p>
-          <p style={{ fontSize: '0.85rem', color: '#475569', marginTop: '0.25rem' }}>{t('redirecting', language)}</p>
+          <p style={{ fontSize: '1.1rem', fontWeight: 700, color: '#27AE60' }}>Verification Successful!</p>
+          <p style={{ fontSize: '0.85rem', color: '#475569', marginTop: '0.25rem' }}>Redirecting to next step...</p>
         </div>
       )}
 
@@ -130,9 +127,9 @@ const DigilockerMock = ({ onVerify, entityType, isLogin }) => {
           padding: '2rem 0', position: 'relative', zIndex: 1, textAlign: 'center' 
         }}>
           <span style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>⚠️</span>
-          <p style={{ fontSize: '1.1rem', fontWeight: 700, color: '#E74C3C', margin: '0 0 0.5rem 0' }}>{t('verification_failed', language)}</p>
+          <p style={{ fontSize: '1.1rem', fontWeight: 700, color: '#E74C3C', margin: '0 0 0.5rem 0' }}>Verification Failed</p>
           <p style={{ fontSize: '0.85rem', color: '#64748B', lineHeight: 1.5, margin: '0 0 1.5rem 0' }}>
-            {t('digilocker_disabled_desc', language)}
+            DigiLocker verification is temporarily offline. Please use direct login or registration forms.
           </p>
           <button 
             type="button" 
@@ -143,7 +140,7 @@ const DigilockerMock = ({ onVerify, entityType, isLogin }) => {
               setStep(1);
             }}
           >
-            {t('retry', language)}
+            Retry
           </button>
         </div>
       )}

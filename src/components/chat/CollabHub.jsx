@@ -1,13 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, Send, Building2, User, Loader2, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { useLanguage } from '../../context/LanguageContext';
-import { t } from '../../utils/translations';
 
 const CollabHub = () => {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  
   const [contacts, setContacts] = useState([]);
   const [selectedContact, setSelectedContact] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -141,12 +137,12 @@ const CollabHub = () => {
         background: '#F8FAFC'
       }}>
         <div style={{ padding: '1.25rem', background: '#FFFFFF', borderBottom: '1px solid #E2E8F0' }}>
-          <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#1E293B', margin: '0 0 1rem 0' }}>{t('collab_hub_title', language)}</h2>
+          <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#1E293B', margin: '0 0 1rem 0' }}>NGO Collab Hub</h2>
           <div style={{ position: 'relative' }}>
             <Search size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#64748B' }} />
             <input 
               type="text" 
-              placeholder={t('search_ngos', language)} 
+              placeholder="Search NGOs..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               style={{
@@ -165,7 +161,7 @@ const CollabHub = () => {
             </div>
           ) : filteredContacts.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '2rem', color: '#64748B', fontSize: '0.85rem' }}>
-              {t('no_ngos_found', language)}
+              No NGOs found.
             </div>
           ) : (
             filteredContacts.map(contact => (
@@ -196,7 +192,7 @@ const CollabHub = () => {
                     {contact.name}
                   </h4>
                   <p style={{ margin: '0.2rem 0 0 0', fontSize: '0.75rem', color: '#64748B', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {contact.domain} {t('focus', language)}
+                    {contact.domain} Focus
                   </p>
                 </div>
                 {unreadCounts[contact._id] > 0 && (
@@ -257,7 +253,7 @@ const CollabHub = () => {
                 </div>
               ) : messages.length === 0 ? (
                 <div style={{ textAlign: 'center', margin: 'auto', background: 'rgba(255,255,255,0.8)', padding: '0.75rem 1.25rem', borderRadius: '1rem', fontSize: '0.85rem', color: '#475569' }}>
-                  {t('no_messages_yet', language)}
+                  No messages yet. Start the conversation!
                 </div>
               ) : (
                 messages.map((msg, index) => {
@@ -292,7 +288,7 @@ const CollabHub = () => {
               <form onSubmit={handleSendMessage} style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
                 <input
                   type="text"
-                  placeholder={t('type_message', language)}
+                  placeholder="Type a message..."
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   style={{
@@ -319,9 +315,9 @@ const CollabHub = () => {
             <div style={{ width: 80, height: 80, borderRadius: '50%', background: '#E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem' }}>
               <Building2 size={36} style={{ color: '#94A3B8' }} />
             </div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#475569', margin: '0 0 0.5rem 0' }}>{t('gladiconnect_web', language)}</h3>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#475569', margin: '0 0 0.5rem 0' }}>GladiConnect Web</h3>
             <p style={{ fontSize: '0.9rem', maxWidth: 300, textAlign: 'center', lineHeight: 1.5 }}>
-              {t('select_ngo_sidebar', language)}
+              Select an NGO from the left sidebar to start collaborating and sharing resources.
             </p>
           </div>
         )}
