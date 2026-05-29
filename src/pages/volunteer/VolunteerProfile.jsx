@@ -363,7 +363,7 @@ const VolunteerProfile = () => {
   };
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0', padding: '1rem 1rem 3rem' }}>
+    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '1rem 1rem 3rem' }}>
       
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', cursor: 'pointer', color: '#64748B', width: 'fit-content' }} onClick={() => navigate('/volunteer/dashboard')}>
         <ArrowLeft size={18} />

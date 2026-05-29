@@ -545,7 +545,7 @@ a:hover { color: var(--color-primary-light); }
 
 @media (min-width: 1024px) {
   .grid-md-3-custom {
-    grid-template-columns: 320px 1fr;
+    grid-template-columns: 320px minmax(0, 1fr);
   }
 }
 
@@ -554,6 +554,19 @@ a:hover { color: var(--color-primary-light); }
   width: 100%;
   height: auto;
 }
+
+/* Auto-wrapping grids for profile sections */
+.grid-sm-1 {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) !important;
+}
+.grid-sm-1 > div {
+  overflow-wrap: anywhere;
+}
+
+.grid-sm-2 {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+}
+
 
 /* Inner layout container inside .profile-sidebar */
 .profile-summary-container {
