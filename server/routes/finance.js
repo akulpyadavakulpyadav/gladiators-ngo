@@ -3,6 +3,35 @@ const router = express.Router();
 const Campaign = require('../models/Campaign');
 const Donation = require('../models/Donation');
 const ExpenseLog = require('../models/ExpenseLog');
+const FinanceReport = require('../models/FinanceReport');
+
+// 0. Finance Reports
+router.post('/reports', async (req, res) => {
+  try {
+    const { ngoId, campaignId, title, rows, bills } = req.body;
+    if (!ngoId || !title || !rows) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+    
+    // Calculate totalAmount
+    const totalAmount = rows.reduce((acc, row) => acc + Number(row.expense || 0), 0);
+    
+    const newReport = new FinanceReport({ ngoId, campaignId: campaignId || null, title, rows, totalAmount, bills });
+    await newReport.save();
+    res.status(201).json(newReport);
+  } catch (error) {
+    res.status(500).json({ error: 'Error generating finance report' });
+  }
+});
+
+router.get('/reports/:ngoId', async (req, res) => {
+  try {
+    const reports = await FinanceReport.find({ ngoId: req.params.ngoId }).sort({ createdAt: -1 }).populate('campaignId', 'title');
+    res.json(reports);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching finance reports' });
+  }
+});
 
 // 1. Campaigns
 router.post('/campaigns', async (req, res) => {
