@@ -188,6 +188,22 @@ const VolunteerProfile = () => {
   const [selectedBadgeModal, setSelectedBadgeModal] = useState(null);
   const [interestInput, setInterestInput] = useState('');
 
+  // Email Change OTP States
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
+  const [countdown, setCountdown] = useState(0);
+  const [otp, setOtp] = useState('');
+
+  useEffect(() => {
+    let timer;
+    if (countdown > 0) {
+      timer = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [countdown]);
+
   const availableInterests = [
     'Environment',
     'Education',
@@ -217,8 +233,68 @@ const VolunteerProfile = () => {
     } else if (name === 'phone') {
       const digitsOnly = value.replace(/\D/g, '').slice(0, 10);
       setFormData(prev => ({ ...prev, [name]: digitsOnly }));
+    } else if (name === 'email') {
+      setFormData(prev => ({ ...prev, [name]: value }));
+      if (value !== user?.email) {
+        setOtpVerified(false);
+        setOtpSent(false);
+        setOtp('');
+      }
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleSendOtp = async () => {
+    if (!formData.email || !formData.email.includes('@')) {
+      setNotification({ type: 'error', message: 'Please enter a valid email address.' });
+      return;
+    }
+    
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.email })
+      });
+      const data = await response.json();
+      
+      if (response.ok) {
+        setOtpSent(true);
+        setCountdown(60);
+        setNotification({ type: 'success', message: 'OTP has been sent to your new email.' });
+      } else {
+        setNotification({ type: 'error', message: data.message || 'Failed to send OTP.' });
+      }
+    } catch (err) {
+      console.error(err);
+      setNotification({ type: 'error', message: 'Server error while sending OTP.' });
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (otp.length !== 6) {
+      setNotification({ type: 'error', message: 'Please enter a valid 6-digit OTP' });
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.email, otp })
+      });
+      const data = await response.json();
+      
+      if (response.ok) {
+        setOtpVerified(true);
+        setNotification({ type: 'success', message: 'Email verified successfully!' });
+      } else {
+        setNotification({ type: 'error', message: data.message || 'Invalid OTP.' });
+      }
+    } catch (err) {
+      console.error(err);
+      setNotification({ type: 'error', message: 'Server error while verifying OTP.' });
     }
   };
 
@@ -263,6 +339,10 @@ const VolunteerProfile = () => {
     }
     if (!formData.address.trim()) {
       setNotification({ type: 'error', message: 'Please enter your full address.' });
+      return;
+    }
+    if (formData.email !== user?.email && !otpVerified) {
+      setNotification({ type: 'error', message: 'Please verify your new email with OTP before saving.' });
       return;
     }
 
@@ -425,6 +505,10 @@ const VolunteerProfile = () => {
                       address: user.address || user.location || '',
                       interests: user.interests || []
                     });
+                    setOtpSent(false);
+                    setOtpVerified(false);
+                    setCountdown(0);
+                    setOtp('');
                     setIsEditing(true);
                   }}
                   className="btn btn-outline"
@@ -468,15 +552,54 @@ const VolunteerProfile = () => {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                     <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Official Email Address</label>
                     {isEditing ? (
-                      <input
-                        type="email"
-                        name="email"
-                        required
-                        className="form-input"
-                        style={{ color: '#1E293B', background: '#FFFFFF', border: '1.5px solid #CBD5E1' }}
-                        value={formData.email}
-                        onChange={handleChange}
-                      />
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                          <input
+                            type="email"
+                            name="email"
+                            required
+                            disabled={otpVerified && formData.email !== user?.email}
+                            className="form-input"
+                            style={{ flex: 1, color: '#1E293B', background: (otpVerified && formData.email !== user?.email) ? '#E2E8F0' : '#FFFFFF', border: '1.5px solid #CBD5E1' }}
+                            value={formData.email}
+                            onChange={handleChange}
+                          />
+                          {formData.email !== user?.email && !otpVerified && (
+                            <button
+                              type="button"
+                              onClick={handleSendOtp}
+                              disabled={countdown > 0}
+                              style={{ padding: '0.6rem 1rem', background: countdown > 0 ? '#94A3B8' : '#4A6741', color: '#FFFFFF', border: 'none', borderRadius: '0.5rem', fontWeight: 700, fontSize: '0.8rem', cursor: countdown > 0 ? 'not-allowed' : 'pointer', whiteSpace: 'nowrap' }}
+                            >
+                              {countdown > 0 ? `Resend in ${countdown}s` : (otpSent ? 'Resend' : 'Send OTP')}
+                            </button>
+                          )}
+                        </div>
+                        {formData.email !== user?.email && otpSent && !otpVerified && (
+                          <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.25rem' }}>
+                            <input
+                              type="text"
+                              maxLength={6}
+                              placeholder="Enter 6-digit OTP"
+                              value={otp}
+                              onChange={e => setOtp(e.target.value.replace(/\D/g, ''))}
+                              style={{ flex: 1, padding: '0.5rem 0.75rem', border: '1.5px solid #CBD5E1', borderRadius: '0.5rem', fontSize: '0.9rem', textAlign: 'center', letterSpacing: '0.2em', fontWeight: 700 }}
+                            />
+                            <button
+                              type="button"
+                              onClick={handleVerifyOtp}
+                              style={{ padding: '0.5rem 1rem', background: '#3D5A34', color: '#FFFFFF', border: 'none', borderRadius: '0.5rem', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer', whiteSpace: 'nowrap' }}
+                            >
+                              Verify OTP
+                            </button>
+                          </div>
+                        )}
+                        {formData.email !== user?.email && otpVerified && (
+                          <div style={{ fontSize: '0.8rem', color: '#2E7D32', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                            <Check size={14} /> New email verified successfully.
+                          </div>
+                        )}
+                      </div>
                     ) : (
                       <div style={{ padding: '0.75rem 1rem', background: '#F8FAFC', borderRadius: 'var(--radius-sm)', border: '1px solid #E2E8F0', color: '#1E293B', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         <Mail size={15} style={{ color: '#64748B' }} />
