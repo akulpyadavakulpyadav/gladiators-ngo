@@ -664,7 +664,7 @@ const ManagementSuite = () => {
                 </td>
                 <td>{app.roleApplied}</td>
                 <td>{app.programId?.title || 'Unknown'}</td>
-                <td><span className={`badge ${app.status === 'Approved' ? 'badge-secondary' : app.status === 'Pending' ? 'badge-warning' : 'badge-primary'}`}>{getStatusTranslation(app.status, language)}</span></td>
+                <td><span className={`badge ${app.status === 'Approved' ? 'badge-secondary' : app.status === 'Pending' ? 'badge-warning' : 'badge-primary'}`}>{getStatusTranslation(app.status, 'EN')}</span></td>
               </tr>
             ))}
           </tbody>
@@ -1173,18 +1173,10 @@ const FinanceSuite = () => {
   const handleImportCampaignDetails = () => {
     const selected = campaigns.find(c => c._id === expenseForm.campaignId);
     if (selected) {
-      setExpenseForm(prev => {
-        const hasEmptyFirstRow = prev.rows.length === 1 && !prev.rows[0].particulars && !prev.rows[0].expense;
-        const newRows = hasEmptyFirstRow ? [] : [...prev.rows];
-        return {
-          ...prev,
-          title: `${selected.title} Expenses`,
-          rows: [
-            { particulars: selected.description || 'Campaign Execution', expense: '' },
-            ...newRows
-          ]
-        };
-      });
+      setExpenseForm(prev => ({
+        ...prev,
+        title: `${selected.title} Expenses`
+      }));
       showToast('Campaign details imported successfully!', 'success');
     }
   };
