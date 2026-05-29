@@ -125,14 +125,7 @@ const CompanyProfile = () => {
     <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '1rem 1rem 3rem' }}>
       
       {/* Top Navigation */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-        <button 
-          onClick={() => navigate('/company/dashboard')}
-          className="btn btn-outline"
-          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', fontSize: '0.85rem' }}
-        >
-          <ArrowLeft size={16} /> Back to Dashboard
-        </button>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '1.5rem' }}>
         <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', fontWeight: 600 }}>
           Role: <span style={{ color: 'var(--color-accent)' }}>{t('corporate_funder', language)}</span>
         </span>
