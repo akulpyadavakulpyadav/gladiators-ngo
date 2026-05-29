@@ -33,9 +33,7 @@ const financeReportSchema = new mongoose.Schema({
     required: true,
     default: 0
   },
-  bills: [{
-    type: String // Base64 strings for the bills/receipts
-  }]
+  bills: [] // Array of Mixed to support both base64 strings and {url, name, fileType} objects
 }, {
   timestamps: true
 });
