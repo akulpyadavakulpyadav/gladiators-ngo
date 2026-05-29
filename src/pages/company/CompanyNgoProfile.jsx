@@ -270,8 +270,8 @@ const CompanyNgoProfile = () => {
             )}
 
             <div style={{ padding: '1.5rem', background: '#ffffff', color: '#334155', borderTop: '1px solid #e2e8f0', flexShrink: 0 }}>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: 700, margin: '0 0 0.5rem' }}>{selectedGalleryItem.title}</h3>
-              <p style={{ fontSize: '1rem', lineHeight: 1.6, opacity: 0.9, margin: 0 }}>{selectedGalleryItem.description}</p>
+              <h3 style={{ fontSize: '1.5rem', fontWeight: 700, margin: '0 0 0.5rem', color: '#0f172a' }}>{selectedGalleryItem.title}</h3>
+              <p style={{ fontSize: '1rem', lineHeight: 1.6, opacity: 0.9, margin: 0, color: '#334155' }}>{selectedGalleryItem.description}</p>
               
               {selectedGalleryItem.images && selectedGalleryItem.images.length > 1 && (
                 <div style={{ display: 'flex', gap: '0.6rem', marginTop: '1rem', justifyContent: 'center' }}>
