@@ -27,8 +27,8 @@ const applicationSchema = new mongoose.Schema({
   },
   attendance: {
     type: String,
-    enum: ['Pending', 'Present', 'Absent'],
-    default: 'Pending'
+    enum: ['Present', 'Absent'],
+    default: 'Present'
   }
 }, {
   timestamps: true
