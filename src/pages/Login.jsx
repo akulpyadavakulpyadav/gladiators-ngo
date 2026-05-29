@@ -43,18 +43,18 @@ const LoginPage = () => {
 
     // Validate inputs
     if (!formattedId) {
-      setErrorMessage('Please enter your GC-ID.');
+      setErrorMessage(t('error_enter_gc_id', language));
       return;
     }
     if (cleanPin.length !== 6 || isNaN(cleanPin)) {
-      setErrorMessage('PIN must be a 6-digit number.');
+      setErrorMessage(t('error_pin_6_digits', language));
       return;
     }
 
     const result = await login({ gcId: formattedId, pin: cleanPin, role: selectedRole });
 
     if (!result.success) {
-      setErrorMessage(result.message || 'Login failed.');
+      setErrorMessage(result.message || t('error_login_failed', language));
       return;
     }
 
