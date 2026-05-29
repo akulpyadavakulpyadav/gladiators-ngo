@@ -883,43 +883,54 @@ const VolunteerNgoProfileView = ({ ngo, onBack }) => {
 
       {/* Gallery Slideshow Modal (Read-Only) */}
       {isGalleryModalOpen && selectedGalleryItem && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.9)', zIndex: 1000, display: 'flex', flexDirection: 'column', padding: '2rem' }}>
-          
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', background: 'rgba(0, 0, 0, 0.75)' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden', borderRadius: '16px', background: '#ffffff', width: '100%', maxWidth: '1000px', maxHeight: '90vh' }}>
             {selectedGalleryItem.images && selectedGalleryItem.images.length > 0 ? (
-              <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', maxWidth: '100%', maxHeight: '100%' }}>
-                <button onClick={() => setIsGalleryModalOpen(false)} style={{ marginBottom: '1rem', background: '#FFFFFF', border: 'none', color: '#334155', cursor: 'pointer', zIndex: 10, width: 36, height: 36, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', flexShrink: 0 }}>
-                  <X size={20} />
-                </button>
-                <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden' }}>
-                  <img src={selectedGalleryItem.images[activeImageIndex]} alt="Gallery Item" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#0f172a', padding: '1rem' }}>
+                <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginBottom: '1rem' }}>
+                  <button onClick={() => setIsGalleryModalOpen(false)} style={{ background: '#FFFFFF', border: 'none', color: '#334155', cursor: 'pointer', width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', flexShrink: 0 }}>
+                    <X size={20} />
+                  </button>
+                </div>
+                <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden', flex: 1, width: '100%', minHeight: '300px' }}>
+                  <img src={selectedGalleryItem.images[activeImageIndex]} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} alt="Activity" />
                 
-                {selectedGalleryItem.images.length > 1 && (
-                  <>
-                    <button 
-                      onClick={(e) => { e.stopPropagation(); setActiveImageIndex(prev => prev > 0 ? prev - 1 : selectedGalleryItem.images.length - 1); }}
-                      style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
-                    >
-                      <ChevronLeft size={24} />
-                    </button>
-                    <button 
-                      onClick={(e) => { e.stopPropagation(); setActiveImageIndex(prev => prev < selectedGalleryItem.images.length - 1 ? prev + 1 : 0); }}
-                      style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
-                    >
-                      <ChevronRight size={24} />
-                    </button>
-                  </>
-                )}
+                  {selectedGalleryItem.images.length > 1 && (
+                    <>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); setActiveImageIndex(prev => prev > 0 ? prev - 1 : selectedGalleryItem.images.length - 1); }}
+                        style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                      >
+                        <ChevronLeft size={24} />
+                      </button>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); setActiveImageIndex(prev => prev < selectedGalleryItem.images.length - 1 ? prev + 1 : 0); }}
+                        style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                      >
+                        <ChevronRight size={24} />
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             ) : (
-              <div style={{ color: 'white' }}>No images available</div>
+              <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#111', color: '#94A3B8', minHeight: '300px' }}>
+                No photos available for this activity
+              </div>
             )}
-          </div>
 
-          <div style={{ marginTop: '2rem', color: 'white', maxWidth: 800, margin: '2rem auto 0', width: '100%' }}>
-            <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.5rem' }}>{selectedGalleryItem.title}</h3>
-            <p style={{ fontSize: '1rem', lineHeight: 1.6, opacity: 0.9 }}>{selectedGalleryItem.description}</p>
+            <div style={{ padding: '1.5rem', background: '#ffffff', color: '#334155', borderTop: '1px solid #e2e8f0', flexShrink: 0 }}>
+              <h3 style={{ fontSize: '1.5rem', fontWeight: 700, margin: '0 0 0.5rem' }}>{selectedGalleryItem.title}</h3>
+              <p style={{ fontSize: '1rem', lineHeight: 1.6, opacity: 0.9, margin: 0 }}>{selectedGalleryItem.description}</p>
+              
+              {selectedGalleryItem.images && selectedGalleryItem.images.length > 1 && (
+                <div style={{ display: 'flex', gap: '0.6rem', marginTop: '1rem', justifyContent: 'center' }}>
+                  {selectedGalleryItem.images.map((_, idx) => (
+                    <div key={idx} style={{ width: 10, height: 10, borderRadius: '50%', background: idx === activeImageIndex ? 'var(--color-primary)' : '#CBD5E1', cursor: 'pointer', transition: 'background 0.2s' }} onClick={() => setActiveImageIndex(idx)} />
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

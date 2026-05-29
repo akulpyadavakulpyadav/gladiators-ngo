@@ -327,19 +327,17 @@ const ImpactProfile = () => {
               selectedGalleryItem && (
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden', borderRadius: '16px' }}>
                   {selectedGalleryItem.images && selectedGalleryItem.images.length > 0 ? (
-                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'transparent' }}>
-                      <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', maxWidth: '100%', maxHeight: '100%' }}>
-                        <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', zIndex: 10 }}>
-                          <button onClick={handleDeletePhoto} style={{ background: '#FFFFFF', border: 'none', color: '#EF4444', borderRadius: '50%', width: 40, height: 40, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.5)', flexShrink: 0 }}>
-                            <Trash2 size={18} />
-                          </button>
-                          <button onClick={() => setIsGalleryModalOpen(false)} style={{ background: '#FFFFFF', border: 'none', color: '#334155', cursor: 'pointer', width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', flexShrink: 0 }}>
-                            <X size={20} />
-                          </button>
-                        </div>
-                        <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden' }}>
-                          <img src={selectedGalleryItem.images[activeImageIndex]} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} alt="Activity" />
-                        </div>
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#0f172a', padding: '1rem' }}>
+                      <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginBottom: '1rem' }}>
+                        <button onClick={handleDeletePhoto} style={{ background: '#FFFFFF', border: 'none', color: '#EF4444', borderRadius: '50%', width: 40, height: 40, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.5)', flexShrink: 0 }}>
+                          <Trash2 size={18} />
+                        </button>
+                        <button onClick={() => setIsGalleryModalOpen(false)} style={{ background: '#FFFFFF', border: 'none', color: '#334155', cursor: 'pointer', width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', flexShrink: 0 }}>
+                          <X size={20} />
+                        </button>
+                      </div>
+                      <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden', flex: 1, width: '100%' }}>
+                        <img src={selectedGalleryItem.images[activeImageIndex]} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} alt="Activity" />
                       </div>
                     </div>
                   ) : (
@@ -359,14 +357,14 @@ const ImpactProfile = () => {
                     </>
                   )}
 
-                  <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '4rem 2.5rem 2.5rem', background: 'linear-gradient(transparent, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0.95))', color: '#fff' }}>
-                    <h3 style={{ fontSize: '1.75rem', fontWeight: 800, margin: '0 0 0.75rem' }}>{selectedGalleryItem.title}</h3>
-                    <p style={{ fontSize: '1.05rem', lineHeight: 1.6, opacity: 0.9, margin: 0, maxWidth: '800px' }}>{selectedGalleryItem.description}</p>
+                  <div style={{ padding: '1.5rem', background: '#ffffff', color: '#334155', borderTop: '1px solid #e2e8f0' }}>
+                    <h3 style={{ fontSize: '1.5rem', fontWeight: 700, margin: '0 0 0.5rem' }}>{selectedGalleryItem.title}</h3>
+                    <p style={{ fontSize: '1rem', lineHeight: 1.6, opacity: 0.9, margin: 0 }}>{selectedGalleryItem.description}</p>
                     
                     {selectedGalleryItem.images && selectedGalleryItem.images.length > 1 && (
-                      <div style={{ display: 'flex', gap: '0.6rem', marginTop: '1.5rem' }}>
+                      <div style={{ display: 'flex', gap: '0.6rem', marginTop: '1rem', justifyContent: 'center' }}>
                         {selectedGalleryItem.images.map((_, idx) => (
-                          <div key={idx} style={{ width: 10, height: 10, borderRadius: '50%', background: idx === activeImageIndex ? '#fff' : 'rgba(255,255,255,0.4)', cursor: 'pointer', transition: 'background 0.2s' }} onClick={() => setActiveImageIndex(idx)} />
+                          <div key={idx} style={{ width: 10, height: 10, borderRadius: '50%', background: idx === activeImageIndex ? 'var(--color-primary)' : '#CBD5E1', cursor: 'pointer', transition: 'background 0.2s' }} onClick={() => setActiveImageIndex(idx)} />
                         ))}
                       </div>
                     )}
