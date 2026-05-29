@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MapPin, Target, IndianRupee, FileText, Download, ChevronLeft, MessageSquare, Users, Clock, Activity, Camera, X, ChevronRight, Heart, Mail } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
+import { useLanguage } from '../../context/LanguageContext';
+import { t } from '../../utils/translations';
 
 const CompanyNgoProfile = () => {
+  const { language } = useLanguage();
   const { ngoId } = useParams();
   const navigate = useNavigate();
   const { showToast } = useToast();
@@ -50,8 +53,8 @@ const CompanyNgoProfile = () => {
     fetchNgoData();
   }, [ngoId]);
 
-  if (loading) return <div className="page-container text-center">Loading NGO profile...</div>;
-  if (!ngo) return <div className="page-container text-center">NGO not found.</div>;
+  if (loading) return <div className="page-container text-center">{t('loading_ngo_profile', language)}</div>;
+  if (!ngo) return <div className="page-container text-center">{t('ngo_not_found', language)}</div>;
 
   return (
     <div className="page-container animate-fade-in">
@@ -69,17 +72,17 @@ const CompanyNgoProfile = () => {
           <div style={{ flex: 1 }}>
             <h1 style={{ margin: '0 0 0.5rem 0', fontSize: '2.5rem' }}>{ngo.name}</h1>
             <div style={{ display: 'flex', gap: '1.5rem', color: '#64748B', marginBottom: '1.5rem' }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><MapPin size={18} /> {ngo.headquarters || 'Unknown Location'}</span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Target size={18} /> {ngo.domain || 'General Cause'}</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><MapPin size={18} /> {ngo.headquarters || t('unknown_location', language)}</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Target size={18} /> {ngo.domain || t('general_cause', language)}</span>
             </div>
-            <p style={{ lineHeight: 1.7, color: '#334155', fontSize: '1.1rem' }}>{ngo.about || 'No details provided.'}</p>
+            <p style={{ lineHeight: 1.7, color: '#334155', fontSize: '1.1rem' }}>{ngo.about || t('no_details_provided', language)}</p>
             
             <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
-              <button className="btn btn-primary" onClick={() => showToast('Pledge flow would start here.', 'info')}>
-                <Heart size={16} /> Pledge Support
+              <button className="btn btn-primary" onClick={() => showToast(t('pledge_flow_info', language), 'info')}>
+                <Heart size={16} /> {t('pledge_support', language)}
               </button>
               <button className="btn btn-secondary" onClick={() => navigate('/messages', { state: { contactId: ngo._id, contactName: ngo.name } })} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <MessageSquare size={16} /> Direct Connect
+                <MessageSquare size={16} /> {t('direct_connect_btn', language)}
               </button>
             </div>
 
@@ -88,22 +91,22 @@ const CompanyNgoProfile = () => {
               <div style={{ flex: '1 1 120px', textAlign: 'center', background: '#F8FAFC', padding: '1rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
                 <Users size={20} style={{ color: 'var(--color-secondary)', margin: '0 auto 0.5rem auto' }} />
                 <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#334155' }}>{ngoStats.volunteers}</div>
-                <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase' }}>Volunteers</div>
+                <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase' }}>{t('volunteers_label', language)}</div>
               </div>
               <div style={{ flex: '1 1 120px', textAlign: 'center', background: '#F8FAFC', padding: '1rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
                 <Clock size={20} style={{ color: 'var(--color-secondary)', margin: '0 auto 0.5rem auto' }} />
                 <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#334155' }}>{ngoStats.hours}</div>
-                <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase' }}>Hours Logged</div>
+                <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase' }}>{t('hours_logged_label', language)}</div>
               </div>
               <div style={{ flex: '1 1 120px', textAlign: 'center', background: '#F8FAFC', padding: '1rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
                 <Activity size={20} style={{ color: '#3B82F6', margin: '0 auto 0.5rem auto' }} />
                 <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#334155' }}>{ngoStats.activeCampaigns}</div>
-                <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase' }}>Active Campaigns</div>
+                <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase' }}>{t('active_campaigns_label', language)}</div>
               </div>
               <div style={{ flex: '1 1 120px', textAlign: 'center', background: '#F8FAFC', padding: '1rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
                 <Activity size={20} style={{ color: '#94A3B8', margin: '0 auto 0.5rem auto' }} />
                 <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#334155' }}>{ngoStats.endedCampaigns}</div>
-                <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase' }}>Ended Campaigns</div>
+                <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase' }}>{t('ended_campaigns', language)}</div>
               </div>
             </div>
           </div>
@@ -111,7 +114,7 @@ const CompanyNgoProfile = () => {
       </div>
 
       <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', fontSize: '1.75rem' }}>
-        <Camera size={28} style={{ color: 'var(--color-primary)' }} /> Impact Gallery
+        <Camera size={28} style={{ color: 'var(--color-primary)' }} /> {t('impact_gallery', language)}
       </h2>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
         {ngo.mediaGallery?.length > 0 ? (
@@ -127,7 +130,7 @@ const CompanyNgoProfile = () => {
                 )}
                 {item.images && item.images.length > 1 && (
                   <div style={{ position: 'absolute', bottom: 8, right: 8, background: 'rgba(0,0,0,0.6)', color: 'white', fontSize: '0.75rem', padding: '0.2rem 0.5rem', borderRadius: '1rem', fontWeight: 600 }}>
-                    +{item.images.length - 1} photos
+                    +{item.images.length - 1} {t('plus_photos', language)}
                   </div>
                 )}
               </div>
@@ -139,13 +142,13 @@ const CompanyNgoProfile = () => {
           ))
         ) : (
           <div className="glass-card" style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-text-secondary)', gridColumn: '1 / -1' }}>
-            No impact photos available yet.
+            {t('no_impact_photos_available', language)}
           </div>
         )}
       </div>
 
       <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', fontSize: '1.75rem' }}>
-        <IndianRupee size={28} style={{ color: 'var(--color-primary)' }} /> Financial Transparency & Reports
+        <IndianRupee size={28} style={{ color: 'var(--color-primary)' }} /> {t('financial_transparency_reports', language)}
       </h2>
       
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2rem' }}>
@@ -153,7 +156,7 @@ const CompanyNgoProfile = () => {
         {/* Campaigns & Volunteer Programs */}
         <div className="glass-card" style={{ padding: '2rem' }}>
           <h3 style={{ marginBottom: '1.5rem', color: '#1E293B', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <FileText size={20} /> Campaigns & Volunteer Programs
+            <FileText size={20} /> {t('campaigns_volunteer_programs', language)}
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             {campaigns.map(c => (
@@ -164,8 +167,8 @@ const CompanyNgoProfile = () => {
                 </div>
                 
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', marginBottom: '0.5rem', color: '#64748B' }}>
-                  <span>Raised: ₹{c.raisedAmount.toLocaleString()}</span>
-                  <span>Goal: ₹{c.targetAmount.toLocaleString()}</span>
+                  <span>{t('raised_label', language)}: ₹{c.raisedAmount.toLocaleString()}</span>
+                  <span>{t('goal_label', language)}: ₹{c.targetAmount.toLocaleString()}</span>
                 </div>
                 <div style={{ width: '100%', height: '8px', background: '#E2E8F0', borderRadius: '4px', overflow: 'hidden', marginBottom: '1rem' }}>
                   <div style={{ width: `${Math.min((c.raisedAmount/c.targetAmount)*100, 100)}%`, height: '100%', background: c.status === 'Completed' ? '#10B981' : 'var(--color-primary)' }}></div>
@@ -173,12 +176,12 @@ const CompanyNgoProfile = () => {
 
                 {c.status === 'Completed' && c.hasFinanceReport && (
                   <button className="btn btn-outline" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }} onClick={() => showToast(`Downloading ${c.financeReportUrl}`, 'info')}>
-                    <Download size={16} /> Download Finance Report
+                    <Download size={16} /> {t('download_finance_report', language)}
                   </button>
                 )}
                 {c.status === 'Completed' && !c.hasFinanceReport && (
                   <div style={{ fontSize: '0.85rem', color: '#F59E0B', background: '#FEF3C7', padding: '0.5rem', borderRadius: '4px', textAlign: 'center' }}>
-                    Finance Report Pending
+                    {t('finance_report_pending', language)}
                   </div>
                 )}
               </div>
@@ -197,14 +200,14 @@ const CompanyNgoProfile = () => {
                 </div>
               </div>
             ))}
-            {campaigns.length === 0 && programs.length === 0 && <p style={{ color: '#94A3B8' }}>No campaigns or programs available.</p>}
+            {campaigns.length === 0 && programs.length === 0 && <p style={{ color: '#94A3B8' }}>{t('no_campaigns_programs', language)}</p>}
           </div>
         </div>
 
         {/* Detailed Expense Logs */}
         <div className="glass-card" style={{ padding: '2rem' }}>
-          <h3 style={{ marginBottom: '1.5rem', color: '#1E293B' }}>Recent Expense Logs</h3>
-          <p style={{ color: '#64748B', fontSize: '0.9rem', marginBottom: '1.5rem' }}>Live feed of exactly how funds are being utilized.</p>
+          <h3 style={{ marginBottom: '1.5rem', color: '#1E293B' }}>{t('recent_expense_logs', language)}</h3>
+          <p style={{ color: '#64748B', fontSize: '0.9rem', marginBottom: '1.5rem' }}>{t('live_feed_funds', language)}</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {expenses.map(e => (
               <div key={e._id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', borderBottom: '1px solid #E2E8F0' }}>
@@ -217,11 +220,11 @@ const CompanyNgoProfile = () => {
                 </div>
                 <div style={{ textAlign: 'right' }}>
                   <div style={{ fontWeight: 'bold', color: '#EF4444', fontSize: '1.1rem' }}>- ₹{e.amountSpent.toLocaleString()}</div>
-                  {e.proofUrl && <a href="#" style={{ fontSize: '0.8rem', color: 'var(--color-primary)' }}>View Receipt</a>}
+                  {e.proofUrl && <a href="#" style={{ fontSize: '0.8rem', color: 'var(--color-primary)' }}>{t('view_receipt', language)}</a>}
                 </div>
               </div>
             ))}
-            {expenses.length === 0 && <p style={{ color: '#94A3B8' }}>No expenses logged yet.</p>}
+            {expenses.length === 0 && <p style={{ color: '#94A3B8' }}>{t('no_expenses_logged', language)}</p>}
           </div>
         </div>
         
@@ -259,7 +262,7 @@ const CompanyNgoProfile = () => {
                 </div>
               </div>
             ) : (
-              <div style={{ color: 'white' }}>No images available</div>
+              <div style={{ color: 'white' }}>{t('no_images_available', language)}</div>
             )}
           </div>
 
