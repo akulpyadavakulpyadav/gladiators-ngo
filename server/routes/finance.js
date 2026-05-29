@@ -33,6 +33,16 @@ router.get('/reports/:ngoId', async (req, res) => {
   }
 });
 
+router.delete('/reports/:id', async (req, res) => {
+  try {
+    const report = await FinanceReport.findByIdAndDelete(req.params.id);
+    if (!report) return res.status(404).json({ error: 'Report not found' });
+    res.json({ message: 'Report deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error deleting report' });
+  }
+});
+
 // 1. Campaigns
 router.post('/campaigns', async (req, res) => {
   try {
