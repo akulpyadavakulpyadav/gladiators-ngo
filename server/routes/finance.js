@@ -43,6 +43,21 @@ router.delete('/reports/:id', async (req, res) => {
   }
 });
 
+router.put('/reports/:id', async (req, res) => {
+  try {
+    const { title, campaignId, rows, totalAmount, bills } = req.body;
+    const report = await FinanceReport.findByIdAndUpdate(
+      req.params.id,
+      { title, campaignId, rows, totalAmount, bills },
+      { new: true }
+    );
+    if (!report) return res.status(404).json({ error: 'Report not found' });
+    res.json(report);
+  } catch (error) {
+    res.status(500).json({ error: 'Error updating report' });
+  }
+});
+
 // 1. Campaigns
 router.post('/campaigns', async (req, res) => {
   try {

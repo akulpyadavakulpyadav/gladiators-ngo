@@ -8,7 +8,8 @@ const financeReportSchema = new mongoose.Schema({
   },
   campaignId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Campaign'
+    ref: 'Campaign',
+    required: true
   },
   title: {
     type: String,
