@@ -31,7 +31,7 @@ const CompanyNgoProfile = () => {
         // Fetch Finance, Program Data & Stats
         const [campRes, expRes, progRes, statsRes] = await Promise.all([
           fetch(`http://localhost:5000/api/finance/campaigns/${ngoId}`),
-          fetch(`http://localhost:5000/api/finance/expenses/${ngoId}`),
+          fetch(`http://localhost:5000/api/finance/reports/${ngoId}`),
           fetch(`http://localhost:5000/api/programs/ngo/${ngoId}`),
           fetch(`http://localhost:5000/api/users/ngos/${ngoId}/stats`)
         ]);
@@ -211,13 +211,17 @@ const CompanyNgoProfile = () => {
                 <div>
                   <h5 style={{ margin: '0 0 0.25rem 0', fontSize: '1rem' }}>{e.title}</h5>
                   <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                    <span className="badge badge-secondary" style={{ fontSize: '0.75rem' }}>{e.category}</span>
+                    {e.campaignId && <span className="badge badge-secondary" style={{ fontSize: '0.75rem' }}>{e.campaignId.title || 'Campaign Expense'}</span>}
                     <span style={{ fontSize: '0.8rem', color: '#94A3B8' }}>{new Date(e.date).toLocaleDateString()}</span>
                   </div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontWeight: 'bold', color: '#EF4444', fontSize: '1.1rem' }}>- ₹{e.amountSpent.toLocaleString()}</div>
-                  {e.proofUrl && <a href="#" style={{ fontSize: '0.8rem', color: 'var(--color-primary)' }}>View Receipt</a>}
+                  <div style={{ fontWeight: 'bold', color: '#EF4444', fontSize: '1.1rem' }}>- ₹{(e.totalAmount || 0).toLocaleString()}</div>
+                  {e.bills && e.bills.length > 0 && (
+                    <span style={{ fontSize: '0.75rem', color: '#10B981', display: 'block', marginTop: '0.25rem' }}>
+                      {e.bills.length} Bill(s) Attached
+                    </span>
+                  )}
                 </div>
               </div>
             ))}
