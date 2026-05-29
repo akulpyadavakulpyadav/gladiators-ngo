@@ -1047,6 +1047,8 @@ const OfflineEventLogger = () => {
 /* ─── Finance Suite ─── */
 const FinanceSuite = () => {
   const { user } = useAuth();
+  const { showToast } = useToast();
+  const { askConfirm } = useConfirm();
   
   const [activeSubTab, setActiveSubTab] = useState('expenses'); // expenses, donations
   const [campaigns, setCampaigns] = useState([]);
@@ -1089,8 +1091,41 @@ const FinanceSuite = () => {
         setShowExpenseModal(false);
         setExpenseForm({ title: '', campaignId: '', rows: [{ particulars: '', expense: '' }], bills: [] });
         fetchFinanceData();
+        showToast('Expense log added successfully!', 'success');
       }
     } catch (err) {}
+  };
+
+  const handleDeleteExpense = async (id) => {
+    if (!(await askConfirm('Are you sure you want to delete this expense report?'))) return;
+    try {
+      const res = await fetch(`http://localhost:5000/api/finance/reports/${id}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) {
+        showToast('Expense report deleted successfully!', 'success');
+        fetchFinanceData();
+      }
+    } catch (err) {}
+  };
+
+  const handleImportCampaignDetails = () => {
+    const selected = campaigns.find(c => c._id === expenseForm.campaignId);
+    if (selected) {
+      setExpenseForm(prev => {
+        const hasEmptyFirstRow = prev.rows.length === 1 && !prev.rows[0].particulars && !prev.rows[0].expense;
+        const newRows = hasEmptyFirstRow ? [] : [...prev.rows];
+        return {
+          ...prev,
+          title: `${selected.title} Expenses`,
+          rows: [
+            { particulars: selected.description || 'Campaign Execution', expense: '' },
+            ...newRows
+          ]
+        };
+      });
+      showToast('Campaign details imported successfully!', 'success');
+    }
   };
 
   const handleFileUpload = (e) => {
@@ -1137,8 +1172,13 @@ const FinanceSuite = () => {
                     <p style={{ fontSize: '0.85rem', color: '#64748B', margin: '0.25rem 0 0 0' }}>{new Date(r.date).toLocaleDateString()}</p>
                     {r.campaignId && <p style={{ fontSize: '0.8rem', color: 'var(--color-primary)', margin: '0.25rem 0 0 0', fontWeight: 500 }}>Campaign: {r.campaignId.title}</p>}
                   </div>
-                  <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#EF4444' }}>
-                    Total: ₹{r.totalAmount}
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#EF4444' }}>
+                      Total: ₹{r.totalAmount}
+                    </div>
+                    <button onClick={() => handleDeleteExpense(r._id)} className="btn btn-outline" style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem', marginTop: '0.5rem', borderColor: '#EF4444', color: '#EF4444' }}>
+                      Delete Report
+                    </button>
                   </div>
                 </div>
                 
@@ -1211,7 +1251,14 @@ const FinanceSuite = () => {
               </div>
               
               <div className="form-group">
-                <label>Related Campaign (Optional)</label>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.25rem' }}>
+                  <label style={{ margin: 0 }}>Related Campaign (Optional)</label>
+                  {expenseForm.campaignId && (
+                    <button type="button" onClick={handleImportCampaignDetails} className="btn btn-outline" style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem' }}>
+                      Import Details
+                    </button>
+                  )}
+                </div>
                 <select className="form-input" value={expenseForm.campaignId} onChange={e => setExpenseForm({...expenseForm, campaignId: e.target.value})}>
                   <option value="">None / General Fund</option>
                   {campaigns.map(c => <option key={c._id} value={c._id}>{c.title}</option>)}
