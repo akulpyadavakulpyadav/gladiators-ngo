@@ -33,7 +33,6 @@ const taglines = {
 
 const GlobalLayout = () => {
   const { user, logout, isAuthenticated, updateUserProfile } = useAuth();
-  const { language, toggleLanguage } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
   const [showDropdown, setShowDropdown] = useState(false);
@@ -245,7 +244,7 @@ const GlobalLayout = () => {
   const [currentTaglineIndex, setCurrentTaglineIndex] = useState(0);
   const [fadeState, setFadeState] = useState('fade-in');
 
-  const currentLanguageTaglines = taglines[language] || taglines.EN;
+  const currentLanguageTaglines = taglines.EN;
 
   React.useEffect(() => {
     const interval = setInterval(() => {
@@ -417,21 +416,7 @@ const GlobalLayout = () => {
             <span style={{ color: '#475569' }}>24/7 Helpline</span>
           </button>
 
-          <button
-            onClick={toggleLanguage}
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
-              padding: '0.5rem 0.9rem', fontSize: '0.8rem', fontWeight: 600,
-              borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer',
-              fontFamily: 'inherit',
-              background: '#F1F5F9',
-              color: '#1E293B',
-              transition: 'all var(--transition-fast)'
-            }}
-          >
-            <Globe size={14} style={{ color: '#475569' }} />
-            {language}
-          </button>
+          <div id="google_translate_element" style={{ display: 'inline-block', minWidth: '150px' }}></div>
         </div>
       </nav>
 
