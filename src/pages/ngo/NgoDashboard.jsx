@@ -1082,18 +1082,35 @@ const FinanceSuite = () => {
   const handleCreateExpense = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('http://localhost:5000/api/finance/reports', {
-        method: 'POST',
+      const isEditing = !!expenseForm._id;
+      const url = isEditing ? `http://localhost:5000/api/finance/reports/${expenseForm._id}` : 'http://localhost:5000/api/finance/reports';
+      const method = isEditing ? 'PUT' : 'POST';
+      
+      const totalAmount = expenseForm.rows.reduce((acc, row) => acc + Number(row.expense || 0), 0);
+      
+      const res = await fetch(url, {
+        method: method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...expenseForm, ngoId: user.gcId })
+        body: JSON.stringify({ ...expenseForm, totalAmount, ngoId: user.gcId })
       });
       if (res.ok) {
         setShowExpenseModal(false);
         setExpenseForm({ title: '', campaignId: '', rows: [{ particulars: '', expense: '' }], bills: [] });
         fetchFinanceData();
-        showToast('Expense log added successfully!', 'success');
+        showToast(`Expense log ${isEditing ? 'updated' : 'added'} successfully!`, 'success');
       }
     } catch (err) {}
+  };
+
+  const handleEditExpense = (report) => {
+    setExpenseForm({
+      _id: report._id,
+      title: report.title,
+      campaignId: report.campaignId ? report.campaignId._id : '',
+      rows: report.rows,
+      bills: report.bills || []
+    });
+    setShowExpenseModal(true);
   };
 
   const handleDeleteExpense = async (id) => {
@@ -1221,7 +1238,10 @@ const FinanceSuite = () => {
                   </div>
                 )}
 
-                <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #E2E8F0', display: 'flex', justifyContent: 'flex-end' }}>
+                <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #E2E8F0', display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
+                  <button onClick={() => handleEditExpense(r)} style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', background: 'none', border: '1px solid #E2E8F0', color: '#64748B', fontSize: '0.85rem', cursor: 'pointer', fontWeight: 500, padding: '0.3rem 0.6rem', borderRadius: '4px', transition: 'all 0.2s' }} onMouseOver={e => {e.currentTarget.style.background = '#F8FAFC'; e.currentTarget.style.color = '#334155'}} onMouseOut={e => {e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#64748B'}}>
+                    <Edit3 size={14} /> Edit Log
+                  </button>
                   <button onClick={() => handleDeleteExpense(r._id)} style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', background: 'none', border: 'none', color: '#EF4444', fontSize: '0.85rem', cursor: 'pointer', fontWeight: 500, padding: '0.3rem 0.6rem', borderRadius: '4px', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background = '#FEE2E2'} onMouseOut={e => e.currentTarget.style.background = 'transparent'}>
                     <Trash2 size={14} /> Delete Log
                   </button>
@@ -1256,8 +1276,11 @@ const FinanceSuite = () => {
         <div className="modal-overlay" onClick={() => setShowExpenseModal(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto' }}>
             <div className="modal-header">
-              <h2>Add Expense Log</h2>
-              <button className="icon-btn" onClick={() => setShowExpenseModal(false)}><X size={20} /></button>
+              <h2>{expenseForm._id ? 'Edit Expense Log' : 'Add Expense Log'}</h2>
+              <button className="icon-btn" onClick={() => {
+                setShowExpenseModal(false);
+                setExpenseForm({ title: '', campaignId: '', rows: [{ particulars: '', expense: '' }], bills: [] });
+              }}><X size={20} /></button>
             </div>
             <form onSubmit={handleCreateExpense} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div className="form-group">
@@ -1267,16 +1290,16 @@ const FinanceSuite = () => {
               
               <div className="form-group">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.25rem' }}>
-                  <label style={{ margin: 0 }}>Related Campaign (Optional)</label>
+                  <label style={{ margin: 0 }}>Related Campaign (Required)</label>
                   {expenseForm.campaignId && (
                     <button type="button" onClick={handleImportCampaignDetails} className="btn btn-outline" style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem' }}>
                       Import Details
                     </button>
                   )}
                 </div>
-                <select className="form-input" value={expenseForm.campaignId} onChange={e => setExpenseForm({...expenseForm, campaignId: e.target.value})}>
-                  <option value="">None / General Fund</option>
-                  {campaigns.map(c => <option key={c._id} value={c._id}>{c.title}</option>)}
+                <select required className="form-input" value={expenseForm.campaignId} onChange={e => setExpenseForm({...expenseForm, campaignId: e.target.value})}>
+                  <option value="" disabled>Select a Campaign</option>
+                  {campaigns.map(c => <option key={c._id} value={c._id}>{c.title} {c.status === 'Completed' ? '(Ended)' : '(Active)'}</option>)}
                 </select>
               </div>
 
