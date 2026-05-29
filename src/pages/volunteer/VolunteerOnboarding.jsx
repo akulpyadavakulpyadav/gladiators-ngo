@@ -78,7 +78,7 @@ const VolunteerOnboarding = () => {
       if (response.ok) {
         setOtpSent(true);
         setCountdown(60);
-        showAlert('OTP has been sent to your email address.', 'success');
+        showAlert('Email sent to the entered email successfully.', 'success');
       } else {
         showAlert(data.message || 'Failed to send OTP.', 'error');
       }

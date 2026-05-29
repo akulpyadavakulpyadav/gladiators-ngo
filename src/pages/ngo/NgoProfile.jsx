@@ -101,7 +101,7 @@ const NgoProfile = () => {
       if (response.ok) {
         setOtpSent(true);
         setCountdown(60);
-        setNotification({ type: 'success', message: 'OTP has been sent to your new email.' });
+        setNotification({ type: 'success', message: 'Email sent to the entered email successfully.' });
       } else {
         setNotification({ type: 'error', message: data.message || 'Failed to send OTP.' });
       }
