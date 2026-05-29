@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Campaign = require('../models/Campaign');
+const Program = require('../models/Program');
 const Donation = require('../models/Donation');
 const ExpenseLog = require('../models/ExpenseLog');
 const FinanceReport = require('../models/FinanceReport');
@@ -73,7 +73,7 @@ router.post('/campaigns', async (req, res) => {
 
 router.get('/campaigns/:ngoId', async (req, res) => {
   try {
-    const campaigns = await Campaign.find({ ngoId: req.params.ngoId }).sort({ createdAt: -1 });
+    const campaigns = await Program.find({ ngoId: req.params.ngoId }).sort({ createdAt: -1 });
     res.json(campaigns);
   } catch (error) {
     res.status(500).json({ error: 'Error fetching campaigns' });
