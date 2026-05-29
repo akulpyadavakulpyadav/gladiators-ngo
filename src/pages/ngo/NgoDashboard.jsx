@@ -1176,9 +1176,6 @@ const FinanceSuite = () => {
                     <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#EF4444' }}>
                       Total: ₹{r.totalAmount}
                     </div>
-                    <button onClick={() => handleDeleteExpense(r._id)} className="btn btn-outline" style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem', marginTop: '0.5rem', borderColor: '#EF4444', color: '#EF4444' }}>
-                      Delete Report
-                    </button>
                   </div>
                 </div>
                 
@@ -1211,6 +1208,12 @@ const FinanceSuite = () => {
                     </div>
                   </div>
                 )}
+
+                <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #E2E8F0', display: 'flex', justifyContent: 'flex-end' }}>
+                  <button onClick={() => handleDeleteExpense(r._id)} style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', background: 'none', border: 'none', color: '#EF4444', fontSize: '0.85rem', cursor: 'pointer', fontWeight: 500, padding: '0.3rem 0.6rem', borderRadius: '4px', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background = '#FEE2E2'} onMouseOut={e => e.currentTarget.style.background = 'transparent'}>
+                    <Trash2 size={14} /> Delete Log
+                  </button>
+                </div>
               </div>
             ))}
             {expenses.length === 0 && <p style={{ color: '#64748B' }}>No expense logs created yet.</p>}
