@@ -296,19 +296,28 @@ router.get('/volunteer/:gcId/badges', async (req, res) => {
 });
 
 // @route   PUT /api/auth/volunteer/:gcId/badges/mark-notified
-// @desc    Mark all new badges as notified
+// @desc    Mark all or a specific new badge as notified
 router.put('/volunteer/:gcId/badges/mark-notified', async (req, res) => {
   try {
     const { gcId } = req.params;
+    const { level } = req.body;
     const user = await User.findById(gcId.toUpperCase());
     if (!user) return res.status(404).json({ message: 'User not found' });
 
     if (user.badges && user.badges.length > 0) {
+      let modified = false;
       user.badges.forEach(b => {
-        b.notified = true;
+        if (!level || b.level === level) {
+          if (!b.notified) {
+            b.notified = true;
+            modified = true;
+          }
+        }
       });
-      user.markModified('badges');
-      await user.save();
+      if (modified) {
+        user.markModified('badges');
+        await user.save();
+      }
     }
 
     res.status(200).json({ success: true, badges: user.badges });
