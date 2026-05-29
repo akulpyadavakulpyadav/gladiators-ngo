@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const Application = require('../models/Application');
-const Campaign = require('../models/Campaign');
 const Program = require('../models/Program');
 
 // Search NGOs (Charity Search Engine)

@@ -63,7 +63,7 @@ router.post('/campaigns', async (req, res) => {
   try {
     const { ngoId, title, description, targetAmount, endDate } = req.body;
     if (!ngoId) return res.status(400).json({ error: 'ngoId is required' });
-    const newCampaign = new Campaign({ ngoId, title, description, targetAmount, endDate });
+    const newCampaign = new Program({ ngoId, title, description, targetAmount, endDate });
     await newCampaign.save();
     res.status(201).json(newCampaign);
   } catch (error) {
@@ -83,7 +83,7 @@ router.get('/campaigns/:ngoId', async (req, res) => {
 // Complete a campaign
 router.put('/campaigns/:id/complete', async (req, res) => {
   try {
-    const campaign = await Campaign.findByIdAndUpdate(req.params.id, { status: 'Completed' }, { new: true });
+    const campaign = await Program.findByIdAndUpdate(req.params.id, { status: 'Completed' }, { new: true });
     res.json(campaign);
   } catch (error) {
     res.status(500).json({ error: 'Error completing campaign' });
@@ -94,7 +94,7 @@ router.put('/campaigns/:id/complete', async (req, res) => {
 router.post('/campaigns/:id/report', async (req, res) => {
   try {
     const { reportUrl } = req.body;
-    const campaign = await Campaign.findByIdAndUpdate(req.params.id, { 
+    const campaign = await Program.findByIdAndUpdate(req.params.id, { 
       hasFinanceReport: true, 
       financeReportUrl: reportUrl || 'generated_report.pdf' 
     }, { new: true });
@@ -107,7 +107,7 @@ router.post('/campaigns/:id/report', async (req, res) => {
 // Get campaigns pending finance report
 router.get('/campaigns/:ngoId/pending-reports', async (req, res) => {
   try {
-    const campaigns = await Campaign.find({ 
+    const campaigns = await Program.find({ 
       ngoId: req.params.ngoId, 
       status: 'Completed', 
       hasFinanceReport: false 
@@ -128,7 +128,7 @@ router.post('/donations', async (req, res) => {
     await newDonation.save();
     
     if (campaignId) {
-      await Campaign.findByIdAndUpdate(campaignId, { $inc: { raisedAmount: amount } });
+      await Program.findByIdAndUpdate(campaignId, { $inc: { raisedAmount: amount } });
     }
     
     res.status(201).json(newDonation);
